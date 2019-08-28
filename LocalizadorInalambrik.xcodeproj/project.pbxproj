@@ -26,6 +26,7 @@
 		B532A86F2310508B0055E6F7 /* DeviceUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A86E2310508B0055E6F7 /* DeviceUtilities.swift */; };
 		B532A87223105B0C0055E6F7 /* LocationReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */; };
 		B5F53D262315F4640034E43A /* LocationUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D252315F4640034E43A /* LocationUtilities.swift */; };
+		B5F53D2823171B090034E43A /* LocationPermissionsWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,7 @@
 		B532A86E2310508B0055E6F7 /* DeviceUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceUtilities.swift; sourceTree = "<group>"; };
 		B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationReportViewController.swift; sourceTree = "<group>"; };
 		B5F53D252315F4640034E43A /* LocationUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUtilities.swift; sourceTree = "<group>"; };
+		B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionsWarning.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 				B532A844230DB0F30055E6F7 /* LoginViewController.swift */,
 				B532A85A230F082F0055E6F7 /* ViewControllerUtilities.swift */,
 				B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */,
+				B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 			files = (
 				B532A866230F38080055E6F7 /* CustomObject.h.m in Sources */,
 				B532A84E230DE4320055E6F7 /* CoreDataStack.swift in Sources */,
+				B5F53D2823171B090034E43A /* LocationPermissionsWarning.swift in Sources */,
 				B532A85D230F20110055E6F7 /* JSONStructures.swift in Sources */,
 				B532A852230DE7F40055E6F7 /* LocationReportInfo+CoreDataProperties.swift in Sources */,
 				B532A845230DB0F30055E6F7 /* LoginViewController.swift in Sources */,

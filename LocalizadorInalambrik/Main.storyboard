@@ -280,7 +280,99 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hyl-J6-exj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="984.79999999999995" y="-400.49261083743846"/>
+            <point key="canvasLocation" x="1268" y="-130"/>
+        </scene>
+        <!--Location Permissions Warning-->
+        <scene sceneID="eeZ-YU-P94">
+            <objects>
+                <viewController id="E76-FF-HPI" customClass="LocationPermissionsWarning" customModule="LocalizadorInalambrik" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3Tc-1w-cBd">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ddc-hD-KJZ">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Wa-DB-aLn">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="881"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Permiso de Servicio de Localización Apagado o Denegado" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a1T-Sl-DqV">
+                                                <rect key="frame" x="40" y="80" width="295" height="68.333333333333314"/>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="19"/>
+                                                <color key="textColor" red="0.60194798520000004" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Itz-F7-nWA">
+                                                <rect key="frame" x="40" y="208.33333333333334" width="295" height="99.333333333333343"/>
+                                                <string key="text">Por favor habilitar los Servicios de Localización de su dispositivo. Vaya a Configuración &gt; Localizador Inalambrik &gt; Ubicación &gt; Marcar "Siempre".</string>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                                <color key="textColor" red="0.25" green="0.25" blue="0.25" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vv6-po-hCV">
+                                                <rect key="frame" x="40" y="367.66666666666669" width="295" height="52.666666666666686"/>
+                                                <string key="text">Si este mensaje no desaparece después de haber habilitado el permiso, por favor reiniciar aplicación (Doble tap en Home &gt; Deslizar esta aplicación para cerrarla).</string>
+                                                <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                                <color key="textColor" red="0.40000000600000002" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fl4-tc-kiC">
+                                                <rect key="frame" x="40" y="450.33333333333331" width="295" height="30"/>
+                                                <state key="normal" title="Refrescar Permisos"/>
+                                                <connections>
+                                                    <segue destination="lz7-mJ-ggY" kind="show" identifier="locationReportPanelSegue" id="wFU-VX-unH"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik (Versión 3.1)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CDB-TM-mnJ">
+                                                <rect key="frame" x="40" y="500.33333333333331" width="295" height="15.666666666666686"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="Itz-F7-nWA" secondAttribute="trailing" constant="40" id="4oV-th-LYw"/>
+                                            <constraint firstAttribute="trailing" secondItem="vv6-po-hCV" secondAttribute="trailing" constant="40" id="6Lm-he-KkP"/>
+                                            <constraint firstItem="CDB-TM-mnJ" firstAttribute="top" secondItem="Fl4-tc-kiC" secondAttribute="bottom" constant="20" id="7yr-nS-oif"/>
+                                            <constraint firstAttribute="trailing" secondItem="a1T-Sl-DqV" secondAttribute="trailing" constant="40" id="8KX-2W-M1Z"/>
+                                            <constraint firstItem="Itz-F7-nWA" firstAttribute="top" secondItem="a1T-Sl-DqV" secondAttribute="bottom" constant="60" id="Has-Y2-BAZ"/>
+                                            <constraint firstItem="Fl4-tc-kiC" firstAttribute="leading" secondItem="0Wa-DB-aLn" secondAttribute="leading" constant="40" id="NRe-jh-YIJ"/>
+                                            <constraint firstItem="a1T-Sl-DqV" firstAttribute="top" secondItem="0Wa-DB-aLn" secondAttribute="top" constant="80" id="Qhi-K3-gEa"/>
+                                            <constraint firstAttribute="trailing" secondItem="Fl4-tc-kiC" secondAttribute="trailing" constant="40" id="U3T-cv-7ss"/>
+                                            <constraint firstAttribute="trailing" secondItem="CDB-TM-mnJ" secondAttribute="trailing" constant="40" id="VCV-dI-dhr"/>
+                                            <constraint firstItem="a1T-Sl-DqV" firstAttribute="leading" secondItem="0Wa-DB-aLn" secondAttribute="leading" constant="40" id="Ywd-8Y-lMM"/>
+                                            <constraint firstItem="vv6-po-hCV" firstAttribute="top" secondItem="Itz-F7-nWA" secondAttribute="bottom" constant="60" id="ZLh-rg-zH4"/>
+                                            <constraint firstAttribute="height" constant="881" id="acp-cX-fyx"/>
+                                            <constraint firstItem="vv6-po-hCV" firstAttribute="leading" secondItem="0Wa-DB-aLn" secondAttribute="leading" constant="40" id="bsJ-RS-P4A"/>
+                                            <constraint firstItem="CDB-TM-mnJ" firstAttribute="leading" secondItem="0Wa-DB-aLn" secondAttribute="leading" constant="40" id="fKN-3d-Umo"/>
+                                            <constraint firstItem="Itz-F7-nWA" firstAttribute="leading" secondItem="0Wa-DB-aLn" secondAttribute="leading" constant="40" id="i5I-sW-HQ2"/>
+                                            <constraint firstItem="Fl4-tc-kiC" firstAttribute="top" secondItem="vv6-po-hCV" secondAttribute="bottom" constant="30" id="swT-0Q-R5Z"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="0Wa-DB-aLn" firstAttribute="leading" secondItem="ddc-hD-KJZ" secondAttribute="leading" id="EtD-8h-MZb"/>
+                                    <constraint firstAttribute="trailing" secondItem="0Wa-DB-aLn" secondAttribute="trailing" id="FWQ-w9-N7P"/>
+                                    <constraint firstItem="0Wa-DB-aLn" firstAttribute="centerX" secondItem="ddc-hD-KJZ" secondAttribute="centerX" id="VUC-3u-Cik"/>
+                                    <constraint firstAttribute="bottom" secondItem="0Wa-DB-aLn" secondAttribute="bottom" constant="-69" id="Zti-ir-6ia"/>
+                                    <constraint firstItem="0Wa-DB-aLn" firstAttribute="top" secondItem="ddc-hD-KJZ" secondAttribute="top" id="n2X-kt-M0X"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="ddc-hD-KJZ" firstAttribute="top" secondItem="3Tc-1w-cBd" secondAttribute="top" id="Hkk-SY-R1d"/>
+                            <constraint firstItem="ddc-hD-KJZ" firstAttribute="trailing" secondItem="hjN-P4-sK4" secondAttribute="trailing" id="Weh-ig-G30"/>
+                            <constraint firstAttribute="bottom" secondItem="ddc-hD-KJZ" secondAttribute="bottom" id="ajX-g8-e59"/>
+                            <constraint firstItem="ddc-hD-KJZ" firstAttribute="leading" secondItem="hjN-P4-sK4" secondAttribute="leading" id="yB5-ob-xsu"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="hjN-P4-sK4"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LB0-v3-PsN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1268" y="-1080"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="2tv-oj-FDA">
@@ -394,11 +486,15 @@
                         <outlet property="loginStatusIndicator" destination="dDG-YW-22v" id="eiJ-s0-yIw"/>
                         <outlet property="textAuthorizationCode" destination="F8l-bM-pxx" id="mze-6y-Kpu"/>
                         <segue destination="lz7-mJ-ggY" kind="show" identifier="locationReportSegue" id="rgN-KA-VY9"/>
+                        <segue destination="E76-FF-HPI" kind="show" identifier="locationPermissionsSegue" id="zSy-DO-dxF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="54g-vt-1cX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="92" y="-400"/>
+            <point key="canvasLocation" x="78" y="-601"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="wFU-VX-unH"/>
+    </inferredMetricsTieBreakers>
 </document>

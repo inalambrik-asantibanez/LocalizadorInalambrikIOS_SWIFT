@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import CoreLocation
 
 class LoginViewController: UIViewController
 {
@@ -23,21 +24,31 @@ class LoginViewController: UIViewController
         updateStatusLabel("")
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        
-        // -------  VERIFICIÓN DE AUTORIZACIÓN ------
-        // Verifico si el Usuario esta autorizado a reportar ubicación con nuestra aplicación.
-        let userAuthorized = QueryUtilities.shared().checkUserAuthorization()
-    
-        // Si está autorizado, entonces quito la pantalla de Login que se pone encima
-        if userAuthorized
+    override func viewDidAppear(_ animated: Bool)
+    {
+        if CLLocationManager.locationServicesEnabled()
         {
-            print("Usuario autorizado")
-            performSegue(withIdentifier: "locationReportSegue", sender: nil)
+            print("Servicios de localizacion activos")
+            
+            // -------  VERIFICIÓN DE AUTORIZACIÓN ------
+            // Verifico si el Usuario esta autorizado a reportar ubicación con nuestra aplicación.
+            let userAuthorized = QueryUtilities.shared().checkUserAuthorization()
+            
+            // Si está autorizado, entonces quito la pantalla de Login que se pone encima
+            if userAuthorized
+            {
+                print("Usuario autorizado")
+                performSegue(withIdentifier: "locationReportSegue", sender: nil)
+            }
+            else
+            {
+                print("Usuario no autorizado")
+            }
         }
         else
         {
-            print("Usuario no autorizado")
+            print("Servicios de ubicacion no activos, se muestra warning...")
+            performSegue(withIdentifier: "locationPermissionsSegue", sender: nil)
         }
     }
     
@@ -160,7 +171,13 @@ class LoginViewController: UIViewController
     override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "locationReportSegue"
         {
+            print("Se muestra el panel de reportes")
             _ = segue.destination as! LocationReportViewController
+        }
+        else if segue.identifier == "locationPermissionsSegue"
+        {
+            print("Se muestra el panel de location warning")
+            _ = segue.destination as! LocationPermissionsWarning
         }
     }
     

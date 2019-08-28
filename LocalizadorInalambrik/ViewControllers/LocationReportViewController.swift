@@ -59,6 +59,8 @@ class LocationReportViewController : UIViewController
         
         //Register BackGroundTask
         registerBackGroundTask()
+        
+        sendLocationReportTest.isHidden = true
     }
     
     //Remove the observer when the viewcontroller is closed
