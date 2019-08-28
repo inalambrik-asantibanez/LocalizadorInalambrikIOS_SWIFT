@@ -59,7 +59,6 @@ extension Client
     
     func sendPendingLocationReport(_ locationReport: LocationReportInfo, completion: @escaping (_ result: sendLocationReportResponse?, _ error: Error?)-> Void)
     {
-        print("Se obtuvo el ultimo reporte pendiente de envio")
         let deviceId              = QueryUtilities.shared().getUserIMEI()
         let yearCharacter         = String(locationReport.year)
         let monthCharacter        = String(locationReport.month)

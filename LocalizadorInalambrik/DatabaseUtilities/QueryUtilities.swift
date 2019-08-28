@@ -42,18 +42,18 @@ class QueryUtilities
             if user != nil
             {
                 userAuthorizationStatus = true
-                print("Encontró el dispositivo")
+                print("Dispositivo encontrado en base")
             }
             else
             {
-                print("Va a encontrar el dispositivo")
+                print("Dispositivo no encontrado en base, será creado")
                 _ = User(userId: "1", deviceId: "ASD", authorizedDevice: "0",deviceIdentifierVendorID:"", context: CoreDataStack.shared().context)
                 CoreDataStack.shared().save()
             }
         }
         catch
         {
-             print("Va a encontrar el dispositivo")
+            print("Error: Dispositivo no encontrado en Base")
         }
         return userAuthorizationStatus
     }

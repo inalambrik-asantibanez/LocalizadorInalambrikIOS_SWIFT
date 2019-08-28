@@ -24,9 +24,11 @@ class LoginViewController: UIViewController
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
         // -------  VERIFICIÓN DE AUTORIZACIÓN ------
         // Verifico si el Usuario esta autorizado a reportar ubicación con nuestra aplicación.
         let userAuthorized = QueryUtilities.shared().checkUserAuthorization()
+    
         // Si está autorizado, entonces quito la pantalla de Login que se pone encima
         if userAuthorized
         {

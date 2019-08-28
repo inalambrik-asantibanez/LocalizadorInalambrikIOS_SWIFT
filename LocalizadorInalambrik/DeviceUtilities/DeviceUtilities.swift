@@ -21,7 +21,6 @@ class DeviceUtilities
         return Singleton.shared
     }
     
-    
     func getNetworkType() -> String
     {
         /*guard let netWorkType = telephonyInfo.currentRadioAccessTechnology
@@ -29,33 +28,7 @@ class DeviceUtilities
         {
             return ""
         }*/
-        return "DEFAULT" //netWorkType
-    }
-    
-    func getMCC() -> Int
-    {
-        let carrier = telephonyInfo.subscriberCellularProvider
-        if carrier != nil
-        {
-            return Int(carrier!.mobileCountryCode!)!
-        }
-        else
-        {
-            return 0
-        }
-    }
-    
-    func getMNC() -> Int
-    {
-        let carrier = telephonyInfo.subscriberCellularProvider
-        if carrier != nil
-        {
-            return  Int((carrier!.mobileNetworkCode)!)!
-        }
-        else
-        {
-            return 0
-        }
+        return "GPS" //netWorkType
     }
     
     func getBatteryStatus() -> Float

@@ -38,7 +38,7 @@ class LocationUtilities
         let Satellites   = getLocationSatellitesNumber(locationReport)
         let Accuracy     = getLocationAccuracy(locationReport)
         let Status       = "P"
-        let NetworkType  = "DEFAULT"//DeviceUtilities.shared().getNetworkType()
+        let NetworkType  = "GPS"//DeviceUtilities.shared().getNetworkType()
         let MCC          = 0//DeviceUtilities.shared().getMCC()
         let MNC          = 0//DeviceUtilities.shared().getMNC()
         let LAC          = 0

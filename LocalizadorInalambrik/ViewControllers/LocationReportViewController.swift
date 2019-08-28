@@ -96,7 +96,7 @@ class LocationReportViewController : UIViewController
             guard let locationInfo = try CoreDataStack.shared().fetchLocationReport(nil, entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))
                 else
             {
-                print("NO Encontro reporte")
+                print("NO hay ultimo reporte disponible")
                 fechaHora = "No Encontrada"
                 latitude = "0.000000"
                 longitude = "0.000000"
@@ -121,11 +121,11 @@ class LocationReportViewController : UIViewController
             velocidad = String(locationInfo.speed)
             velocidad += " km/h"
             satelites = String(locationInfo.satellites)
-            estado = locationInfo.status!
+            estado = locationInfo.status == "P" ? "Pendiente" : "Enviado";
         }
         catch{
             
-            print("NO Encontro reporte")
+            print("NO hay ultimo reporte disponible")
         }
         self.textLocalDateTime.text = fechaHora
         self.textLatitude.text = latitude
@@ -151,7 +151,7 @@ class LocationReportViewController : UIViewController
             {
                 for locationReport in locationReports!
                 {
-                    print("Reporte a enviar=",locationReport.reportDate)
+                    print("Reporte a enviar=",locationReport.reportDate.preciseLocalDateTime)
                     Client.shared().sendPendingLocationReport(locationReport)
                     {
                         (sendLocationResp, error) in
@@ -162,19 +162,20 @@ class LocationReportViewController : UIViewController
                             let reportInterval = sendLocationResp.ReportInterval
                             let errorMessage = sendLocationResp.ErrorMessage
                             
+                            print("Respuestas del webservice")
                             print("reportInterval=",reportInterval)
                             print("errorMessage=",errorMessage)
                             
                             if errorMessage == ""
                             {
                                 //Actualiza el reporte a estado Enviado (S)
-                                print("Se va actualizar el reporte a enviado")
+                                print("Se va actualizar el reporte a estado Enviado (S)")
                                 locationReport.setValue("S", forKey: "status")
                                 CoreDataStack.shared().save()
                                 
                                 print("Se actualizo el ultimo reporte pendiente a enviado")
                                 DispatchQueue.main.async {
-                                    print("dispatched to main")
+                                    print("Actualizacion del UI")
                                     self.getLastLocationInfo()
                                 }
                             }
@@ -206,7 +207,7 @@ class LocationReportViewController : UIViewController
     
     func setTimerBackGroundTask()
     {
-        print("Timer configurado")
+        print("Timer configurado en ",interval," segundos")
         updateTimer = Timer.scheduledTimer(timeInterval: interval, target: self,
                                            selector: #selector(getLocationReportFetch), userInfo: nil, repeats: true)
     }
@@ -242,19 +243,28 @@ class LocationReportViewController : UIViewController
         let localHour = Int(DeviceUtilities.shared().convertDateTimeToString(localDateTime, "HH"))
         if localHour! > 6 && localHour! < 20
         {
-            print("Reinicio numero intentos",counter)
+            print("Localizador en calendario")
+            
+            print("Envio de reportes pendientes ",QueryUtilities.shared().getLocationReportsByStatusCount(NSPredicate(format: "status == %@ ", "P")))
             sendPendingLocationReports()
-            switch UIApplication.shared.applicationState {
-            case .active:
-                print("Resultado Activo=",Date().preciseLocalDateTime)
-                print("Activar el servicio Ubicacion")
-                locationManager.startUpdatingLocation()
-            case .background:
-                print("Resultado Background=",Date().preciseLocalDateTime)
-                print("Activar el servicio Ubicacion")
-                locationManager.startUpdatingLocation()
-            case .inactive:
-                break
+            
+            print("Chequeo de estado de la aplicacion FechaActual=",Date().preciseLocalDateTime)
+            switch UIApplication.shared.applicationState
+            {
+                case .active:
+                    print("Activa FechaActual=",Date().preciseLocalDateTime)
+                    print("Activar el servicio Ubicacion")
+                    locationManager.startUpdatingLocation()
+                    break
+                
+                case .background:
+                    print("BackGround FechaActual=",Date().preciseLocalDateTime)
+                    print("Activar el servicio Ubicacion")
+                    locationManager.startUpdatingLocation()
+                    break
+                
+                case .inactive:
+                    break
             }
         }
         else
@@ -275,26 +285,29 @@ extension LocationReportViewController:CLLocationManagerDelegate
         //print("new latitude",mostRecentLocation.coordinate.latitude)
         //print("new longitude",mostRecentLocation.coordinate.longitude)
         
-        print("Numero intentos",counter)
+        print("Intento # ",counter)
         if abs(mostRecentLocation.coordinate.latitude) != 0 && abs(mostRecentLocation.coordinate.longitude) != 0 && counter > numTries
         {
             //Save LocationReport in DB
             LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(mostRecentLocation)
             
             //If the app is active then update the UI
-            if UIApplication.shared.applicationState == .active
+            print("Verifica el estado de la aplicacion al obtener el reporte")
+            switch UIApplication.shared.applicationState
             {
-                showLocationReportInfo()
-                print("UL datetime",mostRecentLocation.timestamp.preciseLocalTime)
-                print("UL latitude",mostRecentLocation.coordinate.latitude)
-                print("UL longitude",mostRecentLocation.coordinate.longitude)
+                case .active:
+                    print("Refresca la pantalla de reportes")
+                    showLocationReportInfo()
+                    print("Estado Activo Aplicacion")
+                    break
+                case .background:
+                    print("Estado Background Aplicacion")
+                    break
+                case .inactive:
+                    break
             }
-            else
-            {
-                print("BK datetime",mostRecentLocation.timestamp.preciseLocalTime)
-                print("BK latitude",mostRecentLocation.coordinate.latitude)
-                print("BK longitude",mostRecentLocation.coordinate.longitude)
-            }
+            print("Fecha:  \(mostRecentLocation.timestamp.preciseLocalDateTime), Latitude:  \(mostRecentLocation.coordinate.latitude) Longitude:  \(mostRecentLocation.coordinate.longitude)")
+            
             print("Servicio de ubicacion apagado")
             locationManager.stopUpdatingLocation()
             print("")
