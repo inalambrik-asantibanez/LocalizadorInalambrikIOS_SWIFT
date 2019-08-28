@@ -59,71 +59,56 @@ extension Client
     
     func sendPendingLocationReport(_ locationReport: LocationReportInfo, completion: @escaping (_ result: sendLocationReportResponse?, _ error: Error?)-> Void)
     {
-        //do
-        //{
-            /*guard let locationReport = try CoreDataStack.shared().fetchLocationReport(NSPredicate(format: "status == %@ ", "P"), entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))
-            else
-            {
-                print("No se pudo obtener el ultimo reporte pendiente de envio")
+        print("Se obtuvo el ultimo reporte pendiente de envio")
+        let deviceId              = QueryUtilities.shared().getUserIMEI()
+        let yearCharacter         = String(locationReport.year)
+        let monthCharacter        = String(locationReport.month)
+        let dayCharacter          = String(locationReport.day)
+        let hourCharacter         = String(locationReport.hour)
+        let minuteCharacter       = String(locationReport.minute)
+        let secondCharacter       = String(locationReport.second)
+        let latitudeCharacter     = String(locationReport.latitude)
+        let longitudeCharacter    = String(locationReport.longitude)
+        let altitudeCharacter     = String(locationReport.altitude)
+        let speedCharacter        = String(locationReport.speed)
+        let orientationCharacter  = String(locationReport.orientation)
+        let satellitesCharacter   = String(locationReport.satellites)
+        let accuracyCharacter     = String(locationReport.accuracy)
+        let statusCharacter       = locationReport.status
+        let networkTypeCharacter  = locationReport.networkType
+        let mCCCharacter          = String(locationReport.mcc)
+        let mNCCharacter          = String(locationReport.mnc)
+        let lACCharacter          = String(locationReport.lac)
+        let cIDCharacter          = String(locationReport.cid)
+        let batteryLevelCharacter  = String(locationReport.batteryLevel)
+        let eventCodeCharacter    = String(locationReport.eventCode)
+        
+        let sendLocationReport = sendLocationReportRequest(OS: "IOS", DeviceId: deviceId, Year: yearCharacter, Month: monthCharacter, Day: dayCharacter, Hour: hourCharacter, Minute: minuteCharacter, Second: secondCharacter, Latitude: latitudeCharacter, Longitude: longitudeCharacter, Altitude: altitudeCharacter, Speed: speedCharacter, Orientation: orientationCharacter, Satellites: satellitesCharacter, Accuracy: accuracyCharacter, Status: statusCharacter!, NetworkType: networkTypeCharacter!, MCC: mCCCharacter, MNC: mNCCharacter, LAC: lACCharacter, CID: cIDCharacter, BatteryLevel: batteryLevelCharacter, EventCode: eventCodeCharacter,ActivityRecognitionCode: "")
+        
+        let jsonData = try! JSONEncoder().encode(sendLocationReport)
+        let jsonString = String(data: jsonData, encoding: .utf8)!
+        print(jsonString)
+        
+        _ = taskForPOSTRESTMethod("POST", "", jsonString){ (data, error) in
+            if let error = error {
+                completion(nil, error)
                 return
-            }*/
-            
-            print("Se obtuvo el ultimo reporte pendiente de envio")
-            let deviceId              = QueryUtilities.shared().getUserIMEI()
-            let yearCharacter         = String(locationReport.year)
-            let monthCharacter        = String(locationReport.month)
-            let dayCharacter          = String(locationReport.day)
-            let hourCharacter         = String(locationReport.hour)
-            let minuteCharacter       = String(locationReport.minute)
-            let secondCharacter       = String(locationReport.second)
-            let latitudeCharacter     = String(locationReport.latitude)
-            let longitudeCharacter    = String(locationReport.longitude)
-            let altitudeCharacter     = String(locationReport.altitude)
-            let speedCharacter        = String(locationReport.speed)
-            let orientationCharacter  = String(locationReport.orientation)
-            let satellitesCharacter   = String(locationReport.satellites)
-            let accuracyCharacter     = String(locationReport.accuracy)
-            let statusCharacter       = locationReport.status
-            let networkTypeCharacter  = locationReport.networkType
-            let mCCCharacter          = String(locationReport.mcc)
-            let mNCCharacter          = String(locationReport.mnc)
-            let lACCharacter          = String(locationReport.lac)
-            let cIDCharacter          = String(locationReport.cid)
-            let batteryLevelCharacter  = String(locationReport.batteryLevel)
-            let eventCodeCharacter    = String(locationReport.eventCode)
-            
-            let sendLocationReport = sendLocationReportRequest(OS: "IOS", DeviceId: deviceId, Year: yearCharacter, Month: monthCharacter, Day: dayCharacter, Hour: hourCharacter, Minute: minuteCharacter, Second: secondCharacter, Latitude: latitudeCharacter, Longitude: longitudeCharacter, Altitude: altitudeCharacter, Speed: speedCharacter, Orientation: orientationCharacter, Satellites: satellitesCharacter, Accuracy: accuracyCharacter, Status: statusCharacter!, NetworkType: networkTypeCharacter!, MCC: mCCCharacter, MNC: mNCCharacter, LAC: lACCharacter, CID: cIDCharacter, BatteryLevel: batteryLevelCharacter, EventCode: eventCodeCharacter,ActivityRecognitionCode: "")
-            
-            let jsonData = try! JSONEncoder().encode(sendLocationReport)
-            let jsonString = String(data: jsonData, encoding: .utf8)!
-            print(jsonString)
-            
-            _ = taskForPOSTRESTMethod("POST", "", jsonString){ (data, error) in
-                if let error = error {
-                    completion(nil, error)
-                    return
-                }
-                guard let data = data else {
-                    let userInfo = [NSLocalizedDescriptionKey : "Could not retrieve data."]
-                    completion(nil, NSError(domain: "taskForPOSTMethod", code: 2, userInfo: userInfo))
-                    return
-                }
-                
-                do
-                {
-                    let respo = try JSONDecoder().decode(sendLocationReportResponse.self, from: data)
-                    completion(respo, nil)
-                } catch {
-                    print("Error obtenido \(#function) error: \(error)")
-                    completion(nil, error)
-                }
+            }
+            guard let data = data else {
+                let userInfo = [NSLocalizedDescriptionKey : "Could not retrieve data."]
+                completion(nil, NSError(domain: "taskForPOSTMethod", code: 2, userInfo: userInfo))
+                return
             }
             
-        /*}
-        catch
-        {
-            print("Error al obtener el ultimo reporte pendiente")
-        }*/
+            do
+            {
+                let respo = try JSONDecoder().decode(sendLocationReportResponse.self, from: data)
+                completion(respo, nil)
+            } catch {
+                print("Error obtenido \(#function) error: \(error)")
+                completion(nil, error)
+            }
+        }
     }
 
     func taskForPOSTRESTMethod(
