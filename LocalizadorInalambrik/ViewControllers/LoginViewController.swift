@@ -119,7 +119,7 @@ class LoginViewController: UIViewController
             
             if IMEIGetFromKeyChain != ""
             {
-                print("IMEIGetFromKeyChain=",IMEIGetFromKeyChain)
+                print("IMEIGetFromKeyChain=",IMEIGetFromKeyChain ?? "")
                 if let user = CoreDataStack.shared().loadUserInformation()
                 {
                     let deviceUID = UIDevice.current.identifierForVendor!.uuidString

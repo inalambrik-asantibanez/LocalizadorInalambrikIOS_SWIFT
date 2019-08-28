@@ -23,10 +23,6 @@ class LocationUtilities
     func saveLocationReportObjectOnFetchLocation(_ locationReport : CLLocation)
     {
         //Variables of the location report
-        let locationDateString = locationReport.timestamp.preciseLocalDate
-        let locationTimeString = locationReport.timestamp.preciseLocalTime
-        let locationDate = DeviceUtilities.shared().convertStringToDateTime(locationDateString, locationTimeString, "yyyy-MM-dd HH:mm:ss")
-        
         let Year   = Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "YYYY"))
         let Month  = Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "MM"))
         let Day    = Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "dd"))
