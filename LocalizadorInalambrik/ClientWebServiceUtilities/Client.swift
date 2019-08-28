@@ -57,16 +57,16 @@ extension Client
         }
     }
     
-    func sendPendingLocationReport(completion: @escaping (_ result: sendLocationReportResponse?, _ error: Error?)-> Void)
+    func sendPendingLocationReport(_ locationReport: LocationReportInfo, completion: @escaping (_ result: sendLocationReportResponse?, _ error: Error?)-> Void)
     {
-        do
-        {
-            guard let locationReport = try CoreDataStack.shared().fetchLocationReport(NSPredicate(format: "status == %@ ", "P"), entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))
+        //do
+        //{
+            /*guard let locationReport = try CoreDataStack.shared().fetchLocationReport(NSPredicate(format: "status == %@ ", "P"), entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))
             else
             {
                 print("No se pudo obtener el ultimo reporte pendiente de envio")
                 return
-            }
+            }*/
             
             print("Se obtuvo el ultimo reporte pendiente de envio")
             let deviceId              = QueryUtilities.shared().getUserIMEI()
@@ -92,7 +92,7 @@ extension Client
             let batteryLevelCharacter  = String(locationReport.batteryLevel)
             let eventCodeCharacter    = String(locationReport.eventCode)
             
-            let sendLocationReport = sendLocationReportRequest(OS: "IOS", DeviceId: deviceId, Year: yearCharacter, Month: monthCharacter, Day: dayCharacter, Hour: hourCharacter, Minute: minuteCharacter, Second: secondCharacter, Latitude: latitudeCharacter, Longitude: longitudeCharacter, Altitude: altitudeCharacter, Speed: speedCharacter, Orientation: orientationCharacter, Satellites: satellitesCharacter, Accuracy: accuracyCharacter, Status: statusCharacter!, NetworkType: networkTypeCharacter!, MCC: mCCCharacter, MNC: mNCCharacter, LAC: lACCharacter, CID: cIDCharacter, BatteryLevel: batteryLevelCharacter, EventCode: eventCodeCharacter)
+            let sendLocationReport = sendLocationReportRequest(OS: "IOS", DeviceId: deviceId, Year: yearCharacter, Month: monthCharacter, Day: dayCharacter, Hour: hourCharacter, Minute: minuteCharacter, Second: secondCharacter, Latitude: latitudeCharacter, Longitude: longitudeCharacter, Altitude: altitudeCharacter, Speed: speedCharacter, Orientation: orientationCharacter, Satellites: satellitesCharacter, Accuracy: accuracyCharacter, Status: statusCharacter!, NetworkType: networkTypeCharacter!, MCC: mCCCharacter, MNC: mNCCharacter, LAC: lACCharacter, CID: cIDCharacter, BatteryLevel: batteryLevelCharacter, EventCode: eventCodeCharacter,ActivityRecognitionCode: "")
             
             let jsonData = try! JSONEncoder().encode(sendLocationReport)
             let jsonString = String(data: jsonData, encoding: .utf8)!
@@ -119,11 +119,11 @@ extension Client
                 }
             }
             
-        }
+        /*}
         catch
         {
             print("Error al obtener el ultimo reporte pendiente")
-        }
+        }*/
     }
 
     func taskForPOSTRESTMethod(

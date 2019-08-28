@@ -10,4 +10,5 @@
 @interface CustomObject : NSObject
 
 -(NSString *)saveDeviceIDInKeychain:(NSString*)devID;
+-(NSString *)getGeneratedDeviceIDFromKeychain;
 @end

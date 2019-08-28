@@ -8,9 +8,12 @@
 
 import Foundation
 import UIKit
+import CoreTelephony
 
 class DeviceUtilities
 {
+    let telephonyInfo: CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
+    
     class func shared() -> DeviceUtilities {
         struct Singleton {
             static var shared = DeviceUtilities()
@@ -21,9 +24,38 @@ class DeviceUtilities
     
     func getNetworkType() -> String
     {
-        
-        let netWorkType = "RED"
-        return netWorkType
+        /*guard let netWorkType = telephonyInfo.currentRadioAccessTechnology
+        else
+        {
+            return ""
+        }*/
+        return "DEFAULT" //netWorkType
+    }
+    
+    func getMCC() -> Int
+    {
+        let carrier = telephonyInfo.subscriberCellularProvider
+        if carrier != nil
+        {
+            return Int(carrier!.mobileCountryCode!)!
+        }
+        else
+        {
+            return 0
+        }
+    }
+    
+    func getMNC() -> Int
+    {
+        let carrier = telephonyInfo.subscriberCellularProvider
+        if carrier != nil
+        {
+            return  Int((carrier!.mobileNetworkCode)!)!
+        }
+        else
+        {
+            return 0
+        }
     }
     
     func getBatteryStatus() -> Float
@@ -43,15 +75,18 @@ class DeviceUtilities
         return dateTimeString
     }
     
-    func convertStringToDateTime(_ date: String,_ time: String) -> Date
+    func convertStringToDateTime(_ date: String,_ time: String, _ format: String ) -> Date
     {
-        let dateFormat = "yyyy/MM/dd HH:mm:ss"
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = dateFormat
+        dateFormatter.dateFormat = format
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         let stringDateTime = date+" "+time
-        let stringConvertedToDateTime = dateFormatter.date(from:stringDateTime)
-        return stringConvertedToDateTime!
+        guard let stringConvertedToDateTime = dateFormatter.date(from:stringDateTime)
+        else
+        {
+            return Date()
+        }
+        return stringConvertedToDateTime
     }
     
 }

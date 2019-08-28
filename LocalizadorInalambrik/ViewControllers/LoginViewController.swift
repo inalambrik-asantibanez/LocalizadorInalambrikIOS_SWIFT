@@ -49,64 +49,99 @@ class LoginViewController: UIViewController
     {
         loginActivityIndicator.startAnimating()
         self.updateStatusLabel("Verificando activación del Dispositivo...")
-        Client.shared().sendAuthorization(textAuthorizationCode.text!){
-            (userResponse, error) in
-            self.performUIUpdatesOnMain {
-                self.loginActivityIndicator.stopAnimating()
-                self.loginStatusIndicator.text = ""
-            }
-            
-            //After calling the webservice and this finished then check if there exist a response
-            if let userResponse = userResponse
-            {
-                /*let requestMessage = userResponse.request_message
-                let requestStatus = userResponse.request_status
-                let requestIMEI = userResponse.request_imei*/
+        if (textAuthorizationCode.text?.count)! > 0
+        {
+            Client.shared().sendAuthorization(textAuthorizationCode.text!){
+                (userResponse, error) in
+                self.performUIUpdatesOnMain {
+                    self.loginActivityIndicator.stopAnimating()
+                    self.loginStatusIndicator.text = ""
+                }
                 
-                let requestMessage = ""
-                let requestStatus = 1
-                let requestIMEI = "IOS776Y93WJUQP1"
-                
-                print("RequestMessage=",requestMessage)
-                print("requestStatus=",requestStatus)
-                print("requestIMEI=",requestIMEI)
-                
-                if requestStatus == 1
+                //After calling the webservice and this finished then check if there exist a response
+                if let userResponse = userResponse
                 {
-                    let IMEISaveOnKeyChain = CustomObject()
-                    let valueSaveStatus = IMEISaveOnKeyChain.saveDeviceID(inKeychain: requestIMEI)
-                    if valueSaveStatus == "1"
+                    let requestMessage = userResponse.request_message
+                    let requestStatus = userResponse.request_status
+                    let requestIMEI = userResponse.request_imei
+                    
+                    /*let requestMessage = ""
+                     let requestStatus = 1
+                     let requestIMEI = "IOS776Y93WJUQP1"*/
+                    
+                    print("RequestMessage=",requestMessage)
+                    print("requestStatus=",requestStatus)
+                    print("requestIMEI=",requestIMEI)
+                    
+                    if requestStatus == 1
                     {
-                        print("valuesavestatus=",valueSaveStatus ?? "0")
-                        if let user = CoreDataStack.shared().loadUserInformation()
+                        let IMEISaveOnKeyChain = CustomObject()
+                        let valueSaveStatus = IMEISaveOnKeyChain.saveDeviceID(inKeychain: requestIMEI)
+                        if valueSaveStatus == "1"
                         {
-                            let deviceUID = UIDevice.current.identifierForVendor!.uuidString
-                            
-                            print("Se va actualizar el usuario")
-                            user.setValue("1", forKey: "authorizedDevice")
-                            user.setValue(deviceUID, forKey: "deviceIdentifierVendorID")
-                            user.setValue(requestIMEI, forKey: "deviceId")
-                            CoreDataStack.shared().save()
-                            print("Informacion del usuario ha sido actualizada")
-                            DispatchQueue.main.async {
-                                print("dispatched to main")
-                                self.performSegue(withIdentifier: "locationReportSegue", sender: nil)
+                            print("valuesavestatus=",valueSaveStatus ?? "0")
+                            if let user = CoreDataStack.shared().loadUserInformation()
+                            {
+                                let deviceUID = UIDevice.current.identifierForVendor!.uuidString
+                                
+                                print("Se va actualizar el usuario")
+                                user.setValue("1", forKey: "authorizedDevice")
+                                user.setValue(deviceUID, forKey: "deviceIdentifierVendorID")
+                                user.setValue(requestIMEI, forKey: "deviceId")
+                                CoreDataStack.shared().save()
+                                print("Informacion del usuario ha sido actualizada")
+                                DispatchQueue.main.async {
+                                    print("dispatched to main")
+                                    self.performSegue(withIdentifier: "locationReportSegue", sender: nil)
+                                }
+                            }
+                            else
+                            {
+                                print("No encontró el usuario")
                             }
                         }
                         else
                         {
-                            print("No encontró el usuario")
+                            self.showInfo(withMessage: "Error inesperado")
                         }
                     }
                     else
                     {
-                        self.showInfo(withMessage: "Error inesperado")
+                        self.showInfo(withMessage: requestMessage)
+                    }
+                }
+            }
+        }
+        else
+        {
+            let IMEIGetOnKeyChain = CustomObject()
+            let IMEIGetFromKeyChain = IMEIGetOnKeyChain.getGeneratedDeviceIDFromKeychain()
+            
+            if IMEIGetFromKeyChain != ""
+            {
+                print("IMEIGetFromKeyChain=",IMEIGetFromKeyChain)
+                if let user = CoreDataStack.shared().loadUserInformation()
+                {
+                    let deviceUID = UIDevice.current.identifierForVendor!.uuidString
+                    print("Se va actualizar el usuario sin enviar codigo de autorizacion")
+                    user.setValue("1", forKey: "authorizedDevice")
+                    user.setValue(deviceUID, forKey: "deviceIdentifierVendorID")
+                    user.setValue(IMEIGetFromKeyChain, forKey: "deviceId")
+                    CoreDataStack.shared().save()
+                    print("Informacion del usuario ha sido actualizada")
+                    DispatchQueue.main.async {
+                        print("dispatched to main")
+                        self.performSegue(withIdentifier: "locationReportSegue", sender: nil)
                     }
                 }
                 else
                 {
-                    self.showInfo(withMessage: requestMessage)
+                    print("Error al obtener el usuario")
                 }
+            }
+            else
+            {
+                print("Error al obtener el IMEI desde el KEYCHAIN")
             }
         }
     }

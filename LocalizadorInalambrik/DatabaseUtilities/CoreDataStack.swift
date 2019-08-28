@@ -169,10 +169,13 @@ extension CoreDataStack
     }
     
     //It fetch the LocationReport List
-    func fetchLocationReports(_ predicate: NSPredicate,_ entityName: String) throws -> [LocationReportInfo]?
+    func fetchLocationReports(_ predicate: NSPredicate,_ entityName: String,  sorting: NSSortDescriptor? = nil) throws -> [LocationReportInfo]?
     {
         let fr = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         fr.predicate = predicate
+        if let sorting = sorting {
+            fr.sortDescriptors = [sorting]
+        }
         guard let lrs = try context.fetch(fr) as? [LocationReportInfo]
         else
         {

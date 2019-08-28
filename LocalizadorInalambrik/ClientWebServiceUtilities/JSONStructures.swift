@@ -33,29 +33,30 @@ struct sendUserResponse : Codable
 
 struct sendLocationReportRequest : Codable
 {
-    let OS:           String
-    let DeviceId:     String
-    let Year:         String
-    let Month:        String
-    let Day:          String
-    let Hour:         String
-    let Minute:       String
-    let Second:       String
-    let Latitude:     String
-    let Longitude:    String
-    let Altitude:     String
-    let Speed:        String
-    let Orientation:  String
-    let Satellites:   String
-    let Accuracy:     String
-    let Status:       String
-    let NetworkType:  String
-    let MCC:          String
-    let MNC:          String
-    let LAC:          String
-    let CID:          String
-    let BatteryLevel: String
-    let EventCode:    String
+    let OS:                         String
+    let DeviceId:                   String
+    let Year:                       String
+    let Month:                      String
+    let Day:                        String
+    let Hour:                       String
+    let Minute:                     String
+    let Second:                     String
+    let Latitude:                   String
+    let Longitude:                  String
+    let Altitude:                   String
+    let Speed:                      String
+    let Orientation:                String
+    let Satellites:                 String
+    let Accuracy:                   String
+    let Status:                     String
+    let NetworkType:                String
+    let MCC:                        String
+    let MNC:                        String
+    let LAC:                        String
+    let CID:                        String
+    let BatteryLevel:               String
+    let EventCode:                  String
+    let ActivityRecognitionCode:    String
 }
 
 struct sendLocationReportResponse: Codable

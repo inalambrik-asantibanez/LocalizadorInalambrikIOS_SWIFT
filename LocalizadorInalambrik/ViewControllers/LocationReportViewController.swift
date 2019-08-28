@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import CoreLocation
 
 class LocationReportViewController : UIViewController
 {
@@ -25,9 +26,44 @@ class LocationReportViewController : UIViewController
     @IBOutlet weak var textReportStatus: UILabel!
     @IBOutlet weak var sendLocationReportTest: UIButton!
     
+    //Configure the Timer for the infinite BackGroundTask
+    var updateTimer: Timer?
+    
+    //Set as Invalid BackgroundTask
+    var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
+    
+    //Set background service variables
+    var numTries = 2
+    var counter = 1
+    let interval: Double = 60
+    
+    private lazy var locationManager: CLLocationManager = {
+       let manager = CLLocationManager()
+        manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        manager.delegate = self
+        manager.requestAlwaysAuthorization()
+        manager.allowsBackgroundLocationUpdates = true
+        return manager
+    }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         showLocationReportInfo()
+        
+        //Add the observer to check the values of the BackGroundTask
+        addBackGroundTaskObserver()
+        
+        //Set Timer for BackGroundTask
+        setTimerBackGroundTask()
+        
+        //Register BackGroundTask
+        registerBackGroundTask()
+    }
+    
+    //Remove the observer when the viewcontroller is closed
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     public func showLocationReportInfo()
@@ -77,7 +113,7 @@ class LocationReportViewController : UIViewController
                 self.textReportStatus.text = estado
                 return
             }
-            fechaHora = DeviceUtilities.shared().convertDateTimeToString((locationInfo.reportDate),"yyyy/MM/dd HH:mm:ss")
+            fechaHora = DeviceUtilities.shared().convertDateTimeToString((locationInfo.reportDate),"yyyy-MM-dd HH:mm:ss")
             latitude = NSString(format: "%.6f", locationInfo.latitude) as String
             longitude = NSString(format: "%.6f", locationInfo.longitude) as String
             precision = NSString(format: "%.2f", locationInfo.accuracy) as String
@@ -101,58 +137,212 @@ class LocationReportViewController : UIViewController
     }
     @IBAction func sendLocationReportAction(_ sender: Any)
     {
-        print("Se va enviar un reporte de prueba")
-        let reportDate : Date = DeviceUtilities.shared().convertStringToDateTime("2019/08/27","10:57:20")
-        _ = LocationReportInfo(year: 2019, month: 8, day: 27, hour: 10, minute: 57, second: 20, latitude: -2.1705792, longitude:-79.9451913, altitude: 10, speed: 2, orientation: 30, satellites: 5, accuracy: 10.5, status: "P", networkType: "5G", mcc: 5, mnc: 4, lac: 6, cid: 2, batteryLevel: 90, eventCode: 1, reportDate: reportDate, context: CoreDataStack.shared().context)
-        CoreDataStack.shared().save()
-        print("El reporte fue guardado")
-        
-        Client.shared().sendPendingLocationReport()
+    }
+
+//------------------------------------------------LOCATION REPORT METHODS-----------------------------------------------
+    func sendPendingLocationReports()
+    {
+        var locationReports: [LocationReportInfo]?
+        do
         {
-            (sendLocationResp, error) in
+            try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "P"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true))
             
-            //After calling the webservice and this finished then check if there exist a response
-            if let sendLocationResp = sendLocationResp
+            if (locationReports?.count)! > 0
             {
-                let reportInterval = sendLocationResp.ReportInterval
-                let errorMessage = sendLocationResp.ErrorMessage
-                
-                print("reportInterval=",reportInterval)
-                print("errorMessage=",errorMessage)
-                
-                if errorMessage == ""
+                for locationReport in locationReports!
                 {
-                    do
+                    print("Reporte a enviar=",locationReport.reportDate)
+                    Client.shared().sendPendingLocationReport(locationReport)
                     {
-                        //Actualiza el reporte a estado Enviado (S)
-                        guard let lastPendingLocationReport = try CoreDataStack.shared().fetchLocationReport(NSPredicate(format: "status == %@ ", "P"), entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))
-                        else
-                        {
-                            print("No se pudo obtener el ultimo reporte pendiente de envio")
-                            return
-                        }
-                    
-                        print("Se va actualizar el reporte a enviado")
-                        lastPendingLocationReport.setValue("S", forKey: "status")
-                        CoreDataStack.shared().save()
+                        (sendLocationResp, error) in
                         
-                        print("Se actualizo el ultimo reporte pendiente a enviado")
-                        DispatchQueue.main.async {
-                            print("dispatched to main")
-                            self.getLastLocationInfo()
+                        //After calling the webservice and this finished then check if there exist a response
+                        if let sendLocationResp = sendLocationResp
+                        {
+                            let reportInterval = sendLocationResp.ReportInterval
+                            let errorMessage = sendLocationResp.ErrorMessage
+                            
+                            print("reportInterval=",reportInterval)
+                            print("errorMessage=",errorMessage)
+                            
+                            if errorMessage == ""
+                            {
+                                //Actualiza el reporte a estado Enviado (S)
+                                print("Se va actualizar el reporte a enviado")
+                                locationReport.setValue("S", forKey: "status")
+                                CoreDataStack.shared().save()
+                                
+                                print("Se actualizo el ultimo reporte pendiente a enviado")
+                                DispatchQueue.main.async {
+                                    print("dispatched to main")
+                                    self.getLastLocationInfo()
+                                }
+                            }
+                            else
+                            {
+                                print("Existio un error al enviar el reporte")
+                            }
                         }
                     }
-                    catch
-                    {
-                        print("No se pudo obtener el ultimo reporte pendiente de envio")
-                    }
-                }
-                else
-                {
-                    print("Existio un error al enviar el reporte")
                 }
             }
+            else
+            {
+                print("No hay reportes pendientes de enviar")
+            }
+        }
+        catch {
+            print("No es posible obtener los reportes pendientes ")
+        }
+    }
+//----------------------------------------------------------------------------------------------------------------------
+    
+//------------------------------------------------BACKGROUNDTASK METHODS------------------------------------------------
+    func addBackGroundTaskObserver()
+    {
+        print("Tarea agregado el observador")
+        NotificationCenter.default.addObserver(self, selector: #selector(reinstateBackgroundTask), name: .UIApplicationDidBecomeActive, object: nil)
+    }
+    
+    func setTimerBackGroundTask()
+    {
+        print("Timer configurado")
+        updateTimer = Timer.scheduledTimer(timeInterval: interval, target: self,
+                                           selector: #selector(getLocationReportFetch), userInfo: nil, repeats: true)
+    }
+    
+    func registerBackGroundTask()
+    {
+        print("Tarea registrada")
+        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+        assert(backgroundTask != UIBackgroundTaskInvalid)
+    }
+    
+    func endBackgroundTask() {
+        print("Tarea terminada")
+        UIApplication.shared.endBackgroundTask(backgroundTask)
+        backgroundTask = UIBackgroundTaskInvalid
+    }
+    
+    @objc func reinstateBackgroundTask()
+    {
+        print("Tarea reiniciada")
+        if updateTimer != nil && backgroundTask == UIBackgroundTaskInvalid {
+            registerBackGroundTask()
+        }
+    }
+    
+    @objc func getLocationReportFetch()
+    {
+        let localDate = Date().preciseLocalDate
+        let localTime = Date().preciseLocalTime
+        let localDateTime = DeviceUtilities.shared().convertStringToDateTime(localDate, localTime, "yyyy-MM-dd HH:mm:ss")
+        let localHour = Int(DeviceUtilities.shared().convertDateTimeToString(localDateTime, "HH"))
+        if localHour! > 6 && localHour! < 20
+        {
+            print("Reinicio numero intentos",counter)
+            sendPendingLocationReports()
+            switch UIApplication.shared.applicationState {
+            case .active:
+                print("Resultado Activo=",Date().preciseLocalDateTime)
+                print("Activar el servicio Ubicacion")
+                locationManager.startUpdatingLocation()
+            case .background:
+                print("Resultado Background=",Date().preciseLocalDateTime)
+                print("Activar el servicio Ubicacion")
+                locationManager.startUpdatingLocation()
+            case .inactive:
+                break
+            }
+        }
+        else
+        {
+            print("El localizador esta fuera de calendario")
         }
     }
 }
+//-----------------------------------------------------------------------------------------------------------------
 
+//------------------------------------------------LOCATION METHODS------------------------------------------------
+extension LocationReportViewController:CLLocationManagerDelegate
+{
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let mostRecentLocation = locations[0]
+        
+        //print("new datetime",mostRecentLocation.timestamp)
+        //print("new latitude",mostRecentLocation.coordinate.latitude)
+        //print("new longitude",mostRecentLocation.coordinate.longitude)
+        
+        print("Numero intentos",counter)
+        if abs(mostRecentLocation.coordinate.latitude) != 0 && abs(mostRecentLocation.coordinate.longitude) != 0 && counter > numTries
+        {
+            //Save LocationReport in DB
+            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(mostRecentLocation)
+            
+            //If the app is active then update the UI
+            if UIApplication.shared.applicationState == .active
+            {
+                showLocationReportInfo()
+                print("UL datetime",mostRecentLocation.timestamp.preciseLocalTime)
+                print("UL latitude",mostRecentLocation.coordinate.latitude)
+                print("UL longitude",mostRecentLocation.coordinate.longitude)
+            }
+            else
+            {
+                print("BK datetime",mostRecentLocation.timestamp.preciseLocalTime)
+                print("BK latitude",mostRecentLocation.coordinate.latitude)
+                print("BK longitude",mostRecentLocation.coordinate.longitude)
+            }
+            print("Servicio de ubicacion apagado")
+            locationManager.stopUpdatingLocation()
+            print("")
+            
+            //Reinit the counter
+            counter = 0
+        }
+        counter += 1
+    }
+}
+//-----------------------------------------------------------------------------------------------------------------
+
+//------------------------------------------------ AUXILIAR METHODS------------------------------------------------
+extension Formatter {
+    
+    static let preciseLocalTime: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "HH:mm:ss.SSS"
+        return formatter
+    }()
+    
+    static let preciseLocalDate: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+    
+    static let preciseLocalDateTime: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return formatter
+    }()
+}
+
+extension Date {
+    var nanosecond: Int { return Calendar.current.component(.nanosecond,  from: self)   }
+    var preciseLocalTime: String {
+        return Formatter.preciseLocalTime.string(for: self) ?? ""
+    }
+    var preciseLocalDate: String {
+        return Formatter.preciseLocalDate.string(for: self) ?? ""
+    }
+    
+    var preciseLocalDateTime: String {
+        return Formatter.preciseLocalDateTime.string(for: self) ?? ""
+    }
+}
+//------------------------------------------------------------------------------------------------------------------

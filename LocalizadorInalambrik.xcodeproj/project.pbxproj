@@ -25,6 +25,7 @@
 		B532A869230F55660055E6F7 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A868230F55660055E6F7 /* Client.swift */; };
 		B532A86F2310508B0055E6F7 /* DeviceUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A86E2310508B0055E6F7 /* DeviceUtilities.swift */; };
 		B532A87223105B0C0055E6F7 /* LocationReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */; };
+		B5F53D262315F4640034E43A /* LocationUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D252315F4640034E43A /* LocationUtilities.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 		B532A868230F55660055E6F7 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		B532A86E2310508B0055E6F7 /* DeviceUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceUtilities.swift; sourceTree = "<group>"; };
 		B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationReportViewController.swift; sourceTree = "<group>"; };
+		B5F53D252315F4640034E43A /* LocationUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUtilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 		B532A82D230DAF020055E6F7 /* LocalizadorInalambrik */ = {
 			isa = PBXGroup;
 			children = (
+				B5F53D242315F4530034E43A /* LocationUtilities */,
 				B532A870231050940055E6F7 /* DeviceUtilities */,
 				B532A85F230F373E0055E6F7 /* ObjectiveC Utilities */,
 				B532A85E230F305C0055E6F7 /* LocalizadorMovil.entitlements */,
@@ -149,6 +152,14 @@
 			path = DeviceUtilities;
 			sourceTree = "<group>";
 		};
+		B5F53D242315F4530034E43A /* LocationUtilities */ = {
+			isa = PBXGroup;
+			children = (
+				B5F53D252315F4640034E43A /* LocationUtilities.swift */,
+			);
+			path = LocationUtilities;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -182,6 +193,11 @@
 					B532A82A230DAF020055E6F7 = {
 						CreatedOnToolsVersion = 9.4.1;
 						LastSwiftMigration = 0940;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -228,6 +244,7 @@
 				B532A845230DB0F30055E6F7 /* LoginViewController.swift in Sources */,
 				B532A87223105B0C0055E6F7 /* LocationReportViewController.swift in Sources */,
 				B532A837230DAF020055E6F7 /* LocalizadorInalambrik.xcdatamodeld in Sources */,
+				B5F53D262315F4640034E43A /* LocationUtilities.swift in Sources */,
 				B532A869230F55660055E6F7 /* Client.swift in Sources */,
 				B532A85B230F082F0055E6F7 /* ViewControllerUtilities.swift in Sources */,
 				B532A850230DE75C0055E6F7 /* User.swift in Sources */,
