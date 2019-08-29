@@ -27,6 +27,7 @@
 		B532A87223105B0C0055E6F7 /* LocationReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */; };
 		B5F53D262315F4640034E43A /* LocationUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D252315F4640034E43A /* LocationUtilities.swift */; };
 		B5F53D2823171B090034E43A /* LocationPermissionsWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */; };
+		B5F53D2C23183B490034E43A /* ConstantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2B23183B490034E43A /* ConstantsController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationReportViewController.swift; sourceTree = "<group>"; };
 		B5F53D252315F4640034E43A /* LocationUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUtilities.swift; sourceTree = "<group>"; };
 		B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionsWarning.swift; sourceTree = "<group>"; };
+		B5F53D2B23183B490034E43A /* ConstantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantsController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +126,7 @@
 				B532A851230DE7F40055E6F7 /* LocationReportInfo+CoreDataProperties.swift */,
 				B532A853230DE8060055E6F7 /* User+CoreDataProperties.swift */,
 				B532A855230DF3CF0055E6F7 /* QueryUtilities.swift */,
+				B5F53D2B23183B490034E43A /* ConstantsController.swift */,
 			);
 			path = DatabaseUtilities;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 				B532A86F2310508B0055E6F7 /* DeviceUtilities.swift in Sources */,
 				B532A84C230DE2070055E6F7 /* LocationReportInfo.swift in Sources */,
 				B532A854230DE8060055E6F7 /* User+CoreDataProperties.swift in Sources */,
+				B5F53D2C23183B490034E43A /* ConstantsController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
