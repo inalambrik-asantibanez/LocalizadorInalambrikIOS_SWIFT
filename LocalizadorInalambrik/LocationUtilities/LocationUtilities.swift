@@ -35,7 +35,7 @@ class LocationUtilities
         let Altitude     = locationReport.altitude
         let Speed        = locationReport.speed
         let Orientation  = 0 //for the moment
-        let Satellites   = getLocationSatellitesNumber(locationReport)
+        let Satellites   = 9 //getLocationSatellitesNumber(locationReport)
         let Accuracy     = getLocationAccuracy(locationReport)
         let Status       = "P"
         let NetworkType  = "GPS"//DeviceUtilities.shared().getNetworkType()
@@ -46,9 +46,10 @@ class LocationUtilities
         let BatteryLevel = Int(DeviceUtilities.shared().getBatteryStatus())
         let EventCode    = 1
         let ReportDate   = locationReport.timestamp
+        let GpsStatus    = (abs(locationReport.coordinate.latitude) == 0 || abs(locationReport.coordinate.longitude) == 0) ? "I" : "V"
         
         //Save Location Report To DB
-        _ = LocationReportInfo(year: Year!, month: Month!, day: Day!, hour: Hour!, minute: Minute!, second: Second!, latitude: Latitude, longitude: Longitude, altitude: Int(Altitude), speed: Int(Speed), orientation: Orientation, satellites: Satellites, accuracy: Accuracy, status: Status, networkType: NetworkType, mcc: MCC, mnc: MNC, lac: LAC, cid: CID, batteryLevel: BatteryLevel, eventCode: EventCode, reportDate: ReportDate, context: CoreDataStack.shared().context)
+        _ = LocationReportInfo(year: Year!, month: Month!, day: Day!, hour: Hour!, minute: Minute!, second: Second!, latitude: Latitude, longitude: Longitude, altitude: Int(Altitude), speed: Int(Speed), orientation: Orientation, satellites: Satellites, accuracy: Accuracy, status: Status, networkType: NetworkType, mcc: MCC, mnc: MNC, lac: LAC, cid: CID, batteryLevel: BatteryLevel, eventCode: EventCode, reportDate: ReportDate,gpsStatus: GpsStatus, context: CoreDataStack.shared().context)
         CoreDataStack.shared().save()
     }
     

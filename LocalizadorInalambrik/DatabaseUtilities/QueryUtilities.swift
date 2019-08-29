@@ -21,7 +21,7 @@ class QueryUtilities
     
     func saveLocationReport(_ locationReport: LocationReportInfo)
     {
-        _ = LocationReportInfo(year: locationReport.year, month: locationReport.month, day: locationReport.day, hour: locationReport.hour, minute: locationReport.minute, second: locationReport.second, latitude: locationReport.latitude, longitude: locationReport.longitude, altitude: locationReport.altitude, speed: locationReport.speed, orientation: locationReport.orientation, satellites: locationReport.satellites, accuracy: locationReport.accuracy, status: locationReport.status!, networkType: locationReport.networkType!, mcc: locationReport.mcc, mnc: locationReport.mnc, lac: locationReport.lac, cid: locationReport.cid, batteryLevel: locationReport.batteryLevel, eventCode: locationReport.eventCode,reportDate: locationReport.reportDate, context: CoreDataStack.shared().context)
+        _ = LocationReportInfo(year: locationReport.year, month: locationReport.month, day: locationReport.day, hour: locationReport.hour, minute: locationReport.minute, second: locationReport.second, latitude: locationReport.latitude, longitude: locationReport.longitude, altitude: locationReport.altitude, speed: locationReport.speed, orientation: locationReport.orientation, satellites: locationReport.satellites, accuracy: locationReport.accuracy, status: locationReport.status!, networkType: locationReport.networkType!, mcc: locationReport.mcc, mnc: locationReport.mnc, lac: locationReport.lac, cid: locationReport.cid, batteryLevel: locationReport.batteryLevel, eventCode: locationReport.eventCode,reportDate: locationReport.reportDate,gpsStatus: locationReport.gpsStatus!, context: CoreDataStack.shared().context)
         CoreDataStack.shared().save()
         
     }
@@ -36,7 +36,7 @@ class QueryUtilities
     {
         var userAuthorizationStatus = false
         var user: User?
-        let predicate = NSPredicate(format:"userId == %@ ","1")
+        let predicate = NSPredicate(format:"authorizedDevice == %@ ","1")
         do {
             try user = CoreDataStack.shared().fetchUser(predicate, entityName:User.name)
             if user != nil

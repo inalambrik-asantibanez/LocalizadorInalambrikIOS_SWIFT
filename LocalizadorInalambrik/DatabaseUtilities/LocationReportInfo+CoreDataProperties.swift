@@ -39,4 +39,5 @@ extension LocationReportInfo
     @NSManaged public var batteryLevel: Int
     @NSManaged public var eventCode: Int
     @NSManaged public var reportDate: Date
+    @NSManaged public var gpsStatus: String?
 }

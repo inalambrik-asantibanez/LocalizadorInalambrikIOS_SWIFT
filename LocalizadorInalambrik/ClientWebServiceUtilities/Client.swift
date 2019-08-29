@@ -73,7 +73,7 @@ extension Client
         let orientationCharacter  = String(locationReport.orientation)
         let satellitesCharacter   = String(locationReport.satellites)
         let accuracyCharacter     = String(locationReport.accuracy)
-        let statusCharacter       = locationReport.status
+        let statusCharacter       = locationReport.gpsStatus
         let networkTypeCharacter  = locationReport.networkType
         let mCCCharacter          = String(locationReport.mcc)
         let mNCCharacter          = String(locationReport.mnc)
@@ -117,7 +117,8 @@ extension Client
         completionHandlerForPOSTREST: @escaping (_ result: Data?, _ error: NSError?) -> Void) -> URLSessionDataTask {
         
         let request: NSMutableURLRequest!
-        request = NSMutableURLRequest(url: buildURLFromParameters(false,false,useType))
+        
+        request = NSMutableURLRequest(url: buildURLFromParameters(useType))
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -182,16 +183,16 @@ extension Client
     }
     
     //It helps for Creating a URL from Parameters
-    private func buildURLFromParameters(_ httpSecureMode: Bool, _ productionMode: Bool,_ useType: String) -> URL {
+    private func buildURLFromParameters(_ useType: String) -> URL {
         
         var components = URLComponents()
         components.scheme = userRequestAPI.APIScheme
-        if httpSecureMode
+        if ConstantsController().HTTP_SECURE
         {
             components.scheme = userRequestAPI.SecureAPIScheme
         }
         components.host = userRequestAPI.LocalAPIHost
-        if productionMode
+        if ConstantsController().PRODUCTION_MODE
         {
             components.host = userRequestAPI.APIHost
         }
