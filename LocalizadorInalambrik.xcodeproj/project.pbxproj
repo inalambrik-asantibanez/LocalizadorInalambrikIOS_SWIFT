@@ -28,6 +28,7 @@
 		B5F53D262315F4640034E43A /* LocationUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D252315F4640034E43A /* LocationUtilities.swift */; };
 		B5F53D2823171B090034E43A /* LocationPermissionsWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */; };
 		B5F53D2C23183B490034E43A /* ConstantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2B23183B490034E43A /* ConstantsController.swift */; };
+		B5F53D2E2318601E0034E43A /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2D2318601E0034E43A /* Notifications.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +58,7 @@
 		B5F53D252315F4640034E43A /* LocationUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUtilities.swift; sourceTree = "<group>"; };
 		B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionsWarning.swift; sourceTree = "<group>"; };
 		B5F53D2B23183B490034E43A /* ConstantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantsController.swift; sourceTree = "<group>"; };
+		B5F53D2D2318601E0034E43A /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				B532A86E2310508B0055E6F7 /* DeviceUtilities.swift */,
+				B5F53D2D2318601E0034E43A /* Notifications.swift */,
 			);
 			path = DeviceUtilities;
 			sourceTree = "<group>";
@@ -244,6 +247,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B532A866230F38080055E6F7 /* CustomObject.h.m in Sources */,
+				B5F53D2E2318601E0034E43A /* Notifications.swift in Sources */,
 				B532A84E230DE4320055E6F7 /* CoreDataStack.swift in Sources */,
 				B5F53D2823171B090034E43A /* LocationPermissionsWarning.swift in Sources */,
 				B532A85D230F20110055E6F7 /* JSONStructures.swift in Sources */,

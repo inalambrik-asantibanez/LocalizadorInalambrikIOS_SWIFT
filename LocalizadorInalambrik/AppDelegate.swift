@@ -68,7 +68,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             sleep(3)
             print("applicationWillTerminate")
         }
-        
         self.saveContext()
     }
 

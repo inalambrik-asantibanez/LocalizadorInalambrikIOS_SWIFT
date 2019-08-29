@@ -33,11 +33,14 @@ class LocationReportViewController : UIViewController
     var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
     //Set background service variables
-    var numTries = 2
+    var numTries = ConstantsController().NUMBER_OF_TRIES
     var counter = 1
-    let interval: Double = 60
+    let interval: Double = ConstantsController().REPORT_INTERVAL
+    let initInterval : Double = ConstantsController().INITIAL_INTERVAL
     
-    private lazy var locationManager: CLLocationManager = {
+    var initIsActive = true
+    
+    public lazy var locationManager: CLLocationManager = {
        let manager = CLLocationManager()
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         manager.delegate = self
@@ -51,11 +54,13 @@ class LocationReportViewController : UIViewController
         super.viewDidLoad()
         showLocationReportInfo()
         
+        //Add the observer
+        
         //Add the observer to check the values of the BackGroundTask
         addBackGroundTaskObserver()
         
         //Set Timer for BackGroundTask
-        setTimerBackGroundTask()
+        setInitTimerBackGroundTask()
         
         //Register BackGroundTask
         registerBackGroundTask()
@@ -207,11 +212,21 @@ class LocationReportViewController : UIViewController
         NotificationCenter.default.addObserver(self, selector: #selector(reinstateBackgroundTask), name: .UIApplicationDidBecomeActive, object: nil)
     }
     
+    func setInitTimerBackGroundTask()
+    {
+        print("Timer inicial configurado en ",initInterval, " segundos")
+        updateTimer?.invalidate()
+        updateTimer = Timer.scheduledTimer(timeInterval: initInterval, target: self,
+                                           selector: #selector(getLocationReportFetch), userInfo: nil, repeats: false)
+    }
+    
     func setTimerBackGroundTask()
     {
         print("Timer configurado en ",interval," segundos")
+        updateTimer?.invalidate()
         updateTimer = Timer.scheduledTimer(timeInterval: interval, target: self,
                                            selector: #selector(getLocationReportFetch), userInfo: nil, repeats: true)
+        initIsActive = false
     }
     
     func registerBackGroundTask()
@@ -243,7 +258,7 @@ class LocationReportViewController : UIViewController
         let localTime = Date().preciseLocalTime
         let localDateTime = DeviceUtilities.shared().convertStringToDateTime(localDate, localTime, "yyyy-MM-dd HH:mm:ss")
         let localHour = Int(DeviceUtilities.shared().convertDateTimeToString(localDateTime, "HH"))
-        if localHour! > 6 && localHour! < 20
+        if localHour! > ConstantsController().BEGIN_REPORT_HOUR && localHour! < ConstantsController().END_REPORT_HOUR
         {
             print("Localizador en calendario")
             
@@ -268,11 +283,18 @@ class LocationReportViewController : UIViewController
                 case .inactive:
                     break
             }
+            if initIsActive
+            {
+                setTimerBackGroundTask()
+            }
+            
         }
         else
         {
             print("El localizador esta fuera de calendario")
         }
+        
+        
     }
 }
 //-----------------------------------------------------------------------------------------------------------------
@@ -291,7 +313,7 @@ extension LocationReportViewController:CLLocationManagerDelegate
         if abs(mostRecentLocation.coordinate.latitude) != 0 && abs(mostRecentLocation.coordinate.longitude) != 0 && counter > numTries
         {
             //Save LocationReport in DB
-            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(mostRecentLocation)
+            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(mostRecentLocation,"")
             
             //If the app is active then update the UI
             print("Verifica el estado de la aplicacion al obtener el reporte")
