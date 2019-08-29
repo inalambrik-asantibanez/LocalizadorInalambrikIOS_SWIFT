@@ -20,33 +20,45 @@ class LocationUtilities
         return Singleton.shared
     }
     
-    func saveLocationReportObjectOnFetchLocation(_ locationReport : CLLocation)
+    func saveLocationReportObjectOnFetchLocation(_ locationReport : CLLocation, _ reportType: String)
     {
         //Variables of the location report
-        let Year   = Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "YYYY"))
-        let Month  = Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "MM"))
-        let Day    = Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "dd"))
-        let Hour   = Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "HH"))
-        let Minute = Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "mm"))
-        let Second = Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "ss"))
+        let Year             = reportType == "" ? Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "YYYY")) : Int(DeviceUtilities.shared().convertDateTimeToString(Date(), "YYYY"))
+        let Month            = reportType == "" ? Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "MM")) : Int(DeviceUtilities.shared().convertDateTimeToString(Date(), "MM"))
+        let Day              = reportType == "" ? Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "dd")) : Int(DeviceUtilities.shared().convertDateTimeToString(Date(), "dd"))
+        let Hour             = reportType == "" ? Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "HH")) : Int(DeviceUtilities.shared().convertDateTimeToString(Date(), "HH"))
+        let Minute           = reportType == "" ? Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "mm")) : Int(DeviceUtilities.shared().convertDateTimeToString(Date(), "mm"))
+        let Second           = reportType == "" ? Int(DeviceUtilities.shared().convertDateTimeToString(locationReport.timestamp, "ss")) : Int(DeviceUtilities.shared().convertDateTimeToString(Date(), "ss"))
         
-        let Latitude     = Float(locationReport.coordinate.latitude)
-        let Longitude    = Float(locationReport.coordinate.longitude)
-        let Altitude     = locationReport.altitude
-        let Speed        = locationReport.speed
-        let Orientation  = 0 //for the moment
-        let Satellites   = 9 //getLocationSatellitesNumber(locationReport)
-        let Accuracy     = getLocationAccuracy(locationReport)
-        let Status       = "P"
-        let NetworkType  = "GPS"//DeviceUtilities.shared().getNetworkType()
-        let MCC          = 0//DeviceUtilities.shared().getMCC()
-        let MNC          = 0//DeviceUtilities.shared().getMNC()
-        let LAC          = 0
-        let CID          = 0
-        let BatteryLevel = Int(DeviceUtilities.shared().getBatteryStatus())
-        let EventCode    = 1
-        let ReportDate   = locationReport.timestamp
-        let GpsStatus    = (abs(locationReport.coordinate.latitude) == 0 || abs(locationReport.coordinate.longitude) == 0) ? "I" : "V"
+        let Latitude         = reportType == "" ? Float(locationReport.coordinate.latitude) : 0
+        let Longitude        = reportType == "" ? Float(locationReport.coordinate.longitude) : 0
+        let Altitude         = reportType == "" ? Float(locationReport.altitude) : 0
+        let Speed            = reportType == "" ? Float(locationReport.speed) : 0
+        let Orientation      = 0
+        let Satellites       = reportType == "" ? 9 : 0
+        let Accuracy         = reportType == "" ? getLocationAccuracy(locationReport) : 0
+        let Status           = "P"
+        let NetworkType      = reportType == "" ? "GPS" : "INV"
+        let MCC              = 0
+        let MNC              = 0
+        let LAC              = 0
+        let CID              = 0
+        let BatteryLevel     = Int(DeviceUtilities.shared().getBatteryStatus())
+        let EventCode        = reportType == "" ? 1 : 14
+        let ReportDate       = reportType == "" ? locationReport.timestamp : Date()
+        var GpsStatus        = ""
+        if reportType != ""
+        {
+            GpsStatus = "I"
+        }
+        else if (abs(locationReport.coordinate.latitude) == 0 || abs(locationReport.coordinate.longitude) == 0)
+        {
+            GpsStatus = "I"
+        }
+        else
+        {
+            GpsStatus = "V"
+        }
         
         //Save Location Report To DB
         _ = LocationReportInfo(year: Year!, month: Month!, day: Day!, hour: Hour!, minute: Minute!, second: Second!, latitude: Latitude, longitude: Longitude, altitude: Int(Altitude), speed: Int(Speed), orientation: Orientation, satellites: Satellites, accuracy: Accuracy, status: Status, networkType: NetworkType, mcc: MCC, mnc: MNC, lac: LAC, cid: CID, batteryLevel: BatteryLevel, eventCode: EventCode, reportDate: ReportDate,gpsStatus: GpsStatus, context: CoreDataStack.shared().context)
