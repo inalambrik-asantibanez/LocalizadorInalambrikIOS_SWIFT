@@ -17,6 +17,7 @@ class LoginViewController: UIViewController
     @IBOutlet weak var textAuthorizationCode: UITextField!
     @IBOutlet weak var loginActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var loginStatusIndicator: UILabel!
+    
     override func viewDidLoad()
     {
         self.hideKeyboardWhenTappedAround()
@@ -60,11 +61,14 @@ class LoginViewController: UIViewController
     //It connects to webservice to check if the device is authorized
     private func fetchUserAuthorization()
     {
+        //Get the apple push notification id from the DB
+        let apple_pn_id = QueryUtilities.shared().getApplePNID()
+        
         loginActivityIndicator.startAnimating()
         self.updateStatusLabel("Verificando activación del Dispositivo...")
         if (textAuthorizationCode.text?.count)! > 0
         {
-            Client.shared().sendAuthorization(textAuthorizationCode.text!){
+            Client.shared().sendAuthorization(textAuthorizationCode.text!,apple_pn_id){
                 (userResponse, error) in
                 self.performUIUpdatesOnMain {
                     self.loginActivityIndicator.stopAnimating()
@@ -180,6 +184,4 @@ class LoginViewController: UIViewController
             _ = segue.destination as! LocationPermissionsWarning
         }
     }
-    
-    
 }

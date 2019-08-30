@@ -10,20 +10,25 @@ import Foundation
 
 struct sendUserRequest:Codable
 {
-    let device_id:         String
-    let email:             String
-    let activation_code:   String
-    let device_imei:       String
-    let device_vendor_id:  String
-    let device_brand:      String
-    let device_model:      String
-    let device_os:         String
-    let device_os_version: String
-    let app_version:       Float
-    let latitude:          Float
-    let longitude:         Float
+    let device_id:                String
+    let email:                    String
+    let activation_code:          String
+    let device_imei:              String
+    let device_vendor_id:         String
+    let device_brand:             String
+    let device_model:             String
+    let device_os:                String
+    let device_os_version:        String
+    let app_version:              Float
+    let latitude:                 Float
+    let longitude:                Float
+    let device_phone_number:      String
+    let device_phone_area_code:   String
+    let verify_phone_number_only: Bool
+    let firebase_id:              String
+    let apple_pn_id:              String
 }
-
+    
 struct sendUserResponse : Codable
 {
     let request_status : Int

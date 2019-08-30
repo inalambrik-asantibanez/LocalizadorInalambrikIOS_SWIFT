@@ -21,4 +21,5 @@ extension User
     @NSManaged public var deviceId: String?
     @NSManaged public var authorizedDevice: String?
     @NSManaged public var deviceIdentifierVendorID: String?
+    @NSManaged public var apple_pn_id: String?
 }

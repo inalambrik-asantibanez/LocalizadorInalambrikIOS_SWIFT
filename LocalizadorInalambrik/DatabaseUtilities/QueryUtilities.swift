@@ -28,7 +28,7 @@ class QueryUtilities
     
     func saveUser(_ user: User)
     {
-        _ = User(userId: user.userId!, deviceId: user.deviceId!, authorizedDevice: user.authorizedDevice!,deviceIdentifierVendorID: user.deviceIdentifierVendorID!, context: CoreDataStack.shared().context)
+        _ = User(userId: user.userId!, deviceId: user.deviceId!, authorizedDevice: user.authorizedDevice!,deviceIdentifierVendorID: user.deviceIdentifierVendorID!,apple_pn_id:user.apple_pn_id!, context: CoreDataStack.shared().context)
         CoreDataStack.shared().save()
     }
     
@@ -47,7 +47,7 @@ class QueryUtilities
             else
             {
                 print("Dispositivo no encontrado en base, será creado")
-                _ = User(userId: "1", deviceId: "ASD", authorizedDevice: "0",deviceIdentifierVendorID:"", context: CoreDataStack.shared().context)
+                _ = User(userId: "1", deviceId: "ASD", authorizedDevice: "0", deviceIdentifierVendorID: "", apple_pn_id: "", context: CoreDataStack.shared().context)
                 CoreDataStack.shared().save()
             }
         }
@@ -80,6 +80,23 @@ class QueryUtilities
         }
         
         return userIMEI
+    }
+    
+    func getApplePNID() -> String
+    {
+        var ApplePNID = ""
+        var user: User?
+        let predicate = NSPredicate(format: " apple_pn_id != %@ ", "")
+        do
+        {
+            try user = CoreDataStack.shared().fetchUser(predicate, entityName: User.name)
+            ApplePNID = (user?.apple_pn_id)!
+        }
+        catch
+        {
+            ApplePNID = "APPLE_PN_NOT_FOUND"
+        }
+        return ApplePNID
     }
     
     func getLocationReportsByStatusCount(_ predicate: NSPredicate) -> Int

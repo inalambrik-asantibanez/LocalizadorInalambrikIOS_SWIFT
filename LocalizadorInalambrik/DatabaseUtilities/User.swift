@@ -15,7 +15,7 @@ public class User: NSManagedObject
 {
     static let name = "User"
     
-    convenience init(userId: String, deviceId: String, authorizedDevice: String,deviceIdentifierVendorID: String, context: NSManagedObjectContext ) {
+    convenience init(userId: String, deviceId: String, authorizedDevice: String,deviceIdentifierVendorID: String,apple_pn_id: String, context: NSManagedObjectContext ) {
         if let ent = NSEntityDescription.entity(forEntityName: User.name, in: context)
         {
             self.init(entity: ent, insertInto: context)
@@ -23,6 +23,7 @@ public class User: NSManagedObject
             self.deviceId = deviceId
             self.authorizedDevice = authorizedDevice
             self.deviceIdentifierVendorID = deviceIdentifierVendorID
+            self.apple_pn_id = apple_pn_id
         }
         else{
             fatalError("Unable to find Entity Name!")
