@@ -59,6 +59,7 @@
 		B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionsWarning.swift; sourceTree = "<group>"; };
 		B5F53D2B23183B490034E43A /* ConstantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantsController.swift; sourceTree = "<group>"; };
 		B5F53D2D2318601E0034E43A /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		B5F53D2F23197CE80034E43A /* LocalizadorInalambrik.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LocalizadorInalambrik.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +92,7 @@
 		B532A82D230DAF020055E6F7 /* LocalizadorInalambrik */ = {
 			isa = PBXGroup;
 			children = (
+				B5F53D2F23197CE80034E43A /* LocalizadorInalambrik.entitlements */,
 				B5F53D242315F4530034E43A /* LocationUtilities */,
 				B532A870231050940055E6F7 /* DeviceUtilities */,
 				B532A85F230F373E0055E6F7 /* ObjectiveC Utilities */,
@@ -204,6 +206,9 @@
 						LastSwiftMigration = 0940;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
 								enabled = 1;
 							};
 						};
@@ -401,6 +406,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = LocalizadorInalambrik/LocalizadorInalambrik.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 973ZT8Y397;
 				INFOPLIST_FILE = LocalizadorInalambrik/Info.plist;
@@ -422,6 +428,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = LocalizadorInalambrik/LocalizadorInalambrik.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 973ZT8Y397;
 				INFOPLIST_FILE = LocalizadorInalambrik/Info.plist;

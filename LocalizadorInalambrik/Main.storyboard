@@ -400,19 +400,19 @@
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="280" id="W3c-gu-OGW"/>
                                                 </constraints>
-                                                <mutableString key="text">El Localizador Móvil es un servicio diseñado para clientes corporativos CLARO. El servicio permite a supervisores o administradores ubicar los dispositivos móviles de la empresa usando un portal web.
+                                                <string key="text">El Localizador Móvil es un servicio diseñado para clientes corporativos CLARO. El servicio permite a supervisores o administradores ubicar los dispositivos móviles de la empresa usando un portal web.
 
 Si Ud. aún no ha realizado la contratación del servicio, por favor contactenos escribiendo a soporte@inalambrik.com.ec
 
-Si su empresa ha contratado el servicio, por favor a continuación ingrese el código de activación que le proporcionó el administrador de la cuenta o que le llegó a su correo con el asunto "Solicitud de Activación".</mutableString>
+Si su empresa ha contratado el servicio, por favor a continuación ingrese el código de activación que le proporcionó el administrador de la cuenta o que le llegó a su correo con el asunto "Solicitud de Activación".</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Código de Activación" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="F8l-bM-pxx">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Código de Activación" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="F8l-bM-pxx">
                                                 <rect key="frame" x="80" y="381" width="215" height="30"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
+                                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                             </textField>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ag5-Ge-9YV">
                                                 <rect key="frame" x="80" y="431" width="215" height="30"/>

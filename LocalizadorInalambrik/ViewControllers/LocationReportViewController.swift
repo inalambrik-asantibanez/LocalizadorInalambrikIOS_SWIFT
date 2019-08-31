@@ -42,26 +42,27 @@ class LocationReportViewController : UIViewController
     var sendReportCount = 1
     var deleteReportCount = 1
     
-    public lazy var locationManager: CLLocationManager = {
-       let manager = CLLocationManager()
-        manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        manager.distanceFilter = 20
-        manager.allowsBackgroundLocationUpdates = true
-        manager.pausesLocationUpdatesAutomatically = false
-        return manager
-    }()
+    public var locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         UIApplication.shared.isIdleTimerDisabled = true
+        
+        // Ask for Authorisation from the User.
+        self.locationManager.requestAlwaysAuthorization()
+        
+        // For use in foreground
+        self.locationManager.requestWhenInUseAuthorization()
+        
         showLocationReportInfo()
         
+        setLocationManager()
+        
         //Send the pending reports
-        sendPendingLocationReports()
+        //sendPendingLocationReports()
         
         //Delete the first N sent reports
-        deleteYesterDaySentLocationReports()
+        //deleteYesterDaySentLocationReports()
         
         //Add the observer to check the values of the BackGroundTask
         addBackGroundTaskObserver()
@@ -78,6 +79,18 @@ class LocationReportViewController : UIViewController
     //Remove the observer when the viewcontroller is closed
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    func setLocationManager()
+    {
+        if CLLocationManager.locationServicesEnabled()
+        {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+            locationManager.distanceFilter = 20
+            locationManager.allowsBackgroundLocationUpdates = true
+            locationManager.pausesLocationUpdatesAutomatically = false
+        }
     }
     
     public func showLocationReportInfo()
@@ -311,7 +324,7 @@ class LocationReportViewController : UIViewController
             sendPendingLocationReports()
             
             //Delete sent reports to free space on DB
-            deleteYesterDaySentLocationReports()
+            //deleteYesterDaySentLocationReports()
             
             print("Chequeo de estado de la aplicacion FechaActual=",Date().preciseLocalDateTime)
             switch UIApplication.shared.applicationState

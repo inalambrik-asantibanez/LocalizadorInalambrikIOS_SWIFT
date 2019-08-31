@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     let notificationCenter = UNUserNotificationCenter.current()
+    let categoryIdentifier = "PUSH_NOTIFICATION"
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         notificationCenter.delegate = (self as UNUserNotificationCenterDelegate)
@@ -25,6 +26,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if !success {
                 print("usuario no ha autotizado el uso de notificaciones locales")
             }
+            else
+            {
+                self.registerCategory()
+            }
+            self.getNotificationSettings()
         }
         
         return true
@@ -64,11 +70,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(locationReport,"TERMINATE")
             let notificationType = "Notificación Local"
             print("Programacion de notificacion por terminacion del app")
-            self.scheduleNotification(notificationType: notificationType)
+            self.scheduleNotification(event: notificationType,interval: 2)
             sleep(3)
             print("applicationWillTerminate")
+            UIApplication.shared.isIdleTimerDisabled = true
         }
         self.saveContext()
+    }
+    
+    func registerCategory() -> Void
+    {
+        let category : UNNotificationCategory = UNNotificationCategory.init(identifier: categoryIdentifier, actions: [], intentIdentifiers: [], options: [])
+        let center = UNUserNotificationCenter.current()
+        center.setNotificationCategories([category])
+        
+    }
+    
+    func scheduleNotification (event : String, interval: TimeInterval) {
+        let content = UNMutableNotificationContent()
+        
+        content.title = event
+        content.body = "body"
+        content.categoryIdentifier = categoryIdentifier
+        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: interval, repeats: false)
+        let identifier = "id_"+event
+        let request = UNNotificationRequest.init(identifier: identifier, content: content, trigger: trigger)
+        
+        let center = UNUserNotificationCenter.current()
+        center.add(request, withCompletionHandler: { (error) in
+        })
+        
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        print("didReceive notification")
+        completionHandler()
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("willPresent notification")
+        completionHandler([.badge, .alert, .sound])
     }
 
     // MARK: - Core Data stack
@@ -120,7 +161,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
+    /*func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
@@ -140,16 +181,16 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     func scheduleNotification(notificationType: String) {
         
-        let content = UNMutableNotificationContent()
-        let categoryIdentifire = "Delete Notification Type"
+        let content = UNMutableNotificationContent() // Содержимое уведомления
+        let userActions = "User Actions"
         
         content.title = notificationType
-        content.body = "La aplicación fue cerrada " + notificationType
+        content.body = "Localizador Móvil se ha cerrado. Por favor reiniciar aplicación."
         content.sound = UNNotificationSound.default()
         content.badge = 1
-        content.categoryIdentifier = categoryIdentifire
+        content.categoryIdentifier = userActions
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)
         let identifier = "Local Notification"
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         
@@ -159,14 +200,60 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             }
         }
         
-        let snoozeAction = UNNotificationAction(identifier: "Snooze", title: "Snooze", options: [])
-        let deleteAction = UNNotificationAction(identifier: "DeleteAction", title: "Delete", options: [.destructive])
-        let category = UNNotificationCategory(identifier: categoryIdentifire,
+        let snoozeAction = UNNotificationAction(identifier: "Snooze", title: "Abrir", options: [])
+        let deleteAction = UNNotificationAction(identifier: "Delete", title: "Borrar", options: [.destructive])
+        let category = UNNotificationCategory(identifier: userActions,
                                               actions: [snoozeAction, deleteAction],
                                               intentIdentifiers: [],
                                               options: [])
         
         notificationCenter.setNotificationCategories([category])
     }
+    
+    func showLocationReportViewController()
+    {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        // instantiate the view controller from storyboard
+        if  let LocationController = storyboard.instantiateViewController(withIdentifier: "LocationReportViewController") as? LocationReportViewController {
+            
+            // set the view controller as root
+            window?.rootViewController = LocationController
+        }
+    }*/
+    
 }
 
+extension AppDelegate
+{
+    func getNotificationSettings() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            print("Notification settings: \(settings)")
+            guard settings.authorizationStatus == .authorized else{
+                print("Usuario rechazo el permiso de notificaciones")
+                return
+                
+            }
+            print("Usuario permitio las notificaciones push")
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+        }
+    }
+    
+    // Permite recibir el token desde el APNS
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
+        let token = tokenParts.joined()
+        print("Device Token: \(token)")
+        print("Se crea usuario con token")
+        _ = User(userId: "1", deviceId: "ASD", authorizedDevice: "0", deviceIdentifierVendorID: "", apple_pn_id: token, context: CoreDataStack.shared().context)
+        CoreDataStack.shared().save()
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Failed to register: \(error)")
+    
+    }
+
+}
