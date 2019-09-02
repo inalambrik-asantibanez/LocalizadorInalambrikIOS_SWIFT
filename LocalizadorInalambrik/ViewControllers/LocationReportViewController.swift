@@ -38,9 +38,6 @@ class LocationReportViewController : UIViewController
     let interval: Double = ConstantsController().REPORT_INTERVAL
     let initInterval : Double = ConstantsController().INITIAL_INTERVAL
     var initIsActive = true
-    var currentLocation = CLLocation()
-    var sendReportCount = 1
-    var deleteReportCount = 1
     
     public var locationManager = CLLocationManager()
     
@@ -87,7 +84,6 @@ class LocationReportViewController : UIViewController
         {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-            locationManager.distanceFilter = 20
             locationManager.allowsBackgroundLocationUpdates = true
             locationManager.pausesLocationUpdatesAutomatically = false
         }
@@ -100,6 +96,9 @@ class LocationReportViewController : UIViewController
         let networkType = DeviceUtilities.shared().getNetworkType()
         let pendingReports = QueryUtilities.shared().getLocationReportsByStatusCount(NSPredicate(format: "status == %@","P"))
         let sentReports = QueryUtilities.shared().getLocationReportsByStatusCount(NSPredicate(format: "status == %@","S"))
+        
+        print("pending reports ",pendingReports)
+        print("sent reports ",sentReports)
         
         self.textIMEI.text = userIMEI
         self.textBatteryLevel.text = String(batteryLevel)
@@ -172,54 +171,47 @@ class LocationReportViewController : UIViewController
         var locationReports: [LocationReportInfo]?
         do
         {
-            try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "P"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true))
+            try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "P"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true),ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)
             
             if (locationReports?.count)! > 0
             {
-                print("Envio de reportes pendientes ",locationReports?.count ?? 0)
+                print("Maxima cantidad de reportes pendientes a enviar=",ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)
+                print("Numero de reportes pendientes ",locationReports?.count ?? 0)
                 for locationReport in locationReports!
                 {
-                    if sendReportCount < ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND
+                    print("Reporte a enviar=",locationReport.reportDate.preciseLocalDateTime)
+                    Client.shared().sendPendingLocationReport(locationReport)
                     {
-                        print("Reporte a enviar=",locationReport.reportDate.preciseLocalDateTime)
-                        Client.shared().sendPendingLocationReport(locationReport)
+                        (sendLocationResp, error) in
+                        
+                        //After calling the webservice and this finished then check if there exist a response
+                        if let sendLocationResp = sendLocationResp
                         {
-                            (sendLocationResp, error) in
+                            let reportInterval = sendLocationResp.ReportInterval
+                            let errorMessage = sendLocationResp.ErrorMessage
                             
-                            //After calling the webservice and this finished then check if there exist a response
-                            if let sendLocationResp = sendLocationResp
+                            print("Respuestas del webservice")
+                            print("reportInterval=",reportInterval)
+                            print("errorMessage=",errorMessage)
+                            
+                            if errorMessage == ""
                             {
-                                let reportInterval = sendLocationResp.ReportInterval
-                                let errorMessage = sendLocationResp.ErrorMessage
+                                //Actualiza el reporte a estado Enviado (S)
+                                print("Se va actualizar el reporte a estado Enviado (S)")
+                                locationReport.setValue("S", forKey: "status")
+                                CoreDataStack.shared().save()
                                 
-                                print("Respuestas del webservice")
-                                print("reportInterval=",reportInterval)
-                                print("errorMessage=",errorMessage)
-                                
-                                if errorMessage == ""
-                                {
-                                    //Actualiza el reporte a estado Enviado (S)
-                                    print("Se va actualizar el reporte a estado Enviado (S)")
-                                    locationReport.setValue("S", forKey: "status")
-                                    CoreDataStack.shared().save()
-                                    
-                                    print("Se actualizo el ultimo reporte pendiente a enviado")
-                                    DispatchQueue.main.async {
-                                        print("Actualizacion del UI")
-                                        self.getLastLocationInfo()
-                                    }
-                                    self.sendReportCount += 1
-                                }
-                                else
-                                {
-                                    print("Existio un error al enviar el reporte")
+                                print("Se actualizo el ultimo reporte pendiente a enviado")
+                                DispatchQueue.main.async {
+                                    print("Actualizacion del UI")
+                                    self.getLastLocationInfo()
                                 }
                             }
+                            else
+                            {
+                                print("Existio un error al enviar el reporte")
+                            }
                         }
-                    }
-                    else
-                    {
-                        print("Se superó el número máximo de reportes pendientes para enviar ",ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)
                     }
                 }
             }
@@ -238,19 +230,17 @@ class LocationReportViewController : UIViewController
         var locationReports: [LocationReportInfo]?
         do
         {
-            try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "S"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true))
+            try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "S"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true),ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)
             
             if (locationReports?.count)! > 0
             {
+                print("Maximo numero de reportes enviados a eliminar=",ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)
+                
                 print("Borrado de reportes enviados ",locationReports?.count ?? 0)
                 for locationReport in locationReports!
                 {
-                    if sendReportCount < ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE
-                    {
-                        CoreDataStack.shared().context.delete(locationReport)
-                        CoreDataStack.shared().save()
-                        deleteReportCount += 1
-                    }
+                    CoreDataStack.shared().context.delete(locationReport)
+                    CoreDataStack.shared().save()
                 }
             }
         }

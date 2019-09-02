@@ -104,7 +104,7 @@ class QueryUtilities
         var locationReportCount = -1
         var locationReports : [LocationReportInfo]?
         do{
-            try locationReports = CoreDataStack.shared().fetchLocationReports(predicate,LocationReportInfo.name)
+            try locationReports = CoreDataStack.shared().fetchLocationReports(predicate,LocationReportInfo.name,0)
             if locationReports != nil
             {
                 print("Reportes encontrados")

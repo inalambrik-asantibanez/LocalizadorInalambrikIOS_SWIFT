@@ -169,10 +169,14 @@ extension CoreDataStack
     }
     
     //It fetch the LocationReport List
-    func fetchLocationReports(_ predicate: NSPredicate,_ entityName: String,  sorting: NSSortDescriptor? = nil) throws -> [LocationReportInfo]?
+    func fetchLocationReports(_ predicate: NSPredicate,_ entityName: String,  sorting: NSSortDescriptor? = nil,_ fetchLimit: Int? = nil) throws -> [LocationReportInfo]?
     {
         let fr = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         fr.predicate = predicate
+        if fetchLimit! > 0
+        {
+            fr.fetchLimit = ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND
+        }
         if let sorting = sorting {
             fr.sortDescriptors = [sorting]
         }
