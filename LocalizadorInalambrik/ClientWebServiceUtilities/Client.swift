@@ -30,11 +30,11 @@ extension Client
         let deviceOSVersion = UIDevice.current.systemVersion
         let deviceModel = UIDevice.current.name
         
-        let sendRequest = sendUserRequest(device_id: deviceUID, email: "", activation_code: activationCode, device_imei: deviceUID, device_vendor_id: deviceUID, device_brand: deviceModel, device_model: deviceModel, device_os: "IOS", device_os_version: deviceOSVersion, app_version: Float(ConstantsController().APP_VERSION), latitude: 0.0, longitude: 0.0, device_phone_number: "", device_phone_area_code: "", verify_phone_number_only: false, firebase_id: "", apple_pn_id: Apple_pn_id)
+        let sendRequest = sendUserRequest(device_id: deviceUID, email: "", activation_code: activationCode, device_imei: deviceUID, device_vendor_id: deviceUID, device_brand: deviceModel, device_model: deviceModel, device_os: "IOS", device_os_version: deviceOSVersion, app_version: Float(ConstantsController().APP_VERSION), latitude: 0.0, longitude: 0.0, device_phone_number: "", device_phone_area_code: "", verify_phone_number_only: false, firebase_id: "", apple_pn_id: Apple_pn_id,device_firebase_unique_id: "")
         
         let jsonData = try! JSONEncoder().encode(sendRequest)
         let jsonString = String(data: jsonData, encoding: .utf8)!
-        print(jsonString)
+        DeviceUtilities.shared().printData(jsonString)
         
         _ = taskForPOSTRESTMethod("POST","REGISTER_DEVICE",jsonString) { (data, error) in
             if let error = error {
@@ -86,7 +86,7 @@ extension Client
         
         let jsonData = try! JSONEncoder().encode(sendLocationReport)
         let jsonString = String(data: jsonData, encoding: .utf8)!
-        print(jsonString)
+        DeviceUtilities.shared().printData(jsonString)
         
         _ = taskForPOSTRESTMethod("POST", "", jsonString){ (data, error) in
             if let error = error {
@@ -104,7 +104,7 @@ extension Client
                 let respo = try JSONDecoder().decode(sendLocationReportResponse.self, from: data)
                 completion(respo, nil)
             } catch {
-                print("Error obtenido \(#function) error: \(error)")
+                DeviceUtilities.shared().printData("Error obtenido \(#function) error: \(error)")
                 completion(nil, error)
             }
         }
@@ -123,7 +123,7 @@ extension Client
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = parameters.data(using: String.Encoding.utf8)
-        print("Request=",request)
+        DeviceUtilities.shared().printData("Request=\(request)")
         
         showActivityIndicator(true)
         
@@ -132,7 +132,7 @@ extension Client
             
             func sendError(_ error: String) {
                 self.showActivityIndicator(false)
-                print("Existe un error=",error)
+                DeviceUtilities.shared().printData("Existe un error=\(error)")
                 let userInfo = [NSLocalizedDescriptionKey : error]
                 completionHandlerForPOSTREST(nil, NSError(domain: "completionHandlerForPOST", code: 1, userInfo: userInfo))
             }
@@ -143,7 +143,7 @@ extension Client
                 if (error as NSError).code == URLError.cancelled.rawValue {
                     completionHandlerForPOSTREST(nil, nil)
                 } else {
-                    print("Existió un error al conectarse al servidor")
+                    DeviceUtilities.shared().printData("Existió un error al conectarse al servidor")
                     sendError("Existió un error al conectarse al servidor: \(error.localizedDescription)")
                 }
                 return
@@ -155,7 +155,7 @@ extension Client
             }
             
             guard let data = data else {
-                print("No existe respuesta devuelta del servidor")
+                DeviceUtilities.shared().printData("No existe respuesta devuelta del servidor")
                 sendError("No existe respuesta devuelta del servidor")
                 
                 return
@@ -164,7 +164,7 @@ extension Client
             self.showActivityIndicator(false)
             
             //It parses the data and use the data (happens in completion handler)
-            print("Si logro consultar el webservice ")
+            DeviceUtilities.shared().printData("Si logro consultar el webservice ")
             completionHandlerForPOSTREST(data, nil)
             
         }
@@ -202,7 +202,7 @@ extension Client
         {
             components.path = userRequestAPI.RegisterDeviceAPIPath
         }
-        print("Components=",components)
+        DeviceUtilities.shared().printData("Components=\(components)")
         return components.url!
     }
 }
