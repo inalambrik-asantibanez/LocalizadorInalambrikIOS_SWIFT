@@ -33,27 +33,31 @@ class LocationReportViewController : UIViewController
     var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
     //Set background service variables
-    var numTries = ConstantsController().NUMBER_OF_TRIES
-    var counter = 1
+    //var numTries = ConstantsController().NUMBER_OF_TRIES
+    //var counter = 1
     let interval: Double = ConstantsController().REPORT_INTERVAL
     let initInterval : Double = ConstantsController().INITIAL_INTERVAL
     var initIsActive = true
     
-    public var locationManager = CLLocationManager()
+    //public var locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         UIApplication.shared.isIdleTimerDisabled = true
         
         // Ask for Authorisation from the User.
-        self.locationManager.requestAlwaysAuthorization()
+        LocationServiceTask.shared().locationManager?.requestAlwaysAuthorization()
+        
+        //self.locationManager.requestAlwaysAuthorization()
         
         // For use in foreground
-        self.locationManager.requestWhenInUseAuthorization()
+        LocationServiceTask.shared().locationManager?.requestWhenInUseAuthorization()
+        
+        //self.locationManager.requestWhenInUseAuthorization()
         
         showLocationReportInfo()
         
-        setLocationManager()
+        //setLocationManager()
         
         //Send the pending reports
         //sendPendingLocationReports()
@@ -78,7 +82,7 @@ class LocationReportViewController : UIViewController
         NotificationCenter.default.removeObserver(self)
     }
     
-    func setLocationManager()
+    /*func setLocationManager()
     {
         if CLLocationManager.locationServicesEnabled()
         {
@@ -87,7 +91,7 @@ class LocationReportViewController : UIViewController
             locationManager.allowsBackgroundLocationUpdates = true
             locationManager.pausesLocationUpdatesAutomatically = false
         }
-    }
+    }*/
     
     public func showLocationReportInfo()
     {
@@ -97,8 +101,8 @@ class LocationReportViewController : UIViewController
         let pendingReports = QueryUtilities.shared().getLocationReportsByStatusCount(NSPredicate(format: "status == %@","P"))
         let sentReports = QueryUtilities.shared().getLocationReportsByStatusCount(NSPredicate(format: "status == %@","S"))
         
-        print("pending reports ",pendingReports)
-        print("sent reports ",sentReports)
+        DeviceUtilities.shared().printData("pending reports ")
+        DeviceUtilities.shared().printData("sent reports ")
         
         self.textIMEI.text = userIMEI
         self.textBatteryLevel.text = String(batteryLevel)
@@ -122,7 +126,7 @@ class LocationReportViewController : UIViewController
             guard let locationInfo = try CoreDataStack.shared().fetchLocationReport(nil, entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))
                 else
             {
-                print("NO hay ultimo reporte disponible")
+                DeviceUtilities.shared().printData("NO hay ultimo reporte disponible")
                 fechaHora = "No Encontrada"
                 latitude = "0.000000"
                 longitude = "0.000000"
@@ -151,7 +155,7 @@ class LocationReportViewController : UIViewController
         }
         catch{
             
-            print("NO hay ultimo reporte disponible")
+            DeviceUtilities.shared().printData("NO hay ultimo reporte disponible")
         }
         self.textLocalDateTime.text = fechaHora
         self.textLatitude.text = latitude
@@ -175,11 +179,10 @@ class LocationReportViewController : UIViewController
             
             if (locationReports?.count)! > 0
             {
-                print("Maxima cantidad de reportes pendientes a enviar=",ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)
-                print("Numero de reportes pendientes ",locationReports?.count ?? 0)
+                DeviceUtilities.shared().printData("Maxima cantidad de reportes pendientes a enviar=\(ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)")
                 for locationReport in locationReports!
                 {
-                    print("Reporte a enviar=",locationReport.reportDate.preciseLocalDateTime)
+                    DeviceUtilities.shared().printData("Reporte a enviar=\(locationReport.reportDate.preciseLocalDateTime)")
                     Client.shared().sendPendingLocationReport(locationReport)
                     {
                         (sendLocationResp, error) in
@@ -190,26 +193,26 @@ class LocationReportViewController : UIViewController
                             let reportInterval = sendLocationResp.ReportInterval
                             let errorMessage = sendLocationResp.ErrorMessage
                             
-                            print("Respuestas del webservice")
-                            print("reportInterval=",reportInterval)
-                            print("errorMessage=",errorMessage)
+                             DeviceUtilities.shared().printData("Respuestas del webservice")
+                             DeviceUtilities.shared().printData("reportInterval=\(reportInterval)")
+                             DeviceUtilities.shared().printData("errorMessage=\(errorMessage)")
                             
                             if errorMessage == ""
                             {
                                 //Actualiza el reporte a estado Enviado (S)
-                                print("Se va actualizar el reporte a estado Enviado (S)")
+                                DeviceUtilities.shared().printData("Se va actualizar el reporte a estado Enviado (S)")
                                 locationReport.setValue("S", forKey: "status")
                                 CoreDataStack.shared().save()
                                 
-                                print("Se actualizo el ultimo reporte pendiente a enviado")
+                                DeviceUtilities.shared().printData("Se actualizo el ultimo reporte pendiente a enviado")
                                 DispatchQueue.main.async {
-                                    print("Actualizacion del UI")
+                                    print("Actualizacion del UI",separator: "",terminator: "\n")
                                     self.getLastLocationInfo()
                                 }
                             }
                             else
                             {
-                                print("Existio un error al enviar el reporte")
+                                DeviceUtilities.shared().printData("Existio un error al enviar el reporte")
                             }
                         }
                     }
@@ -217,11 +220,11 @@ class LocationReportViewController : UIViewController
             }
             else
             {
-                print("No hay reportes pendientes de enviar")
+                DeviceUtilities.shared().printData("No hay reportes pendientes de enviar")
             }
         }
         catch {
-            print("No es posible obtener los reportes pendientes ")
+            DeviceUtilities.shared().printData("No es posible obtener los reportes pendientes ")
         }
     }
     
@@ -234,9 +237,9 @@ class LocationReportViewController : UIViewController
             
             if (locationReports?.count)! > 0
             {
-                print("Maximo numero de reportes enviados a eliminar=",ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)
+                DeviceUtilities.shared().printData("Maximo numero de reportes enviados a eliminar=\(ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)")
                 
-                print("Borrado de reportes enviados ",locationReports?.count ?? 0)
+                DeviceUtilities.shared().printData("Borrado de reportes enviados \(locationReports?.count ?? 0)")
                 for locationReport in locationReports!
                 {
                     CoreDataStack.shared().context.delete(locationReport)
@@ -246,7 +249,7 @@ class LocationReportViewController : UIViewController
         }
         catch
         {
-            print("No hay reportes enviados por eliminar ")
+            DeviceUtilities.shared().printData("No hay reportes enviados por eliminar ")
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
@@ -254,13 +257,13 @@ class LocationReportViewController : UIViewController
 //------------------------------------------------BACKGROUNDTASK METHODS------------------------------------------------
     func addBackGroundTaskObserver()
     {
-        print("Tarea agregado el observador")
+        DeviceUtilities.shared().printData("Tarea agregado el observador")
         NotificationCenter.default.addObserver(self, selector: #selector(reinstateBackgroundTask), name: .UIApplicationDidBecomeActive, object: nil)
     }
     
     func setInitTimerBackGroundTask()
     {
-        print("Timer inicial configurado en ",initInterval, " segundos")
+        DeviceUtilities.shared().printData("Timer inicial configurado en \(initInterval)")
         updateTimer?.invalidate()
         updateTimer = Timer.scheduledTimer(timeInterval: initInterval, target: self,
                                            selector: #selector(getLocationReportFetch), userInfo: nil, repeats: false)
@@ -268,7 +271,7 @@ class LocationReportViewController : UIViewController
     
     func setTimerBackGroundTask()
     {
-        print("Timer configurado en ",interval," segundos")
+        DeviceUtilities.shared().printData("Timer configurado en \(interval), segundos")
         updateTimer?.invalidate()
         updateTimer = Timer.scheduledTimer(timeInterval: interval, target: self,
                                            selector: #selector(getLocationReportFetch), userInfo: nil, repeats: true)
@@ -277,7 +280,7 @@ class LocationReportViewController : UIViewController
     
     func registerBackGroundTask()
     {
-        print("Tarea registrada")
+        DeviceUtilities.shared().printData("Tarea registrada")
         backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
             self?.endBackgroundTask()
         }
@@ -285,14 +288,14 @@ class LocationReportViewController : UIViewController
     }
     
     func endBackgroundTask() {
-        print("Tarea terminada")
+        DeviceUtilities.shared().printData("Tarea terminada")
         UIApplication.shared.endBackgroundTask(backgroundTask)
         backgroundTask = UIBackgroundTaskInvalid
     }
     
     @objc func reinstateBackgroundTask()
     {
-        print("Tarea reiniciada")
+        DeviceUtilities.shared().printData("Tarea reiniciada")
         if updateTimer != nil && backgroundTask == UIBackgroundTaskInvalid {
             registerBackGroundTask()
         }
@@ -306,29 +309,31 @@ class LocationReportViewController : UIViewController
         let localHour = Int(DeviceUtilities.shared().convertDateTimeToString(localDateTime, "HH"))
         if localHour! > ConstantsController().BEGIN_REPORT_HOUR && localHour! < ConstantsController().END_REPORT_HOUR
         {
-            print("Localizador en calendario")
+            DeviceUtilities.shared().printData("Localizador en calendario")
             
-            print("Envio de reportes pendientes ",QueryUtilities.shared().getLocationReportsByStatusCount(NSPredicate(format: "status == %@ ", "P")))
+            DeviceUtilities.shared().printData("Envio de reportes pendientes \(QueryUtilities.shared().getLocationReportsByStatusCount(NSPredicate(format: "status == %@ ", "P")))")
             
             //Sending pending reports
             sendPendingLocationReports()
             
             //Delete sent reports to free space on DB
-            //deleteYesterDaySentLocationReports()
+            deleteYesterDaySentLocationReports()
             
-            print("Chequeo de estado de la aplicacion FechaActual=",Date().preciseLocalDateTime)
+            DeviceUtilities.shared().printData("Chequeo de estado de la aplicacion FechaActual=\(Date().preciseLocalDateTime)")
             switch UIApplication.shared.applicationState
             {
                 case .active:
-                    print("Activa FechaActual=",Date().preciseLocalDateTime)
-                    print("Activar el servicio Ubicacion")
-                    locationManager.startUpdatingLocation()
+                    DeviceUtilities.shared().printData("Activa FechaActual=\(Date().preciseLocalDateTime)")
+                    DeviceUtilities.shared().printData("Activar el servicio Ubicacion")
+                    //locationManager.startUpdatingLocation()
+                    LocationServiceTask.shared().startUpdatingLocation()
                     break
                 
                 case .background:
-                    print("BackGround FechaActual=",Date().preciseLocalDateTime)
-                    print("Activar el servicio Ubicacion")
-                    locationManager.startUpdatingLocation()
+                    DeviceUtilities.shared().printData("BackGround FechaActual=\(Date().preciseLocalDateTime)")
+                    DeviceUtilities.shared().printData("Activar el servicio Ubicacion")
+                    //locationManager.startUpdatingLocation()
+                    LocationServiceTask.shared().startUpdatingLocation()
                     break
                 
                 case .inactive:
@@ -342,61 +347,10 @@ class LocationReportViewController : UIViewController
         }
         else
         {
-            print("El localizador esta fuera de calendario")
+            DeviceUtilities.shared().printData("El localizador esta fuera de calendario")
         }
         
         
-    }
-}
-//-----------------------------------------------------------------------------------------------------------------
-
-//------------------------------------------------LOCATION METHODS------------------------------------------------
-extension LocationReportViewController:CLLocationManagerDelegate
-{
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let mostRecentLocation = locations[0]
-        
-        //print("new datetime",mostRecentLocation.timestamp)
-        //print("new latitude",mostRecentLocation.coordinate.latitude)
-        //print("new longitude",mostRecentLocation.coordinate.longitude)
-        
-        print("Intento # ",counter)
-        if abs(mostRecentLocation.coordinate.latitude) != 0 && abs(mostRecentLocation.coordinate.longitude) != 0 && counter > numTries
-        {
-            //Save LocationReport in DB
-            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(mostRecentLocation,"")
-            
-            //If the app is active then update the UI
-            print("Verifica el estado de la aplicacion al obtener el reporte")
-            switch UIApplication.shared.applicationState
-            {
-                case .active:
-                    print("Refresca la pantalla de reportes")
-                    showLocationReportInfo()
-                    print("Estado Activo Aplicacion")
-                    break
-                case .background:
-                    print("Estado Background Aplicacion")
-                    break
-                case .inactive:
-                    break
-            }
-            print("Fecha:  \(mostRecentLocation.timestamp.preciseLocalDateTime), Latitude:  \(mostRecentLocation.coordinate.latitude) Longitude:  \(mostRecentLocation.coordinate.longitude)")
-            
-            print("Servicio de ubicacion apagado")
-            locationManager.stopUpdatingLocation()
-            print("")
-            
-            //Reinit the counter
-            counter = 0
-        }
-        counter += 1
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("No puedo obtener la coordenada, esta tuvo error")
-        self.locationManager.stopUpdatingLocation()
-        self.locationManager.startUpdatingLocation()
     }
 }
 //-----------------------------------------------------------------------------------------------------------------
