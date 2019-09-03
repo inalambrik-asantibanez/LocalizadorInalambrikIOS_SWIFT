@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notificationCenter.requestAuthorization(options: options) {
             (success, error) in
             if !success {
-                print("usuario no ha autotizado el uso de notificaciones locales")
+                DeviceUtilities.shared().printData("usuario no ha autotizado el uso de notificaciones locales")
             }
             else
             {
@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        print("App entro a background")
+        DeviceUtilities.shared().printData("App entro a background")
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -59,20 +59,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
-        print("App fue eliminada del multitarea")
+        DeviceUtilities.shared().printData("App fue eliminada del multitarea")
         let userAuthorized = QueryUtilities.shared().checkUserAuthorization()
         
         // Si está autorizado, entonces quito la pantalla de Login que se pone encima
         if userAuthorized
         {
-            print("Usuario autorizado proceda con el guardado del reporte por terminacion de app")
+            DeviceUtilities.shared().printData("Usuario autorizado proceda con el guardado del reporte por terminacion de app")
             let locationReport = CLLocation()
             LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(locationReport,"TERMINATE")
             let notificationType = "Notificación Local"
-            print("Programacion de notificacion por terminacion del app")
+            DeviceUtilities.shared().printData("Programacion de notificacion por terminacion del app")
             self.scheduleNotification(event: notificationType,interval: 2)
             sleep(3)
-            print("applicationWillTerminate")
+            DeviceUtilities.shared().printData("applicationWillTerminate")
             UIApplication.shared.isIdleTimerDisabled = true
         }
         self.saveContext()
@@ -103,13 +103,50 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        print("didReceive notification")
+        DeviceUtilities.shared().printData("didReceive notification")
         completionHandler()
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("willPresent notification")
+        DeviceUtilities.shared().printData("PN willPresent notification")
         completionHandler([.badge, .alert, .sound])
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+    {
+        DeviceUtilities.shared().printData("PN Remote notification received...")
+        if application.applicationState == .active
+        {
+            DeviceUtilities.shared().printData("PN Notification received in active state in this state does not need to do anything...")
+        }
+        else if application.applicationState == .background
+        {
+            DeviceUtilities.shared().printData("PN Notification received in background state, in this state it needs to reactive the location task...")
+            if CLLocationManager.locationServicesEnabled()
+            {
+                switch CLLocationManager.authorizationStatus() {
+                case .notDetermined, .restricted, .denied:
+                    DeviceUtilities.shared().printData("PN No access")
+                case .authorizedAlways, .authorizedWhenInUse:
+                    DeviceUtilities.shared().printData("PN Location Services are granted")
+                    if LocationServiceTask.shared().locationServiceIsRunning
+                    {
+                        DeviceUtilities.shared().printData("PN Location service need to stop before start")
+                        LocationServiceTask.shared().stopUpdatingLocation()
+                    }
+                    DeviceUtilities.shared().printData("PN Location service start from notification")
+                    LocationServiceTask.shared().startUpdatingLocation()
+                    
+                }
+            } else {
+                DeviceUtilities.shared().printData("PN Location services are not enabled")
+            }
+        }
+        else{
+            DeviceUtilities.shared().printData("PN Notification received in inactive state.... this state unfortunately can't do anything")
+        }
+        
+        completionHandler(UIBackgroundFetchResult.newData)
     }
 
     // MARK: - Core Data stack
@@ -179,7 +216,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         notificationCenter.add(request) { (error) in
             if let error = error {
-                print("Error \(error.localizedDescription)")
+                DeviceUtilities.shared().printData("Error \(error.localizedDescription)")
             }
         }
         
@@ -192,32 +229,19 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         notificationCenter.setNotificationCategories([category])
     }
-    
-    /*func showLocationReportViewController()
-    {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        // instantiate the view controller from storyboard
-        if  let LocationController = storyboard.instantiateViewController(withIdentifier: "LocationReportViewController") as? LocationReportViewController {
-            
-            // set the view controller as root
-            window?.rootViewController = LocationController
-        }
-    }*/
-    
 }
 
 extension AppDelegate
 {
     func getNotificationSettings() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
-            print("Notification settings: \(settings)")
+            DeviceUtilities.shared().printData("Notification settings: \(settings)")
             guard settings.authorizationStatus == .authorized else{
-                print("Usuario rechazo el permiso de notificaciones")
+                DeviceUtilities.shared().printData("Usuario rechazo el permiso de notificaciones")
                 return
                 
             }
-            print("Usuario permitio las notificaciones push")
+            DeviceUtilities.shared().printData("Usuario permitio las notificaciones push")
             DispatchQueue.main.async {
                 UIApplication.shared.registerForRemoteNotifications()
             }
@@ -228,14 +252,14 @@ extension AppDelegate
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
-        print("Device Token: \(token)")
-        print("Se crea usuario con token")
+        DeviceUtilities.shared().printData("Device Token: \(token)")
+        DeviceUtilities.shared().printData("Se crea usuario con token")
         _ = User(userId: "1", deviceId: "ASD", authorizedDevice: "0", deviceIdentifierVendorID: "", apple_pn_id: token, context: CoreDataStack.shared().context)
         CoreDataStack.shared().save()
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Failed to register: \(error)")
+        DeviceUtilities.shared().printData("Failed to register: \(error)")
     
     }
 
