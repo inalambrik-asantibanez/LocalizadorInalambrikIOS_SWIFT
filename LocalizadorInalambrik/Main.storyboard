@@ -395,27 +395,27 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="justified" translatesAutoresizingMaskIntoConstraints="NO" id="Qkv-gt-xbj" userLabel="Mensaje de Activacion">
-                                                <rect key="frame" x="40" y="111" width="295" height="280"/>
+                                                <rect key="frame" x="40" y="170" width="295" height="230"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="280" id="W3c-gu-OGW"/>
+                                                    <constraint firstAttribute="height" constant="230" id="Bob-sm-2WX"/>
                                                 </constraints>
-                                                <string key="text">El Localizador Móvil es un servicio diseñado para clientes corporativos CLARO. El servicio permite a supervisores o administradores ubicar los dispositivos móviles de la empresa usando un portal web.
+                                                <mutableString key="text">El Localizador Móvil es un servicio diseñado para clientes corporativos. El servicio permite a supervisores o administradores ubicar los dispositivos móviles de la empresa usando un portal web.
 
 Si Ud. aún no ha realizado la contratación del servicio, por favor contactenos escribiendo a soporte@inalambrik.com.ec
 
-Si su empresa ha contratado el servicio, por favor a continuación ingrese el código de activación que le proporcionó el administrador de la cuenta o que le llegó a su correo con el asunto "Solicitud de Activación".</string>
-                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+Si su empresa ha contratado el servicio, por favor a continuación ingrese el código de activación que le proporcionó el administrador de la cuenta o que le llegó a su correo con el asunto "Solicitud de Activación".</mutableString>
+                                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Código de Activación" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="F8l-bM-pxx">
-                                                <rect key="frame" x="80" y="381" width="215" height="30"/>
+                                                <rect key="frame" x="80" y="410" width="215" height="30"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                             </textField>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ag5-Ge-9YV">
-                                                <rect key="frame" x="80" y="431" width="215" height="30"/>
+                                                <rect key="frame" x="80" y="440" width="215" height="30"/>
                                                 <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="15"/>
                                                 <state key="normal" title="Activar"/>
                                                 <connections>
@@ -423,45 +423,62 @@ Si su empresa ha contratado el servicio, por favor a continuación ingrese el c�
                                                 </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik S.A. (Versión 3.1)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KmX-FJ-5kE">
-                                                <rect key="frame" x="40" y="491" width="295" height="16"/>
+                                                <rect key="frame" x="40" y="510" width="295" height="16"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="0.43933166871275164" green="0.47020203669653154" blue="0.47450980392156861" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="----" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dDG-YW-22v" userLabel="status Label">
-                                                <rect key="frame" x="40" y="577" width="295" height="21"/>
+                                                <rect key="frame" x="40" y="600" width="295" height="21"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="TGt-Q2-5Oz">
-                                                <rect key="frame" x="177" y="537" width="20" height="20"/>
+                                                <rect key="frame" x="177" y="560" width="21" height="20"/>
                                             </activityIndicatorView>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_launcher.png" translatesAutoresizingMaskIntoConstraints="NO" id="8hq-41-jv3" userLabel="Imagen Localizador">
+                                                <rect key="frame" x="147" y="90" width="80" height="80"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="80" id="NTK-1s-d6p"/>
+                                                    <constraint firstAttribute="height" constant="80" id="YI8-vI-Fw8"/>
+                                                </constraints>
+                                            </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="F8l-bM-pxx" firstAttribute="top" secondItem="w5c-od-ALd" secondAttribute="bottom" constant="310" id="0ko-jp-ieJ"/>
-                                            <constraint firstItem="Ag5-Ge-9YV" firstAttribute="top" secondItem="F8l-bM-pxx" secondAttribute="bottom" constant="20" id="3gM-C6-BBL"/>
-                                            <constraint firstItem="KmX-FJ-5kE" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="40" id="5Nj-gF-bfa"/>
-                                            <constraint firstAttribute="trailing" secondItem="w5c-od-ALd" secondAttribute="trailing" constant="40" id="8bV-Vx-Lak"/>
-                                            <constraint firstItem="TGt-Q2-5Oz" firstAttribute="top" secondItem="KmX-FJ-5kE" secondAttribute="bottom" constant="30" id="8cD-ld-tnN"/>
-                                            <constraint firstAttribute="trailing" secondItem="KmX-FJ-5kE" secondAttribute="trailing" constant="40" id="CZO-N9-UYd"/>
-                                            <constraint firstAttribute="trailing" secondItem="F8l-bM-pxx" secondAttribute="trailing" constant="80" id="Idp-3w-JOf"/>
-                                            <constraint firstItem="dDG-YW-22v" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="40" id="KUh-0U-X8U"/>
+                                            <constraint firstItem="Qkv-gt-xbj" firstAttribute="top" secondItem="8hq-41-jv3" secondAttribute="bottom" id="2ks-c6-L37"/>
+                                            <constraint firstItem="dDG-YW-22v" firstAttribute="top" secondItem="TGt-Q2-5Oz" secondAttribute="bottom" constant="20" id="4JF-tZ-Hyn"/>
+                                            <constraint firstItem="8hq-41-jv3" firstAttribute="centerX" secondItem="KmX-FJ-5kE" secondAttribute="centerX" id="6CE-EM-XQm"/>
+                                            <constraint firstItem="dDG-YW-22v" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="40" id="7Tu-F4-AOb"/>
+                                            <constraint firstItem="w5c-od-ALd" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="40" id="9Ag-oc-JtU"/>
+                                            <constraint firstItem="F8l-bM-pxx" firstAttribute="top" secondItem="Qkv-gt-xbj" secondAttribute="bottom" constant="10" id="GTm-gF-SvO"/>
+                                            <constraint firstItem="8hq-41-jv3" firstAttribute="centerX" secondItem="F8l-bM-pxx" secondAttribute="centerX" id="Hii-8b-XVQ"/>
+                                            <constraint firstAttribute="trailing" secondItem="Qkv-gt-xbj" secondAttribute="trailing" constant="40" id="IQF-hr-RsB"/>
+                                            <constraint firstAttribute="trailing" secondItem="w5c-od-ALd" secondAttribute="trailing" constant="40" id="K8e-Bv-ARh"/>
+                                            <constraint firstItem="Ag5-Ge-9YV" firstAttribute="top" secondItem="F8l-bM-pxx" secondAttribute="bottom" id="LOm-bq-QAO"/>
                                             <constraint firstAttribute="height" constant="822" id="LY7-hM-sK3"/>
-                                            <constraint firstItem="w5c-od-ALd" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="40" id="MCZ-VP-81K"/>
-                                            <constraint firstAttribute="trailing" secondItem="Ag5-Ge-9YV" secondAttribute="trailing" constant="80" id="NsU-ER-VI7"/>
-                                            <constraint firstItem="Qkv-gt-xbj" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="40" id="OcB-Eh-Gaf"/>
-                                            <constraint firstAttribute="trailing" secondItem="Qkv-gt-xbj" secondAttribute="trailing" constant="40" id="Snn-3G-AKP"/>
-                                            <constraint firstItem="Qkv-gt-xbj" firstAttribute="top" secondItem="w5c-od-ALd" secondAttribute="bottom" constant="40" id="TZO-Ed-eJ5"/>
-                                            <constraint firstItem="KmX-FJ-5kE" firstAttribute="top" secondItem="Ag5-Ge-9YV" secondAttribute="bottom" constant="30" id="WbW-5a-PaM"/>
-                                            <constraint firstItem="Ag5-Ge-9YV" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="80" id="afZ-zU-lr1"/>
-                                            <constraint firstAttribute="trailing" secondItem="dDG-YW-22v" secondAttribute="trailing" constant="40" id="cWc-nw-qQU"/>
-                                            <constraint firstAttribute="trailing" secondItem="TGt-Q2-5Oz" secondAttribute="trailing" constant="178" id="hiu-WJ-ji1"/>
-                                            <constraint firstItem="w5c-od-ALd" firstAttribute="top" secondItem="x2T-7j-wNJ" secondAttribute="top" constant="50" id="qZU-vp-Xgo"/>
-                                            <constraint firstItem="dDG-YW-22v" firstAttribute="top" secondItem="TGt-Q2-5Oz" secondAttribute="bottom" constant="20" id="thI-kZ-cKY"/>
-                                            <constraint firstItem="F8l-bM-pxx" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="80" id="wKa-KO-By0"/>
-                                            <constraint firstItem="TGt-Q2-5Oz" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="177" id="yoX-Ks-8LN"/>
+                                            <constraint firstItem="8hq-41-jv3" firstAttribute="centerX" secondItem="w5c-od-ALd" secondAttribute="centerX" id="Lwe-Q1-3Mf"/>
+                                            <constraint firstItem="8hq-41-jv3" firstAttribute="centerX" secondItem="TGt-Q2-5Oz" secondAttribute="centerX" id="M2Y-uH-H3y"/>
+                                            <constraint firstItem="KmX-FJ-5kE" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="40" id="Oko-4c-pLn"/>
+                                            <constraint firstItem="8hq-41-jv3" firstAttribute="centerX" secondItem="Qkv-gt-xbj" secondAttribute="centerX" id="SFS-bj-VKl"/>
+                                            <constraint firstItem="KmX-FJ-5kE" firstAttribute="top" secondItem="Ag5-Ge-9YV" secondAttribute="bottom" constant="40" id="TFy-mt-h8a"/>
+                                            <constraint firstItem="TGt-Q2-5Oz" firstAttribute="top" secondItem="KmX-FJ-5kE" secondAttribute="bottom" constant="34" id="TQa-K2-1mP"/>
+                                            <constraint firstItem="Ag5-Ge-9YV" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="80" id="U2f-3H-mcO"/>
+                                            <constraint firstItem="TGt-Q2-5Oz" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="177" id="V9l-Nr-IZf"/>
+                                            <constraint firstAttribute="trailing" secondItem="TGt-Q2-5Oz" secondAttribute="trailing" constant="177" id="YMN-dv-Sn1"/>
+                                            <constraint firstItem="8hq-41-jv3" firstAttribute="centerX" secondItem="Ag5-Ge-9YV" secondAttribute="centerX" id="ZeV-yc-bxf"/>
+                                            <constraint firstItem="F8l-bM-pxx" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="80" id="b8y-ld-q6v"/>
+                                            <constraint firstItem="8hq-41-jv3" firstAttribute="top" secondItem="w5c-od-ALd" secondAttribute="bottom" constant="19" id="bIx-9d-040"/>
+                                            <constraint firstAttribute="trailing" secondItem="dDG-YW-22v" secondAttribute="trailing" constant="40" id="e4G-ZQ-MTc"/>
+                                            <constraint firstItem="Qkv-gt-xbj" firstAttribute="top" secondItem="8hq-41-jv3" secondAttribute="bottom" id="hom-m3-y2v"/>
+                                            <constraint firstAttribute="trailing" secondItem="Ag5-Ge-9YV" secondAttribute="trailing" constant="80" id="lHN-sL-HSZ"/>
+                                            <constraint firstItem="w5c-od-ALd" firstAttribute="top" secondItem="x2T-7j-wNJ" secondAttribute="top" constant="50" id="m6q-zw-ptM"/>
+                                            <constraint firstAttribute="trailing" secondItem="KmX-FJ-5kE" secondAttribute="trailing" constant="40" id="n5a-Va-Agl"/>
+                                            <constraint firstItem="8hq-41-jv3" firstAttribute="centerX" secondItem="dDG-YW-22v" secondAttribute="centerX" id="ngV-eY-gCk"/>
+                                            <constraint firstItem="Qkv-gt-xbj" firstAttribute="leading" secondItem="x2T-7j-wNJ" secondAttribute="leading" constant="40" id="pGy-IR-Pod"/>
+                                            <constraint firstAttribute="trailing" secondItem="F8l-bM-pxx" secondAttribute="trailing" constant="80" id="rLA-9d-QfM"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -497,6 +514,9 @@ Si su empresa ha contratado el servicio, por favor a continuación ingrese el c�
             <point key="canvasLocation" x="78" y="-601"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="ic_launcher.png" width="180" height="180"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="rgN-KA-VY9"/>
     </inferredMetricsTieBreakers>
