@@ -29,7 +29,7 @@ class LoginViewController: UIViewController
     {
         if CLLocationManager.locationServicesEnabled()
         {
-            print("Servicios de localizacion activos")
+            DeviceUtilities.shared().printData("Servicios de localizacion activos")
             
             // -------  VERIFICIÓN DE AUTORIZACIÓN ------
             // Verifico si el Usuario esta autorizado a reportar ubicación con nuestra aplicación.
@@ -38,17 +38,17 @@ class LoginViewController: UIViewController
             // Si está autorizado, entonces quito la pantalla de Login que se pone encima
             if userAuthorized
             {
-                print("Usuario autorizado")
+                DeviceUtilities.shared().printData("Usuario autorizado")
                 performSegue(withIdentifier: "locationReportSegue", sender: nil)
             }
             else
             {
-                print("Usuario no autorizado")
+                DeviceUtilities.shared().printData("Usuario no autorizado")
             }
         }
         else
         {
-            print("Servicios de ubicacion no activos, se muestra warning...")
+            DeviceUtilities.shared().printData("Servicios de ubicacion no activos, se muestra warning...")
             performSegue(withIdentifier: "locationPermissionsSegue", sender: nil)
         }
     }
@@ -66,100 +66,101 @@ class LoginViewController: UIViewController
         
         loginActivityIndicator.startAnimating()
         self.updateStatusLabel("Verificando activación del Dispositivo...")
-        if (textAuthorizationCode.text?.count)! > 0
-        {
-            Client.shared().sendAuthorization(textAuthorizationCode.text!,apple_pn_id){
-                (userResponse, error) in
-                self.performUIUpdatesOnMain {
-                    self.loginActivityIndicator.stopAnimating()
-                    self.loginStatusIndicator.text = ""
-                }
+        //if (textAuthorizationCode.text?.count)! > 0
+        //{
+        Client.shared().sendAuthorization(textAuthorizationCode.text!,apple_pn_id){
+            (userResponse, error) in
+            self.performUIUpdatesOnMain {
+                self.loginActivityIndicator.stopAnimating()
+                self.loginStatusIndicator.text = ""
+            }
+            
+            //After calling the webservice and this finished then check if there exist a response
+            if let userResponse = userResponse
+            {
+                let requestMessage = userResponse.request_message
+                let requestStatus = userResponse.request_status
+                let requestIMEI = userResponse.request_imei
                 
-                //After calling the webservice and this finished then check if there exist a response
-                if let userResponse = userResponse
+                /*let requestMessage = ""
+                 let requestStatus = 1
+                 let requestIMEI = "IOS776Y93WJUQP1"*/
+                
+                DeviceUtilities.shared().printData("RequestMessage=\(requestMessage)")
+                DeviceUtilities.shared().printData("requestStatus=\(requestStatus)")
+                DeviceUtilities.shared().printData("requestIMEI=\(requestIMEI)")
+                 
+                if requestStatus == 1
                 {
-                    let requestMessage = userResponse.request_message
-                    let requestStatus = userResponse.request_status
-                    let requestIMEI = userResponse.request_imei
-                    
-                    /*let requestMessage = ""
-                     let requestStatus = 1
-                     let requestIMEI = "IOS776Y93WJUQP1"*/
-                    
-                    print("RequestMessage=",requestMessage)
-                    print("requestStatus=",requestStatus)
-                    print("requestIMEI=",requestIMEI)
-                    
-                    if requestStatus == 1
+                    let IMEISaveOnKeyChain = CustomObject()
+                    let valueSaveStatus = IMEISaveOnKeyChain.saveDeviceID(inKeychain: requestIMEI)
+                    if valueSaveStatus == "1"
                     {
-                        let IMEISaveOnKeyChain = CustomObject()
-                        let valueSaveStatus = IMEISaveOnKeyChain.saveDeviceID(inKeychain: requestIMEI)
-                        if valueSaveStatus == "1"
+                        DeviceUtilities.shared().printData("valuesavestatus=\(valueSaveStatus ?? "0")")
+                        if let user = CoreDataStack.shared().loadUserInformation()
                         {
-                            print("valuesavestatus=",valueSaveStatus ?? "0")
-                            if let user = CoreDataStack.shared().loadUserInformation()
-                            {
-                                let deviceUID = UIDevice.current.identifierForVendor!.uuidString
-                                
-                                print("Se va actualizar el usuario")
-                                user.setValue("1", forKey: "authorizedDevice")
-                                user.setValue(deviceUID, forKey: "deviceIdentifierVendorID")
-                                user.setValue(requestIMEI, forKey: "deviceId")
-                                CoreDataStack.shared().save()
-                                print("Informacion del usuario ha sido actualizada")
-                                DispatchQueue.main.async {
-                                    print("dispatched to main")
-                                    self.performSegue(withIdentifier: "locationReportSegue", sender: nil)
-                                }
-                            }
-                            else
-                            {
-                                print("No encontró el usuario")
+                            let deviceUID = UIDevice.current.identifierForVendor!.uuidString
+                            
+                            DeviceUtilities.shared().printData("Se va actualizar el usuario")
+                            user.setValue("1", forKey: "authorizedDevice")
+                            user.setValue(deviceUID, forKey: "deviceIdentifierVendorID")
+                            user.setValue(requestIMEI, forKey: "deviceId")
+                            CoreDataStack.shared().save()
+                            DeviceUtilities.shared().printData("Informacion del usuario ha sido actualizada")
+                            DispatchQueue.main.async {
+                                DeviceUtilities.shared().printData("dispatched to main")
+                                self.performSegue(withIdentifier: "locationReportSegue", sender: nil)
                             }
                         }
                         else
                         {
-                            self.showInfo(withMessage: "Error inesperado")
+                            DeviceUtilities.shared().printData("No encontró el usuario")
                         }
                     }
                     else
                     {
-                        self.showInfo(withMessage: requestMessage)
-                    }
-                }
-            }
-        }
-        else
-        {
-            let IMEIGetOnKeyChain = CustomObject()
-            let IMEIGetFromKeyChain = IMEIGetOnKeyChain.getGeneratedDeviceIDFromKeychain()
-            
-            if IMEIGetFromKeyChain != ""
-            {
-                print("IMEIGetFromKeyChain=",IMEIGetFromKeyChain ?? "")
-                if let user = CoreDataStack.shared().loadUserInformation()
-                {
-                    let deviceUID = UIDevice.current.identifierForVendor!.uuidString
-                    print("Se va actualizar el usuario sin enviar codigo de autorizacion")
-                    user.setValue("1", forKey: "authorizedDevice")
-                    user.setValue(deviceUID, forKey: "deviceIdentifierVendorID")
-                    user.setValue(IMEIGetFromKeyChain, forKey: "deviceId")
-                    CoreDataStack.shared().save()
-                    print("Informacion del usuario ha sido actualizada")
-                    DispatchQueue.main.async {
-                        print("dispatched to main")
-                        self.performSegue(withIdentifier: "locationReportSegue", sender: nil)
+                        self.showInfo(withMessage: "Error inesperado")
                     }
                 }
                 else
                 {
-                    print("Error al obtener el usuario")
+                    self.showInfo(withMessage: requestMessage)
                 }
             }
-            else
-            {
-                print("Error al obtener el IMEI desde el KEYCHAIN")
-            }
+            //}
+            
+                /*}
+                 else
+                 {
+                 let IMEIGetOnKeyChain = CustomObject()
+                 let IMEIGetFromKeyChain = IMEIGetOnKeyChain.getGeneratedDeviceIDFromKeychain()
+                 
+                 if IMEIGetFromKeyChain != ""
+                 {
+                 print("IMEIGetFromKeyChain=",IMEIGetFromKeyChain ?? "")
+                 if let user = CoreDataStack.shared().loadUserInformation()
+                 {
+                 let deviceUID = UIDevice.current.identifierForVendor!.uuidString
+                 print("Se va actualizar el usuario sin enviar codigo de autorizacion")
+                 user.setValue("1", forKey: "authorizedDevice")
+                 user.setValue(deviceUID, forKey: "deviceIdentifierVendorID")
+                 user.setValue(IMEIGetFromKeyChain, forKey: "deviceId")
+                 CoreDataStack.shared().save()
+                 print("Informacion del usuario ha sido actualizada")
+                 DispatchQueue.main.async {
+                 print("dispatched to main")
+                 self.performSegue(withIdentifier: "locationReportSegue", sender: nil)
+                 }
+                 }
+                 else
+                 {
+                 print("Error al obtener el usuario")
+                 }
+                 }
+                 else
+                 {
+                 print("Error al obtener el IMEI desde el KEYCHAIN")
+                 }*/
         }
     }
     
@@ -175,12 +176,12 @@ class LoginViewController: UIViewController
     override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "locationReportSegue"
         {
-            print("Se muestra el panel de reportes")
+            DeviceUtilities.shared().printData("Se muestra el panel de reportes")
             _ = segue.destination as! LocationReportViewController
         }
         else if segue.identifier == "locationPermissionsSegue"
         {
-            print("Se muestra el panel de location warning")
+            DeviceUtilities.shared().printData("Se muestra el panel de location warning")
             _ = segue.destination as! LocationPermissionsWarning
         }
     }

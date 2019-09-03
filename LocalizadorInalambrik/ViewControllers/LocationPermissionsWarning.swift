@@ -13,7 +13,7 @@ class LocationPermissionsWarning : UIViewController
 {
     
     override func viewDidLoad() {
-        print("Se muestra el panel porque no estan habilitados los permisos")
+        DeviceUtilities.shared().printData("Se muestra el panel porque no estan habilitados los permisos")
     }
     
     @IBAction func actionRefreshLocationServices(_ sender: Any) {

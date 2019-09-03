@@ -31,14 +31,14 @@ struct CoreDataStack {
     {
         //It asumes that the model is installed in the main bundle
         guard let modelURL = Bundle.main.url(forResource: modelName, withExtension: "momd") else {
-            print("Not Able to find \(modelName) in the main bundle")
+            DeviceUtilities.shared().printData("Not Able to find \(modelName) in the main bundle")
             return nil
         }
         self.modelURL = modelURL
         
         //It tries to create the model from the URL
         guard let model = NSManagedObjectModel(contentsOf: modelURL) else {
-            print("Not able to create a model from \(modelURL)")
+            DeviceUtilities.shared().printData("Not able to create a model from \(modelURL)")
             return nil
         }
         self.model = model
@@ -78,7 +78,7 @@ struct CoreDataStack {
             try addStoreCoordinator(NSSQLiteStoreType, configuration: nil, storeURL: dbURL, options: options as [NSObject : AnyObject]?)
         }
         catch {
-            print("Not able to add store at \(dbURL)")
+            DeviceUtilities.shared().printData("Not able to add store at \(dbURL)")
         }
     }
     
@@ -106,7 +106,7 @@ extension CoreDataStack
                 do {
                     try self.context.save()
                 } catch {
-                    print("Error while saving main context: \(error)")
+                    DeviceUtilities.shared().printData("Error while saving main context: \(error)")
                 }
                 
                 // now we save in the background
@@ -114,7 +114,7 @@ extension CoreDataStack
                     do {
                         try self.persistingContext.save()
                     } catch {
-                        print("Error while saving persisting context: \(error)")
+                        DeviceUtilities.shared().printData("Error while saving persisting context: \(error)")
                     }
                 }
             }
@@ -127,9 +127,9 @@ extension CoreDataStack
         if delayInSeconds > 0 {
             do {
                 try saveContext()
-                print("Autosaving")
+                DeviceUtilities.shared().printData("Autosaving")
             } catch {
-                print("Error while autosaving")
+                DeviceUtilities.shared().printData("Error while autosaving")
             }
             
             let delayInNanoSeconds = UInt64(delayInSeconds) * NSEC_PER_SEC
@@ -195,7 +195,7 @@ extension CoreDataStack
         do {
             try user = CoreDataStack.shared().fetchUser(predicate, entityName: User.name)
         } catch {
-            print("Error while fetching location: ",error)
+            DeviceUtilities.shared().printData("Error while fetching location: \(error)")
         }
         return user
     }
@@ -204,11 +204,11 @@ extension CoreDataStack
     public func save(){
         do {
             try CoreDataStack.shared().saveContext()
-            print("Se va a guardar el contexto")
+            DeviceUtilities.shared().printData("Se va a guardar el contexto")
         }
         catch
         {
-            print("Error", separator: "Error while saving data: \(error)")
+            DeviceUtilities.shared().printData("Error: Error while saving data: \(error)")
         }
     }
     

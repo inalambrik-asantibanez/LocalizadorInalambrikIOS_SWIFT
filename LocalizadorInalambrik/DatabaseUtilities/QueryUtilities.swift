@@ -42,18 +42,18 @@ class QueryUtilities
             if user != nil
             {
                 userAuthorizationStatus = true
-                print("Dispositivo encontrado en base")
+                DeviceUtilities.shared().printData("Dispositivo encontrado en base")
             }
             else
             {
-                print("Dispositivo no encontrado en base, será creado")
+                DeviceUtilities.shared().printData("Dispositivo no encontrado en base, será creado")
                 _ = User(userId: "1", deviceId: "ASD", authorizedDevice: "0", deviceIdentifierVendorID: "", apple_pn_id: "", context: CoreDataStack.shared().context)
                 CoreDataStack.shared().save()
             }
         }
         catch
         {
-            print("Error: Dispositivo no encontrado en Base")
+            DeviceUtilities.shared().printData("Error: Dispositivo no encontrado en Base")
         }
         return userAuthorizationStatus
     }
@@ -107,17 +107,17 @@ class QueryUtilities
             try locationReports = CoreDataStack.shared().fetchLocationReports(predicate,LocationReportInfo.name,0)
             if locationReports != nil
             {
-                print("Reportes encontrados")
+                DeviceUtilities.shared().printData("Reportes encontrados")
                 locationReportCount = (locationReports?.count)!
             }
             else
             {
-                print("No Hay Reportes encontrados")
+                DeviceUtilities.shared().printData("No Hay Reportes encontrados")
                 locationReportCount = -1
             }
         }
         catch{
-            print("No hay Reportes encontrados")
+            DeviceUtilities.shared().printData("No hay Reportes encontrados")
             locationReportCount = -1
         }
         

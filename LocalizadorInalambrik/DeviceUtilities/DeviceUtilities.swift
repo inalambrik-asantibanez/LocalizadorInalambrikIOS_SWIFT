@@ -62,4 +62,8 @@ class DeviceUtilities
         return stringConvertedToDateTime
     }
     
+    func printData(_ message: String)
+    {
+        print(message,separator: "",terminator: "\n")
+    }
 }
