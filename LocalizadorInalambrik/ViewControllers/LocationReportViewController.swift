@@ -17,6 +17,7 @@ class LocationReportViewController : UIViewController
     @IBOutlet weak var textNetworkType: UILabel!
     @IBOutlet weak var textPendingReports: UILabel!
     @IBOutlet weak var textSentReports: UILabel!
+    @IBOutlet weak var labelSentReports: UILabel!
     @IBOutlet weak var textLocalDateTime: UILabel!
     @IBOutlet weak var textLatitude: UILabel!
     @IBOutlet weak var textLongitude: UILabel!
@@ -75,6 +76,8 @@ class LocationReportViewController : UIViewController
         registerBackGroundTask()
         
         sendLocationReportTest.isHidden = true
+        textSentReports.isHidden = true
+        labelSentReports.isHidden = true
     }
     
     //Remove the observer when the viewcontroller is closed
@@ -326,6 +329,8 @@ class LocationReportViewController : UIViewController
                     DeviceUtilities.shared().printData("Activa FechaActual=\(Date().preciseLocalDateTime)")
                     DeviceUtilities.shared().printData("Activar el servicio Ubicacion")
                     //locationManager.startUpdatingLocation()
+                    DeviceUtilities.shared().printData("Actualizar la pantalla ")
+                    showLocationReportInfo()
                     LocationServiceTask.shared().startUpdatingLocation()
                     break
                 

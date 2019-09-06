@@ -25,6 +25,8 @@
 		B532A869230F55660055E6F7 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A868230F55660055E6F7 /* Client.swift */; };
 		B532A86F2310508B0055E6F7 /* DeviceUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A86E2310508B0055E6F7 /* DeviceUtilities.swift */; };
 		B532A87223105B0C0055E6F7 /* LocationReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */; };
+		B5D45632231EFD7400138CC5 /* LocationServiceTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D45631231EFD7400138CC5 /* LocationServiceTask.swift */; };
+		B5D4563C231F1AE400138CC5 /* ic_launcher.png in Resources */ = {isa = PBXBuildFile; fileRef = B5D4563B231F1AE400138CC5 /* ic_launcher.png */; };
 		B5F53D262315F4640034E43A /* LocationUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D252315F4640034E43A /* LocationUtilities.swift */; };
 		B5F53D2823171B090034E43A /* LocationPermissionsWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */; };
 		B5F53D2C23183B490034E43A /* ConstantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2B23183B490034E43A /* ConstantsController.swift */; };
@@ -32,7 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B532A82B230DAF020055E6F7 /* LocalizadorInalambrik.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocalizadorInalambrik.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B532A82B230DAF020055E6F7 /* Localizador.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Localizador.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B532A82E230DAF020055E6F7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B532A836230DAF020055E6F7 /* LocalizadorInalambrik.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LocalizadorInalambrik.xcdatamodel; sourceTree = "<group>"; };
 		B532A838230DAF040055E6F7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -55,6 +57,8 @@
 		B532A868230F55660055E6F7 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		B532A86E2310508B0055E6F7 /* DeviceUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceUtilities.swift; sourceTree = "<group>"; };
 		B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationReportViewController.swift; sourceTree = "<group>"; };
+		B5D45631231EFD7400138CC5 /* LocationServiceTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceTask.swift; sourceTree = "<group>"; };
+		B5D4563B231F1AE400138CC5 /* ic_launcher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ic_launcher.png; path = ../../../../../Desktop/IconoClaroParaLocalizador/ic_launcher.png; sourceTree = "<group>"; };
 		B5F53D252315F4640034E43A /* LocationUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUtilities.swift; sourceTree = "<group>"; };
 		B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionsWarning.swift; sourceTree = "<group>"; };
 		B5F53D2B23183B490034E43A /* ConstantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantsController.swift; sourceTree = "<group>"; };
@@ -84,7 +88,7 @@
 		B532A82C230DAF020055E6F7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B532A82B230DAF020055E6F7 /* LocalizadorInalambrik.app */,
+				B532A82B230DAF020055E6F7 /* Localizador.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -101,6 +105,7 @@
 				B532A84A230DCF960055E6F7 /* DatabaseUtilities */,
 				B532A843230DAF5C0055E6F7 /* ViewControllers */,
 				B532A82E230DAF020055E6F7 /* AppDelegate.swift */,
+				B5D4563B231F1AE400138CC5 /* ic_launcher.png */,
 				B532A838230DAF040055E6F7 /* Assets.xcassets */,
 				B532A83A230DAF040055E6F7 /* LaunchScreen.storyboard */,
 				B532A83D230DAF040055E6F7 /* Info.plist */,
@@ -167,6 +172,7 @@
 			isa = PBXGroup;
 			children = (
 				B5F53D252315F4640034E43A /* LocationUtilities.swift */,
+				B5D45631231EFD7400138CC5 /* LocationServiceTask.swift */,
 			);
 			path = LocationUtilities;
 			sourceTree = "<group>";
@@ -188,7 +194,7 @@
 			);
 			name = LocalizadorInalambrik;
 			productName = LocalizadorInalambrik;
-			productReference = B532A82B230DAF020055E6F7 /* LocalizadorInalambrik.app */;
+			productReference = B532A82B230DAF020055E6F7 /* Localizador.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -241,6 +247,7 @@
 				B532A847230DB1910055E6F7 /* Main.storyboard in Resources */,
 				B532A83C230DAF040055E6F7 /* LaunchScreen.storyboard in Resources */,
 				B532A839230DAF040055E6F7 /* Assets.xcassets in Resources */,
+				B5D4563C231F1AE400138CC5 /* ic_launcher.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B532A866230F38080055E6F7 /* CustomObject.h.m in Sources */,
+				B5D45632231EFD7400138CC5 /* LocationServiceTask.swift in Sources */,
 				B5F53D2E2318601E0034E43A /* Notifications.swift in Sources */,
 				B532A84E230DE4320055E6F7 /* CoreDataStack.swift in Sources */,
 				B5F53D2823171B090034E43A /* LocationPermissionsWarning.swift in Sources */,
@@ -410,12 +418,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 973ZT8Y397;
 				INFOPLIST_FILE = LocalizadorInalambrik/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ec.com.inalambrik.localizadormovil;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Localizador;
 				SWIFT_OBJC_BRIDGING_HEADER = "LocalizadorInalambrik/ObjectiveC Utilities/LocalizadorInalambrik-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -432,12 +441,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 973ZT8Y397;
 				INFOPLIST_FILE = LocalizadorInalambrik/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ec.com.inalambrik.localizadormovil;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Localizador;
 				SWIFT_OBJC_BRIDGING_HEADER = "LocalizadorInalambrik/ObjectiveC Utilities/LocalizadorInalambrik-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
