@@ -26,11 +26,14 @@ extension Client
     
     func sendAuthorization(_ activationCode: String,_ Apple_pn_id: String, completion: @escaping (_ result: sendUserResponse?, _ error: Error?) -> Void)
     {
+        let IMEIGetOnKeyChain = CustomObject()
+        let IMEIGetFromKeyChain = IMEIGetOnKeyChain.getGeneratedDeviceIDFromKeychain()
+        
         let deviceUID = UIDevice.current.identifierForVendor!.uuidString
         let deviceOSVersion = UIDevice.current.systemVersion
         let deviceModel = UIDevice.current.name
         
-        let sendRequest = sendUserRequest(device_id: deviceUID, email: "", activation_code: activationCode, device_imei: deviceUID, device_vendor_id: deviceUID, device_brand: deviceModel, device_model: deviceModel, device_os: "IOS", device_os_version: deviceOSVersion, app_version: Float(ConstantsController().APP_VERSION), latitude: 0.0, longitude: 0.0, device_phone_number: "", device_phone_area_code: "", verify_phone_number_only: false, firebase_id: "", apple_pn_id: Apple_pn_id,device_firebase_unique_id: "")
+        let sendRequest = sendUserRequest(device_id: deviceUID, email: "", activation_code: activationCode, device_imei: IMEIGetFromKeyChain!, device_vendor_id: deviceUID, device_brand: deviceModel, device_model: deviceModel, device_os: "IOS", device_os_version: deviceOSVersion, app_version: Float(ConstantsController().APP_VERSION), latitude: 0.0, longitude: 0.0, device_phone_number: "", device_phone_area_code: "", verify_phone_number_only: false, firebase_id: "", apple_pn_id: Apple_pn_id,device_firebase_unique_id: "")
         
         let jsonData = try! JSONEncoder().encode(sendRequest)
         let jsonString = String(data: jsonData, encoding: .utf8)!
@@ -123,7 +126,6 @@ extension Client
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = parameters.data(using: String.Encoding.utf8)
-        DeviceUtilities.shared().printData("Request=\(request)")
         
         showActivityIndicator(true)
         
