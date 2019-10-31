@@ -66,8 +66,6 @@ class LoginViewController: UIViewController
         
         loginActivityIndicator.startAnimating()
         self.updateStatusLabel("Verificando activación del Dispositivo...")
-        //if (textAuthorizationCode.text?.count)! > 0
-        //{
         Client.shared().sendAuthorization(textAuthorizationCode.text!,apple_pn_id){
             (userResponse, error) in
             self.performUIUpdatesOnMain {
@@ -127,40 +125,6 @@ class LoginViewController: UIViewController
                     self.showInfo(withMessage: requestMessage)
                 }
             }
-            //}
-            
-                /*}
-                 else
-                 {
-                 let IMEIGetOnKeyChain = CustomObject()
-                 let IMEIGetFromKeyChain = IMEIGetOnKeyChain.getGeneratedDeviceIDFromKeychain()
-                 
-                 if IMEIGetFromKeyChain != ""
-                 {
-                 print("IMEIGetFromKeyChain=",IMEIGetFromKeyChain ?? "")
-                 if let user = CoreDataStack.shared().loadUserInformation()
-                 {
-                 let deviceUID = UIDevice.current.identifierForVendor!.uuidString
-                 print("Se va actualizar el usuario sin enviar codigo de autorizacion")
-                 user.setValue("1", forKey: "authorizedDevice")
-                 user.setValue(deviceUID, forKey: "deviceIdentifierVendorID")
-                 user.setValue(IMEIGetFromKeyChain, forKey: "deviceId")
-                 CoreDataStack.shared().save()
-                 print("Informacion del usuario ha sido actualizada")
-                 DispatchQueue.main.async {
-                 print("dispatched to main")
-                 self.performSegue(withIdentifier: "locationReportSegue", sender: nil)
-                 }
-                 }
-                 else
-                 {
-                 print("Error al obtener el usuario")
-                 }
-                 }
-                 else
-                 {
-                 print("Error al obtener el IMEI desde el KEYCHAIN")
-                 }*/
         }
     }
     
@@ -177,7 +141,7 @@ class LoginViewController: UIViewController
         if segue.identifier == "locationReportSegue"
         {
             DeviceUtilities.shared().printData("Se muestra el panel de reportes")
-            _ = segue.destination as! LocationReportViewController
+                _ = segue.destination as! LocationReportViewController
         }
         else if segue.identifier == "locationPermissionsSegue"
         {
