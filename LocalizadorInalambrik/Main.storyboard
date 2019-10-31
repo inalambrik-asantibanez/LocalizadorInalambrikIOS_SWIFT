@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="S2E-Wc-Exo">
-    <device id="retina5_9" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="S2E-Wc-Exo">
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,7 +11,7 @@
         <!--Location Report View Controller-->
         <scene sceneID="dsC-Pr-yz5">
             <objects>
-                <viewController id="lz7-mJ-ggY" customClass="LocationReportViewController" customModule="Localizador" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="lz7-mJ-ggY" customClass="LocationReportViewController" customModule="Localizador" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ZTh-Qt-jJl">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -192,19 +190,26 @@
                                                 <color key="textColor" red="0.43933166870000001" green="0.47020203669999999" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik (Versión 3.1)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t7t-hW-EOA" userLabel="Leyenda Desarrollado">
-                                                <rect key="frame" x="40" y="478" width="260.66666666666669" height="16"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                <color key="textColor" red="0.43933166870000001" green="0.47020203669999999" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kOe-tl-nDm">
-                                                <rect key="frame" x="80" y="524" width="262" height="30"/>
+                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kOe-tl-nDm">
+                                                <rect key="frame" x="56" y="592" width="262" height="30"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <state key="normal" title="Enviar reporte de ubicacion de prueba"/>
                                                 <connections>
                                                     <action selector="sendLocationReportAction:" destination="lz7-mJ-ggY" eventType="touchUpInside" id="Bev-mN-xi9"/>
                                                 </connections>
                                             </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bJK-oP-9Jd">
+                                                <rect key="frame" x="40" y="478" width="295" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik (Versión 3.2)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t7t-hW-EOA" userLabel="Leyenda Desarrollado">
+                                                <rect key="frame" x="40" y="525" width="295" height="16"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                <color key="textColor" red="0.43933166870000001" green="0.47020203669999999" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
@@ -216,21 +221,23 @@
                                             <constraint firstItem="eWW-dP-7mJ" firstAttribute="top" secondItem="K85-kf-qNe" secondAttribute="bottom" constant="10" id="2VB-wK-I5m"/>
                                             <constraint firstItem="DBm-Zg-YPp" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="35M-pI-71J"/>
                                             <constraint firstItem="dm3-AS-IJ9" firstAttribute="top" secondItem="AbG-vS-J5C" secondAttribute="top" constant="40" id="4GN-ke-LP2"/>
-                                            <constraint firstItem="kOe-tl-nDm" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="80" id="58d-tn-las"/>
-                                            <constraint firstItem="t7t-hW-EOA" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="6BZ-hf-z7p"/>
                                             <constraint firstItem="DBm-Zg-YPp" firstAttribute="top" secondItem="QRi-MW-cAz" secondAttribute="bottom" constant="10" id="6C7-tu-0xK"/>
                                             <constraint firstItem="iSU-vS-3vI" firstAttribute="top" secondItem="CjJ-IC-c95" secondAttribute="bottom" constant="10" id="7WA-rK-znB"/>
+                                            <constraint firstAttribute="trailing" secondItem="t7t-hW-EOA" secondAttribute="trailing" constant="40" id="AVZ-4l-S5d"/>
                                             <constraint firstItem="eWW-dP-7mJ" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="Cwp-Z8-TAt"/>
+                                            <constraint firstItem="t7t-hW-EOA" firstAttribute="top" secondItem="bJK-oP-9Jd" secondAttribute="bottom" constant="30" id="DxV-Ja-fhh"/>
+                                            <constraint firstItem="bJK-oP-9Jd" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="GZI-Xw-yr2"/>
                                             <constraint firstItem="Szr-ok-KaX" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="Gbo-La-FfF"/>
                                             <constraint firstItem="K85-kf-qNe" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="JEj-gg-BY9"/>
-                                            <constraint firstItem="t7t-hW-EOA" firstAttribute="top" secondItem="h7Y-gC-kLP" secondAttribute="bottom" constant="20" id="Qyw-aR-crg"/>
-                                            <constraint firstItem="kOe-tl-nDm" firstAttribute="top" secondItem="t7t-hW-EOA" secondAttribute="bottom" constant="30" id="RxG-Eu-UGL"/>
+                                            <constraint firstAttribute="trailing" secondItem="bJK-oP-9Jd" secondAttribute="trailing" constant="40" id="ODT-aw-pnB"/>
                                             <constraint firstItem="h7Y-gC-kLP" firstAttribute="top" secondItem="DBm-Zg-YPp" secondAttribute="bottom" constant="10" id="TLa-tC-K3T"/>
+                                            <constraint firstItem="bJK-oP-9Jd" firstAttribute="top" secondItem="h7Y-gC-kLP" secondAttribute="bottom" constant="20" id="TsM-Th-cA4"/>
                                             <constraint firstItem="QRi-MW-cAz" firstAttribute="top" secondItem="iSU-vS-3vI" secondAttribute="bottom" constant="10" id="WgP-UJ-1sP"/>
                                             <constraint firstItem="Bcq-Kp-SyX" firstAttribute="top" secondItem="Yjg-pt-VK8" secondAttribute="bottom" constant="10" id="YWt-Fw-K21"/>
                                             <constraint firstItem="Bcq-Kp-SyX" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="bSI-XZ-fCG"/>
                                             <constraint firstItem="OUl-DL-fJu" firstAttribute="top" secondItem="ZUJ-Nu-Xwa" secondAttribute="bottom" constant="10" id="dTa-Zb-3tF"/>
                                             <constraint firstItem="Yjg-pt-VK8" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="dVK-ZB-mXb"/>
+                                            <constraint firstItem="t7t-hW-EOA" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="f3M-VV-jYG"/>
                                             <constraint firstItem="CjJ-IC-c95" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="fG3-wY-KBi"/>
                                             <constraint firstItem="iSU-vS-3vI" firstAttribute="leading" secondItem="AbG-vS-J5C" secondAttribute="leading" constant="40" id="fTm-1n-Tr8"/>
                                             <constraint firstItem="fbd-4N-VKL" firstAttribute="top" secondItem="eWW-dP-7mJ" secondAttribute="bottom" constant="10" id="lae-hc-53d"/>
@@ -266,6 +273,7 @@
                         <outlet property="labelSentReports" destination="Bcq-Kp-SyX" id="g22-e6-F7m"/>
                         <outlet property="sendLocationReportTest" destination="kOe-tl-nDm" id="Lek-gC-pRy"/>
                         <outlet property="textBatteryLevel" destination="jvA-Cg-XMT" id="R3y-Jh-fAd"/>
+                        <outlet property="textErrorLocation" destination="bJK-oP-9Jd" id="1HD-oA-9lB"/>
                         <outlet property="textIMEI" destination="PNk-uB-CCP" id="AME-ba-qp6"/>
                         <outlet property="textLatitude" destination="dDa-ar-l9K" id="wyz-7L-92D"/>
                         <outlet property="textLocalDateTime" destination="Oel-3T-cMq" id="Dmb-go-Q07"/>
@@ -286,7 +294,7 @@
         <!--Location Permissions Warning-->
         <scene sceneID="eeZ-YU-P94">
             <objects>
-                <viewController id="E76-FF-HPI" customClass="LocationPermissionsWarning" customModule="Localizador" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="E76-FF-HPI" customClass="LocationPermissionsWarning" customModule="Localizador" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3Tc-1w-cBd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -324,7 +332,7 @@
                                                     <segue destination="lz7-mJ-ggY" kind="show" identifier="locationReportPanelSegue" id="wFU-VX-unH"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik (Versión 3.1)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CDB-TM-mnJ">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik (Versión 3.2)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CDB-TM-mnJ">
                                                 <rect key="frame" x="40" y="500.33333333333331" width="295" height="15.666666666666686"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -410,36 +418,35 @@ Si su empresa ha contratado el servicio, por favor a continuación ingrese el c�
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Código de Activación" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="F8l-bM-pxx">
-                                                <rect key="frame" x="80" y="410" width="215" height="30"/>
-                                                <nil key="textColor"/>
+                                                <rect key="frame" x="80" y="410" width="215" height="34"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                             </textField>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ag5-Ge-9YV">
-                                                <rect key="frame" x="80" y="440" width="215" height="30"/>
+                                                <rect key="frame" x="80" y="444" width="215" height="30"/>
                                                 <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="15"/>
                                                 <state key="normal" title="Activar"/>
                                                 <connections>
                                                     <action selector="actionActivateDevice:" destination="S2E-Wc-Exo" eventType="touchUpInside" id="Med-EW-1fg"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik S.A. (Versión 3.1)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KmX-FJ-5kE">
-                                                <rect key="frame" x="40" y="510" width="295" height="16"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik S.A. (Versión 3.2)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KmX-FJ-5kE">
+                                                <rect key="frame" x="40" y="514" width="295" height="16"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="0.43933166871275164" green="0.47020203669653154" blue="0.47450980392156861" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="----" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dDG-YW-22v" userLabel="status Label">
-                                                <rect key="frame" x="40" y="600" width="295" height="21"/>
+                                                <rect key="frame" x="40" y="604" width="295" height="21"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="TGt-Q2-5Oz">
-                                                <rect key="frame" x="177" y="560" width="21" height="20"/>
+                                                <rect key="frame" x="177" y="564" width="21" height="20"/>
                                             </activityIndicatorView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_launcher.png" translatesAutoresizingMaskIntoConstraints="NO" id="8hq-41-jv3" userLabel="Imagen Localizador">
-                                                <rect key="frame" x="147" y="90" width="80" height="80"/>
+                                                <rect key="frame" x="147.66666666666666" y="90" width="80" height="80"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="80" id="NTK-1s-d6p"/>
@@ -519,6 +526,6 @@ Si su empresa ha contratado el servicio, por favor a continuación ingrese el c�
         <image name="ic_launcher.png" width="180" height="180"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="rgN-KA-VY9"/>
+        <segue reference="wFU-VX-unH"/>
     </inferredMetricsTieBreakers>
 </document>

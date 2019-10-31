@@ -23,12 +23,7 @@ class DeviceUtilities
     
     func getNetworkType() -> String
     {
-        /*guard let netWorkType = telephonyInfo.currentRadioAccessTechnology
-        else
-        {
-            return ""
-        }*/
-        return "GPS" //netWorkType
+        return "GPS"
     }
     
     func getBatteryStatus() -> Float
