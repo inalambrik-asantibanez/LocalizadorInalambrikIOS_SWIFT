@@ -21,7 +21,7 @@ class QueryUtilities
     
     func saveLocationReport(_ locationReport: LocationReportInfo)
     {
-        _ = LocationReportInfo(year: locationReport.year, month: locationReport.month, day: locationReport.day, hour: locationReport.hour, minute: locationReport.minute, second: locationReport.second, latitude: locationReport.latitude, longitude: locationReport.longitude, altitude: locationReport.altitude, speed: locationReport.speed, orientation: locationReport.orientation, satellites: locationReport.satellites, accuracy: locationReport.accuracy, status: locationReport.status!, networkType: locationReport.networkType!, mcc: locationReport.mcc, mnc: locationReport.mnc, lac: locationReport.lac, cid: locationReport.cid, batteryLevel: locationReport.batteryLevel, eventCode: locationReport.eventCode,reportDate: locationReport.reportDate,gpsStatus: locationReport.gpsStatus!, context: CoreDataStack.shared().context)
+        _ = LocationReportInfo(year: locationReport.year, month: locationReport.month, day: locationReport.day, hour: locationReport.hour, minute: locationReport.minute, second: locationReport.second, latitude: locationReport.latitude, longitude: locationReport.longitude, altitude: locationReport.altitude, speed: locationReport.speed, orientation: locationReport.orientation, satellites: locationReport.satellites, accuracy: locationReport.accuracy, status: locationReport.status!, networkType: locationReport.networkType!, mcc: locationReport.mcc, mnc: locationReport.mnc, lac: locationReport.lac, cid: locationReport.cid, batteryLevel: locationReport.batteryLevel, eventCode: locationReport.eventCode,reportDate: locationReport.reportDate,gpsStatus: locationReport.gpsStatus!,errorLocation: locationReport.locationerror!, context: CoreDataStack.shared().context)
         CoreDataStack.shared().save()
         
     }
@@ -60,43 +60,41 @@ class QueryUtilities
     
     func getUserIMEI() -> String
     {
-        var userIMEI = ""
         var user :User?
         let predicate = NSPredicate(format: "userId == %@ ","1")
-        do {
+        do
+        {
             try user = CoreDataStack.shared().fetchUser(predicate, entityName: User.name)
-            if user != nil
+            guard let userIMEI = user?.deviceId! else
             {
-                userIMEI = (user?.deviceId)!
+                return "IMEI No Encontrado"
             }
-            else
-            {
-                userIMEI = "IMEI No Encontrado"
-            }
-
+            return userIMEI
         }
-        catch{
-            userIMEI = "IMEI No Encontrado"
+        catch
+        {
+            return "IMEI No Encontrado"
         }
         
-        return userIMEI
     }
     
     func getApplePNID() -> String
     {
-        var ApplePNID = ""
         var user: User?
         let predicate = NSPredicate(format: " apple_pn_id != %@ ", "")
         do
         {
             try user = CoreDataStack.shared().fetchUser(predicate, entityName: User.name)
-            ApplePNID = (user?.apple_pn_id)!
+            guard let ApplePNID = user?.apple_pn_id! else {
+                return "APPLE_ID_NOT_FOUND"
+            }
+            return ApplePNID
+            
         }
         catch
         {
-            ApplePNID = "APPLE_PN_NOT_FOUND"
+            return "APPLE_ID_NOT_FOUND"
         }
-        return ApplePNID
     }
     
     func getLocationReportsByStatusCount(_ predicate: NSPredicate) -> Int

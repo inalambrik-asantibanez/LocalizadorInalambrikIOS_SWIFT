@@ -26,29 +26,41 @@ class LocationReportViewController : UIViewController
     @IBOutlet weak var textSatellites: UILabel!
     @IBOutlet weak var textReportStatus: UILabel!
     @IBOutlet weak var sendLocationReportTest: UIButton!
+    @IBOutlet weak var textErrorLocation: UILabel!
     
     //Configure the Timer for the infinite BackGroundTask
-    var updateTimer: Timer?
+    //var updateTimer: Timer?
     
     //Set as Invalid BackgroundTask
-    var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
+    //var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
     //Set background service variables
-    let interval: Double = ConstantsController().REPORT_INTERVAL
+    /*let interval: Double = ConstantsController().REPORT_INTERVAL
     let initInterval : Double = ConstantsController().INITIAL_INTERVAL
-    var initIsActive = false
+    var initIsActive = false*/
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        //Observer to refresh the ui
+        NotificationCenter.default.addObserver(self, selector:  #selector(applicationDidBecomeActive),name: .UIApplicationDidBecomeActive,object: nil)
+        
+        //Observer to refresh the last report saved in DB
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshLastReportUI), name: .refreshUILastReport, object: nil)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         UIApplication.shared.isIdleTimerDisabled = true
         
-        //check Location Permissions
-        checkUsersLocationServicesAuthorization()
-        
         showLocationReportInfo()
         
         //Send the pending reports
         sendPendingLocationReports()
+        
+        /*//check Location Permissions
+        checkUsersLocationServicesAuthorization()
+        
+        showLocationReportInfo()
         
         //Add observer to refresh UI
         addRefreshUIObserver()
@@ -66,16 +78,30 @@ class LocationReportViewController : UIViewController
         addBackGroundTaskObserver()
         
         //Register BackGroundTask
-        registerBackGroundTask()
+        registerBackGroundTask()*/
         
         sendLocationReportTest.isHidden = true
         textSentReports.isHidden = true
         labelSentReports.isHidden = true
+        
+        INLLocationTracking.shared().startLocationTracking()
     }
     
     //Remove the observer when the viewcontroller is closed
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func applicationDidBecomeActive()
+    {
+        DeviceUtilities.shared().printData("applicationDidBecomeActive on viewcontroller")
+        self.showLocationReportInfo()
+    }
+    
+    @objc func refreshLastReportUI()
+    {
+        DeviceUtilities.shared().printData("refreshLastReportUI refresh the last report on viewcontroller")
+        self.showLocationReportInfo()
     }
     
     public func showLocationReportInfo()
@@ -87,9 +113,6 @@ class LocationReportViewController : UIViewController
         let networkType = DeviceUtilities.shared().getNetworkType()
         let pendingReports = QueryUtilities.shared().getLocationReportsByStatusCount(NSPredicate(format: "status == %@","P"))
         let sentReports = QueryUtilities.shared().getLocationReportsByStatusCount(NSPredicate(format: "status == %@","S"))
-        
-        //DeviceUtilities.shared().printData("pending reports ")
-        //DeviceUtilities.shared().printData("sent reports ")
         
         self.textIMEI.text = userIMEI
         self.textBatteryLevel.text = String(batteryLevel)
@@ -108,6 +131,7 @@ class LocationReportViewController : UIViewController
         var velocidad = ""
         var satelites = ""
         var estado = ""
+        var errorLocation = ""
         
         do{
             guard let locationInfo = try CoreDataStack.shared().fetchLocationReport(nil, entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))
@@ -121,6 +145,7 @@ class LocationReportViewController : UIViewController
                 velocidad = "0 km/h"
                 satelites = "0 "
                 estado = " "
+                errorLocation = ""
                 self.textLocalDateTime.text = fechaHora
                 self.textLatitude.text = latitude
                 self.textLongitude.text = longitude
@@ -128,6 +153,7 @@ class LocationReportViewController : UIViewController
                 self.textSpeed.text = velocidad
                 self.textSatellites.text = satelites
                 self.textReportStatus.text = estado
+                self.textErrorLocation.text = errorLocation
                 return
             }
             fechaHora = DeviceUtilities.shared().convertDateTimeToString((locationInfo.reportDate),"yyyy-MM-dd HH:mm:ss")
@@ -139,6 +165,7 @@ class LocationReportViewController : UIViewController
             velocidad += " km/h"
             satelites = String(locationInfo.satellites)
             estado = locationInfo.status == "P" ? "Pendiente" : "Enviado";
+            errorLocation = locationInfo.locationerror!
         }
         catch{
             
@@ -151,6 +178,7 @@ class LocationReportViewController : UIViewController
         self.textSpeed.text = velocidad
         self.textSatellites.text = satelites
         self.textReportStatus.text = estado
+        self.textErrorLocation.text = errorLocation
     }
     @IBAction func sendLocationReportAction(_ sender: Any)
     {
@@ -194,7 +222,7 @@ class LocationReportViewController : UIViewController
                                 DeviceUtilities.shared().printData("Se actualizo el ultimo reporte pendiente a enviado")
                                 DispatchQueue.main.async {
                                     print("Actualizacion del UI",separator: "",terminator: "\n")
-                                    self.getLastLocationInfo()
+                                    self.showLocationReportInfo()
                                 }
                             }
                             else
@@ -216,7 +244,7 @@ class LocationReportViewController : UIViewController
         showLocationReportInfo()
     }
     
-    func deleteYesterDaySentLocationReports()
+    /*func deleteYesterDaySentLocationReports()
     {
         var locationReports: [LocationReportInfo]?
         do
@@ -239,11 +267,11 @@ class LocationReportViewController : UIViewController
         {
             DeviceUtilities.shared().printData("No hay reportes enviados por eliminar ")
         }
-    }
+    }*/
 //----------------------------------------------------------------------------------------------------------------------
     
 //------------------------------------------------BACKGROUNDTASK METHODS------------------------------------------------
-    func addBackGroundTaskObserver()
+    /*func addBackGroundTaskObserver()
     {
         DeviceUtilities.shared().printData("Tarea que mantiene el hilo principal agregado el observador")
         NotificationCenter.default.addObserver(self, selector: #selector(reinstateBackgroundTask), name: .UIApplicationDidBecomeActive, object: nil)
@@ -260,14 +288,15 @@ class LocationReportViewController : UIViewController
     func registerBackGroundTask()
     {
         DeviceUtilities.shared().printData("Tarea registrada")
-        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+        backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "com.so.locationreport", expirationHandler: {self.endBackgroundTask()})
+        /*backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
             self?.endBackgroundTask()
-        }
+        }*/
         assert(backgroundTask != UIBackgroundTaskInvalid)
     }
     
     func endBackgroundTask() {
-        DeviceUtilities.shared().printData("Tarea terminada")
+        DeviceUtilities.shared().printData("endBackgroundTask Se termina la tarea")
         UIApplication.shared.endBackgroundTask(backgroundTask)
         backgroundTask = UIBackgroundTaskInvalid
     }
@@ -413,6 +442,50 @@ class LocationReportViewController : UIViewController
             DeviceUtilities.shared().printData("El localizador esta fuera de calendario")
         }
     }
+    
+    func checkUsersLocationServicesAuthorization()
+    {
+        
+        /// Check if user has authorized Total Plus to use Location Services
+        if CLLocationManager.locationServicesEnabled()
+        {
+            switch CLLocationManager.authorizationStatus()
+            {
+
+            case .notDetermined:
+                // Request when-in-use authorization initially
+                // This is the first and the ONLY time you will be able to ask the user for permission
+                LocationServiceTask.shared().locationManager?.requestWhenInUseAuthorization()
+                break
+
+            case .restricted, .denied:
+                // Disable location features
+
+                let alert = UIAlertController(title: "Allow Location Access", message: "Localizador necesita acceder a su ubicación. Encienda los servicios de localización.", preferredStyle: UIAlertController.Style.alert)
+
+                // Button to Open Settings
+                alert.addAction(UIAlertAction(title: "Configuración", style: UIAlertAction.Style.default, handler: { action in
+                    guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
+                        return
+                    }
+                    if UIApplication.shared.canOpenURL(settingsUrl) {
+                        UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
+                            print("Settings opened: \(success)")
+                        })
+                    }
+                }))
+                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+
+                break
+
+            case .authorizedWhenInUse, .authorizedAlways:
+                // Enable features that require location services here.
+                print("Full Access")
+                break
+            }
+        }
+    }*/
 }
 //-----------------------------------------------------------------------------------------------------------------
 
