@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 import UserNotifications
 import CoreLocation
+import BackgroundTasks
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,7 +19,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let notificationCenter = UNUserNotificationCenter.current()
     let categoryIdentifier = "PUSH_NOTIFICATION"
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
+    {
+        /*if #available(iOS 13.0, *)
+        {
+            registerBackgroundTaks()
+        }*/
+        
         notificationCenter.delegate = (self as UNUserNotificationCenterDelegate)
         let options : UNAuthorizationOptions = [.badge,.alert,.sound]
         notificationCenter.requestAuthorization(options: options) {
@@ -35,19 +42,125 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
+    
+    //MARK: Register BackGround Tasks
+    @available(iOS 13.0, *)
+    private func registerBackgroundTaks() {
+        DeviceUtilities.shared().printData("registerBackgroundTaks Register the background task for ios 13")
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.so.locationreport", using: nil) { task in
+            //This task is cast with processing request (BGAppRefreshTask)
+            self.scheduleLocalNotification()
+            self.handleAppRefreshTask(task: task as! BGAppRefreshTask)
+        }
+    }
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
 
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        DeviceUtilities.shared().printData("App entro a background")
+    func applicationDidEnterBackground(_ application: UIApplication)
+    {
+        /*if #available(iOS 13.0, *)
+        {
+            let vc = LocationReportViewController()
+            vc.endBackgroundTask()
+            DeviceUtilities.shared().printData("App entro a background ios 13")
+            cancelAllPandingBGTask()
+            scheduleAppRefresh()
+        }
+        else
+        {
+            DeviceUtilities.shared().printData("App entro a background ios 12 para abajo")
+            NotificationCenter.default.post(name: .setLocationReportInterval, object: nil)
+        }*/
     }
+    
+    
+    @available(iOS 13.0, *)
+    func cancelAllPandingBGTask() {
+        DeviceUtilities.shared().printData("cancelAllPandingBGTask Cancel all pending tasks")
+        BGTaskScheduler.shared.cancelAllTaskRequests()
+    }
+    
+    @available(iOS 13.0, *)
+    func scheduleAppRefresh()
+    {
+        DeviceUtilities.shared().printData("scheduleAppRefresh Schedule the app refresh")
+        let request = BGAppRefreshTaskRequest(identifier: "com.so.locationreport")
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 60) // App Refresh after 2 minute.
+        
+        do
+        {
+            DeviceUtilities.shared().printData("scheduleAppRefresh Submitting the background task request")
+            try BGTaskScheduler.shared.submit(request)
+        }
+        catch
+        {
+            DeviceUtilities.shared().printData("Could not schedule app refresh: \(error)")
+        }
+    }
+    
+    @available(iOS 13.0, *)
+    func handleAppRefreshTask(task: BGAppRefreshTask)
+    {
+        scheduleAppRefresh()
+        DeviceUtilities.shared().printData("handleAppRefreshTask FechaActual=\(Date().preciseLocalDateTime)")
 
-    func applicationWillEnterForeground(_ application: UIApplication) {
+        task.expirationHandler = {
+            self.cancelAllPandingBGTask()
+        }
+        scheduleLocalNotification()
+        task.setTaskCompleted(success: true)
+    }
+    
+    func registerLocalNotification() {
+           let notificationCenter = UNUserNotificationCenter.current()
+           let options: UNAuthorizationOptions = [.alert, .sound, .badge]
+           
+           notificationCenter.requestAuthorization(options: options) {
+               (didAllow, error) in
+               if !didAllow {
+                   print("User has declined notifications")
+               }
+           }
+       }
+       
+       func scheduleLocalNotification()
+       {
+            DeviceUtilities.shared().printData("scheduleLocalNotification create a notification")
+           let notificationCenter = UNUserNotificationCenter.current()
+           notificationCenter.getNotificationSettings { (settings) in
+               if settings.authorizationStatus == .authorized {
+                   self.fireNotification()
+               }
+           }
+       }
+       
+       func fireNotification() {
+           // Create Notification Content
+           let notificationContent = UNMutableNotificationContent()
+           
+           // Configure Notification Content
+           notificationContent.title = "Bg"
+           notificationContent.body = "BG Notifications."
+           
+           // Add Trigger
+           let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.0, repeats: false)
+           
+           // Create Notification Request
+           let notificationRequest = UNNotificationRequest(identifier: "local_notification", content: notificationContent, trigger: notificationTrigger)
+           
+           // Add Request to User Notification Center
+           UNUserNotificationCenter.current().add(notificationRequest) { (error) in
+               if let error = error {
+                   print("Unable to Add Notification Request (\(error), \(error.localizedDescription))")
+               }
+           }
+       }
+
+    func applicationWillEnterForeground(_ application: UIApplication)
+    {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
 
@@ -68,7 +181,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             DeviceUtilities.shared().printData("Usuario autorizado proceda con el guardado del reporte por terminacion de app")
             let locationReport = CLLocation()
             LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(locationReport,"TERMINATE")
-            let notificationType = "Notificación Local"
+            let notificationType = "Localizador Inalambrik fue cerrado"
             DeviceUtilities.shared().printData("Programacion de notificacion por terminacion del app")
             self.scheduleNotification(event: notificationType,interval: 2)
             sleep(3)
@@ -90,7 +203,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let content = UNMutableNotificationContent()
         
         content.title = event
-        content.body = "body"
+        content.body = "Favor abrir el Localizador Inalambrik"
         content.categoryIdentifier = categoryIdentifier
         let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: interval, repeats: false)
         let identifier = "id_"+event
