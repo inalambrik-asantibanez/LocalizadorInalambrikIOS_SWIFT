@@ -226,16 +226,15 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
         startBackgroundTask()
         startCheckLocationTimer()
         pauseLocationManager()
-        /*if localHour! > ConstantsController().BEGIN_REPORT_HOUR && localHour! < ConstantsController().END_REPORT_HOUR
-            {*/
-                DeviceUtilities.shared().printData("Localizador en calendario")
-                DeviceUtilities.shared().printData("Chequeo de estado de la aplicacion FechaActual=\(Date().preciseLocalDateTime)")
-                //delegate.scheduledLocationManager(self, didUpdateLocations: lastLocations)
-            //}
-            /*else
-            {
-                DeviceUtilities.shared().printData("Localizador no esta en calendario")
-            }*/
+        if localHour! > ConstantsController().BEGIN_REPORT_HOUR && localHour! < ConstantsController().END_REPORT_HOUR
+        {
+            DeviceUtilities.shared().printData("Localizador en calendario FechaActual=\(Date().preciseLocalDateTime)")
+            DeviceUtilities.shared().printData("Chequeo de estado de la aplicacion FechaActual=\(Date().preciseLocalDateTime)")
+        }
+        else
+        {
+            DeviceUtilities.shared().printData("Localizador no esta en calendario FechaActual=\(Date().preciseLocalDateTime)")
+        }
     }
     
     @objc func waitTimerEvent()
@@ -253,16 +252,16 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
             startBackgroundTask()
             startCheckLocationTimer()
             pauseLocationManager()
-            /*if localHour! > ConstantsController().BEGIN_REPORT_HOUR && localHour! < ConstantsController().END_REPORT_HOUR
-            {*/
-                DeviceUtilities.shared().printData("Localizador en calendario")
+            if localHour! > ConstantsController().BEGIN_REPORT_HOUR && localHour! < ConstantsController().END_REPORT_HOUR
+            {
+                DeviceUtilities.shared().printData("Localizador en calendario FechaActual=\(Date().preciseLocalDateTime)")
                 DeviceUtilities.shared().printData("Chequeo de estado de la aplicacion FechaActual=\(Date().preciseLocalDateTime)")
                 delegate.scheduledLocationManager(self, didUpdateLocations: lastLocations)
-            //}
-            /*else
+            }
+            else
             {
-                DeviceUtilities.shared().printData("Localizador no esta en calendario")
-            }*/
+                DeviceUtilities.shared().printData("Localizador no esta en calendario FechaActual=\(Date().preciseLocalDateTime)" )
+            }
         }
         else
         {

@@ -97,9 +97,19 @@ extension INLLocationTracking:INLLocationManagerDelegate{
         DeviceUtilities.shared().printData("new longitude=\(recentLocation.coordinate.longitude)")
         
         let existLastLocationReport = LocationUtilities.shared().checkIfExistsLocationReport()
+        let lastLocationReport = LocationUtilities.shared().getLastLocationInfo()
+        if existLastLocationReport
+        {
+            
+            currentLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: CLLocationDegrees(lastLocationReport.latitude), longitude: CLLocationDegrees(lastLocationReport.longitude)), altitude: CLLocationDistance(lastLocationReport.altitude), horizontalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), verticalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), timestamp: lastLocationReport.reportDate)
+        }
+        else
+        {
+            currentLocation = CLLocation(latitude: 0, longitude: 0)
+        }
         let DifferencesTwoDatesInSeconds = getDifferenceBetweenDates(dateFrom: currentLocation.timestamp, dateTo: recentLocation.timestamp)
         DeviceUtilities.shared().printData("Difference between two dates in seconds \(DifferencesTwoDatesInSeconds)")
-        if(Int(abs(recentLocation.coordinate.latitude)) != 0 && Int(abs(recentLocation.coordinate.longitude)) != 0)// && (!existLastLocationReport || DifferencesTwoDatesInSeconds >= 30)
+        if(Int(abs(recentLocation.coordinate.latitude)) != 0 && Int(abs(recentLocation.coordinate.longitude)) != 0) && (!existLastLocationReport || DifferencesTwoDatesInSeconds >= 45)
         {
             DeviceUtilities.shared().printData("Location retrive successfully: FechaActual=\(Date().preciseLocalDateTime)")
             //Save LocationReport in DB
@@ -129,20 +139,45 @@ extension INLLocationTracking:INLLocationManagerDelegate{
     
     func scheduledLocationManager(_ manager: INLLocationManager, didFailWithError error: Error)
     {
+        let existLastLocationReport = LocationUtilities.shared().checkIfExistsLocationReport()
+        let lastLocationReport = LocationUtilities.shared().getLastLocationInfo()
+        if existLastLocationReport
+        {
+            
+            currentLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: CLLocationDegrees(lastLocationReport.latitude), longitude: CLLocationDegrees(lastLocationReport.longitude)), altitude: CLLocationDistance(lastLocationReport.altitude), horizontalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), verticalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), timestamp: lastLocationReport.reportDate)
+        }
+        else
+        {
+            currentLocation = CLLocation(latitude: 0, longitude: 0)
+        }
+        
         DeviceUtilities.shared().printData("Location Error \(error.localizedDescription)")
-        DeviceUtilities.shared().printData("Se guarda reporte en BD 0.0 con fecha \(Date().preciseLocalDateTime)")
         let nullCoordinates = CLLocationCoordinate2D(latitude: 0, longitude: 0)
         let locationNull = CLLocation.init(coordinate: nullCoordinates, altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, course: 0, speed: 0, timestamp:convertToDate(dateString: Date().preciseLocalDateTime) )
         
-        LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(locationNull,"",error.localizedDescription)
-        sendPendingLocationReports()
-        manager.startWaitTimerOnLocationError()
-        
+        let DifferencesTwoDatesInSeconds = getDifferenceBetweenDates(dateFrom: currentLocation.timestamp, dateTo: locationNull.timestamp)
+        if(!existLastLocationReport || DifferencesTwoDatesInSeconds >= 45)
+        {
+            DeviceUtilities.shared().printData("Se guarda reporte en BD 0.0 con fecha \(Date().preciseLocalDateTime)")
+            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(locationNull,"",error.localizedDescription)
+            currentLocation = locationNull
+            sendPendingLocationReports()
+            manager.startWaitTimerOnLocationError()
+            
+        }
     }
     
     func scheduledLocationManager(_ manager: INLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if CLLocationManager.authorizationStatus() == .denied{
             DeviceUtilities.shared().printData("Location service is disable...")
+            if #available(iOS 13.0,*)
+            {
+            manager.requestWhenInUseAuthorization()
+            }
+            else
+            {
+                manager.requestAlwaysAuthorization()
+            }
         }else{
             startLocationTracking()
         }
@@ -207,21 +242,10 @@ extension INLLocationTracking:INLLocationManagerDelegate{
                                 DeviceUtilities.shared().printData("Eliminacion de las notificaciones enviadas")
                                 nCenter.removeAllDeliveredNotifications()
                                 
-                                //DeviceUtilities.shared().printData("Programacion de notificacion en background")
-                                /*if(UIApplication.shared.applicationState != .active)
-                                {
-                                    self.scheduleLocalNotification(locationReport: locationReport)
-                                }*/
-                                
                                 //Update UI in case is foreground
                                 DispatchQueue.main.async {
                                     NotificationCenter.default.post(name: .refreshUILastReport, object: nil)
                                 }
-                                
-                                /*if(UIApplication.shared.applicationState == .active)
-                                {
-                                    NotificationCenter.default.post(name: .refreshUILastReport, object: nil)
-                                }*/
                             }
                             else
                             {

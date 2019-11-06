@@ -21,11 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
     {
-        /*if #available(iOS 13.0, *)
-        {
-            registerBackgroundTaks()
-        }*/
-        
         notificationCenter.delegate = (self as UNUserNotificationCenterDelegate)
         let options : UNAuthorizationOptions = [.badge,.alert,.sound]
         notificationCenter.requestAuthorization(options: options) {
@@ -235,7 +230,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         else if application.applicationState == .background
         {
             DeviceUtilities.shared().printData("PN Notification received in background state, in this state it needs to reactive the location task...")
-            if CLLocationManager.locationServicesEnabled()
+            
+            //MARK: NEED TO BE CHECKED TO ALLOW LOCATING WHEN A NOTIFICATION IS COMING
+            /*if CLLocationManager.locationServicesEnabled()
             {
                 switch CLLocationManager.authorizationStatus() {
                 case .notDetermined, .restricted, .denied:
@@ -251,9 +248,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     LocationServiceTask.shared().startUpdatingLocation()
                     
                 }
-            } else {
-                DeviceUtilities.shared().printData("PN Location services are not enabled")
             }
+            else
+            {
+                DeviceUtilities.shared().printData("PN Location services are not enabled")
+            }*/
         }
         else{
             DeviceUtilities.shared().printData("PN Notification received in inactive state.... this state unfortunately can't do anything")
