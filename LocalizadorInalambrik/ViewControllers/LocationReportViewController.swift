@@ -12,6 +12,21 @@ import CoreLocation
 
 class LocationReportViewController : UIViewController
 {
+    
+    @IBOutlet weak var labelIMEI: UILabel!
+    @IBOutlet weak var labelBattery: UILabel!
+    @IBOutlet weak var labelNetworkType: UILabel!
+    @IBOutlet weak var labelPendingReports: UILabel!
+    @IBOutlet weak var labelLSentReports: UILabel!
+    
+    @IBOutlet weak var labelDateTime: UILabel!
+    @IBOutlet weak var labelLatitude: UILabel!
+    @IBOutlet weak var labelLongitude: UILabel!
+    @IBOutlet weak var labelPrecision: UILabel!
+    @IBOutlet weak var labelSpeed: UILabel!
+    @IBOutlet weak var labelNumberOfSatellites: UILabel!
+    @IBOutlet weak var labelStatus: UILabel!
+    
     @IBOutlet weak var textIMEI: UILabel!
     @IBOutlet weak var textBatteryLevel: UILabel!
     @IBOutlet weak var textNetworkType: UILabel!
@@ -28,63 +43,49 @@ class LocationReportViewController : UIViewController
     @IBOutlet weak var sendLocationReportTest: UIButton!
     @IBOutlet weak var textErrorLocation: UILabel!
     
-    //Configure the Timer for the infinite BackGroundTask
-    //var updateTimer: Timer?
-    
-    //Set as Invalid BackgroundTask
-    //var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
-    
-    //Set background service variables
-    /*let interval: Double = ConstantsController().REPORT_INTERVAL
-    let initInterval : Double = ConstantsController().INITIAL_INTERVAL
-    var initIsActive = false*/
-    
     override func viewWillAppear(_ animated: Bool) {
         
         //Observer to refresh the ui
         NotificationCenter.default.addObserver(self, selector:  #selector(applicationDidBecomeActive),name: .UIApplicationDidBecomeActive,object: nil)
         
         //Observer to refresh the last report saved in DB
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshLastReportUI), name: .refreshUILastReport, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshLastReportUI), name: .refreshUILastReport , object: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         UIApplication.shared.isIdleTimerDisabled = true
         
+        if #available(iOS 12.0, *)
+        {
+            if self.traitCollection.userInterfaceStyle == .dark
+            {
+                labelIMEI.textColor = UIColor.black
+                labelBattery.textColor = UIColor.black
+                labelNetworkType.textColor = UIColor.black
+                labelPendingReports.textColor = UIColor.black
+                labelLSentReports.textColor = UIColor.black
+                labelDateTime.textColor = UIColor.black
+                labelLatitude.textColor = UIColor.black
+                labelLongitude.textColor = UIColor.black
+                labelPrecision.textColor = UIColor.black
+                labelSpeed.textColor = UIColor.black
+                labelNumberOfSatellites.textColor = UIColor.black
+                labelStatus.textColor = UIColor.black
+            }
+        }
+        
         showLocationReportInfo()
         
         //Send the pending reports
         sendPendingLocationReports()
-        
-        /*//check Location Permissions
-        checkUsersLocationServicesAuthorization()
-        
-        showLocationReportInfo()
-        
-        //Add observer to refresh UI
-        addRefreshUIObserver()
-        
-        //Add observer to send the first report found
-        addSendFirstReportObserver()
-        
-        //Add observer to set the location report Interval
-        addSetLocationReportInterval()
-        
-        //Set Timer for BackGroundTask
-        setInitTimerBackGroundTask()
-        
-        //Add the observer to check the values of the BackGroundTask
-        addBackGroundTaskObserver()
-        
-        //Register BackGroundTask
-        registerBackGroundTask()*/
         
         sendLocationReportTest.isHidden = true
         textSentReports.isHidden = true
         labelSentReports.isHidden = true
         
         INLLocationTracking.shared().startLocationTracking()
+        
     }
     
     //Remove the observer when the viewcontroller is closed
@@ -183,6 +184,15 @@ class LocationReportViewController : UIViewController
     @IBAction func sendLocationReportAction(_ sender: Any)
     {
     }
+    
+    @objc func refreshUI()
+       {
+           if UIApplication.shared.applicationState == .active
+           {
+               DeviceUtilities.shared().printData("Pantalla Refrescada")
+               showLocationReportInfo()
+           }
+       }
 
 //------------------------------------------------LOCATION REPORT METHODS-----------------------------------------------
     func sendPendingLocationReports()
@@ -243,249 +253,6 @@ class LocationReportViewController : UIViewController
         }
         showLocationReportInfo()
     }
-    
-    /*func deleteYesterDaySentLocationReports()
-    {
-        var locationReports: [LocationReportInfo]?
-        do
-        {
-            try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "S"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true),ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)
-            
-            if (locationReports?.count)! > 0
-            {
-                DeviceUtilities.shared().printData("Maximo numero de reportes enviados a eliminar=\(ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)")
-                
-                DeviceUtilities.shared().printData("Borrado de reportes enviados \(locationReports?.count ?? 0)")
-                for locationReport in locationReports!
-                {
-                    CoreDataStack.shared().context.delete(locationReport)
-                    CoreDataStack.shared().save()
-                }
-            }
-        }
-        catch
-        {
-            DeviceUtilities.shared().printData("No hay reportes enviados por eliminar ")
-        }
-    }*/
-//----------------------------------------------------------------------------------------------------------------------
-    
-//------------------------------------------------BACKGROUNDTASK METHODS------------------------------------------------
-    /*func addBackGroundTaskObserver()
-    {
-        DeviceUtilities.shared().printData("Tarea que mantiene el hilo principal agregado el observador")
-        NotificationCenter.default.addObserver(self, selector: #selector(reinstateBackgroundTask), name: .UIApplicationDidBecomeActive, object: nil)
-    }
-    
-    @objc func reinstateBackgroundTask()
-    {
-        DeviceUtilities.shared().printData("Tarea que mantiene el hilo principal reiniciada")
-        if updateTimer != nil && backgroundTask == UIBackgroundTaskInvalid {
-            registerBackGroundTask()
-        }
-    }
-    
-    func registerBackGroundTask()
-    {
-        DeviceUtilities.shared().printData("Tarea registrada")
-        backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "com.so.locationreport", expirationHandler: {self.endBackgroundTask()})
-        /*backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
-            self?.endBackgroundTask()
-        }*/
-        assert(backgroundTask != UIBackgroundTaskInvalid)
-    }
-    
-    func endBackgroundTask() {
-        DeviceUtilities.shared().printData("endBackgroundTask Se termina la tarea")
-        UIApplication.shared.endBackgroundTask(backgroundTask)
-        backgroundTask = UIBackgroundTaskInvalid
-    }
-    
-    func addRefreshUIObserver()
-    {
-        DeviceUtilities.shared().printData("Registro Observer Refresh de la pantalla del localizador")
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: Notification.Name.refreshUIfromLocation, object: nil)
-    }
-    
-    @objc func refreshUI()
-    {
-        if UIApplication.shared.applicationState == .active
-        {
-            DeviceUtilities.shared().printData("Pantalla Refrescada")
-            showLocationReportInfo()
-        }
-    }
-    
-    //Setea el primer intervalo de reporte basado en preferencia
-    func setInitTimerBackGroundTask()
-    {
-        DeviceUtilities.shared().printData("Timer inicial configurado en \(initInterval)")
-        updateTimer?.invalidate()
-        updateTimer = Timer.scheduledTimer(timeInterval: initInterval, target: self,
-                                           selector: #selector(getFirstLocationReportFetch), userInfo: nil, repeats: false)
-    }
-    
-    //Activa la tarea que obtiene el primer reporte
-    @objc func getFirstLocationReportFetch()
-    {
-        let localDate = Date().preciseLocalDate
-        let localTime = Date().preciseLocalTime
-        let localDateTime = DeviceUtilities.shared().convertStringToDateTime(localDate, localTime, "yyyy-MM-dd HH:mm:ss")
-        let localHour = Int(DeviceUtilities.shared().convertDateTimeToString(localDateTime, "HH"))
-        if localHour! > ConstantsController().BEGIN_REPORT_HOUR && localHour! < ConstantsController().END_REPORT_HOUR
-        {
-            DeviceUtilities.shared().printData("Localizador en calendario")
-            DeviceUtilities.shared().printData("Chequeo de estado de la aplicacion FechaActual=\(Date().preciseLocalDateTime)")
-            switch UIApplication.shared.applicationState
-            {
-            case .active:
-                checkUsersLocationServicesAuthorization()
-                DeviceUtilities.shared().printData("Activa FechaActual=\(Date().preciseLocalDateTime)")
-                DeviceUtilities.shared().printData("ACTIVO Activar el servicio Ubicacion")
-                DeviceUtilities.shared().printData("Actualizar la pantalla ")
-                showLocationReportInfo()
-                LocationServiceTask.shared().startUpdatingLocation()
-                break
-                
-            case .background:
-                DeviceUtilities.shared().printData("BackGround FechaActual=\(Date().preciseLocalDateTime)")
-                DeviceUtilities.shared().printData("BACKGROUND Activar el servicio Ubicacion")
-                LocationServiceTask.shared().startUpdatingLocation()
-                break
-                
-            case .inactive:
-                break
-            }
-            initIsActive = true
-        }
-        else
-        {
-            DeviceUtilities.shared().printData("El localizador esta fuera de calendario")
-        }
-    }
-    
-    func addSendFirstReportObserver()
-    {
-        DeviceUtilities.shared().printData("Registro Observer Envio del primer reporte")
-        NotificationCenter.default.addObserver(self, selector: #selector(sendFirstReport), name: Notification.Name.sendFirstReport, object: nil)
-    }
-    
-    @objc func sendFirstReport()
-    {
-        DeviceUtilities.shared().printData("Envio primer Reporte y initIsActive \(initIsActive)")
-        if UIApplication.shared.applicationState == .active && initIsActive
-        {
-            DeviceUtilities.shared().printData("Envio primer Reporte")
-            sendPendingLocationReports()
-            initIsActive = false
-        }
-    }
-    
-    func addSetLocationReportInterval()
-    {
-        DeviceUtilities.shared().printData("addSetLocationReportInterval Registro Observer timer del intervalo de reporte")
-        NotificationCenter.default.addObserver(self, selector: #selector(setTimerBackGroundTask), name: Notification.Name.setIntervalRep, object: nil)
-    }
-    
-    @objc func setTimerBackGroundTask()
-    {
-        DeviceUtilities.shared().printData("setTimerBackGroundTask Timer configurado en \(interval), segundos")
-        updateTimer?.invalidate()
-        updateTimer = Timer.scheduledTimer(timeInterval: interval, target: self,
-                                           selector: #selector(getLocationReportFetch), userInfo: nil, repeats: false)
-    }
-    
-    @objc func getLocationReportFetch()
-    {
-        let localDate = Date().preciseLocalDate
-        let localTime = Date().preciseLocalTime
-        let localDateTime = DeviceUtilities.shared().convertStringToDateTime(localDate, localTime, "yyyy-MM-dd HH:mm:ss")
-        let localHour = Int(DeviceUtilities.shared().convertDateTimeToString(localDateTime, "HH"))
-        if localHour! > ConstantsController().BEGIN_REPORT_HOUR && localHour! < ConstantsController().END_REPORT_HOUR
-        {
-            checkUsersLocationServicesAuthorization()
-            DeviceUtilities.shared().printData("Localizador en calendario")
-            
-            DeviceUtilities.shared().printData("Envio de reportes pendientes \(QueryUtilities.shared().getLocationReportsByStatusCount(NSPredicate(format: "status == %@ ", "P")))")
-            
-            //Sending pending reports
-            sendPendingLocationReports()
-            
-            //Delete sent reports to free space on DB
-            deleteYesterDaySentLocationReports()
-            
-            DeviceUtilities.shared().printData("Chequeo de estado de la aplicacion FechaActual=\(Date().preciseLocalDateTime)")
-            DeviceUtilities.shared().printData("Detiene el servicio para un nuevo ciclo")
-            LocationServiceTask.shared().stopUpdatingLocation()
-            switch UIApplication.shared.applicationState
-            {
-            case .active:
-                DeviceUtilities.shared().printData("Activa FechaActual=\(Date().preciseLocalDateTime)")
-                DeviceUtilities.shared().printData("Activar el servicio Ubicacion")
-                DeviceUtilities.shared().printData("Actualizar la pantalla ")
-                showLocationReportInfo()
-                LocationServiceTask.shared().startUpdatingLocation()
-                break
-                
-            case .background:
-                DeviceUtilities.shared().printData("BackGround FechaActual=\(Date().preciseLocalDateTime)")
-                DeviceUtilities.shared().printData("Activar el servicio Ubicacion")
-                LocationServiceTask.shared().startUpdatingLocation()
-                break
-                
-            case .inactive:
-                break
-            }
-        }
-        else
-        {
-            DeviceUtilities.shared().printData("El localizador esta fuera de calendario")
-        }
-    }
-    
-    func checkUsersLocationServicesAuthorization()
-    {
-        
-        /// Check if user has authorized Total Plus to use Location Services
-        if CLLocationManager.locationServicesEnabled()
-        {
-            switch CLLocationManager.authorizationStatus()
-            {
-
-            case .notDetermined:
-                // Request when-in-use authorization initially
-                // This is the first and the ONLY time you will be able to ask the user for permission
-                LocationServiceTask.shared().locationManager?.requestWhenInUseAuthorization()
-                break
-
-            case .restricted, .denied:
-                // Disable location features
-
-                let alert = UIAlertController(title: "Allow Location Access", message: "Localizador necesita acceder a su ubicación. Encienda los servicios de localización.", preferredStyle: UIAlertController.Style.alert)
-
-                // Button to Open Settings
-                alert.addAction(UIAlertAction(title: "Configuración", style: UIAlertAction.Style.default, handler: { action in
-                    guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
-                        return
-                    }
-                    if UIApplication.shared.canOpenURL(settingsUrl) {
-                        UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
-                            print("Settings opened: \(success)")
-                        })
-                    }
-                }))
-                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-
-                break
-
-            case .authorizedWhenInUse, .authorizedAlways:
-                // Enable features that require location services here.
-                print("Full Access")
-                break
-            }
-        }
-    }*/
 }
 //-----------------------------------------------------------------------------------------------------------------
 

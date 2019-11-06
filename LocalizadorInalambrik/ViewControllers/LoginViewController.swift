@@ -17,12 +17,33 @@ class LoginViewController: UIViewController
     @IBOutlet weak var textAuthorizationCode: UITextField!
     @IBOutlet weak var loginActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var loginStatusIndicator: UILabel!
+    @IBOutlet weak var loginViewControllerBody: UIView!
+    
+    @IBOutlet weak var textLocalizadorMovilBodyMessage: UITextView!
+    @IBOutlet weak var labelLocalizadorMovil: UILabel!
+    @IBOutlet weak var labelLocalizadorMovilDevelop: UILabel!
     
     override func viewDidLoad()
     {
         self.hideKeyboardWhenTappedAround()
         self.loginActivityIndicator.stopAnimating()
         updateStatusLabel("")
+        
+        if #available(iOS 12.0, *)
+        {
+            if self.traitCollection.userInterfaceStyle == .dark
+            {
+                textLocalizadorMovilBodyMessage.backgroundColor = UIColor.white
+                labelLocalizadorMovil.backgroundColor = UIColor.white
+                labelLocalizadorMovil.textColor = UIColor.black
+                textAuthorizationCode.backgroundColor = UIColor.white
+                textAuthorizationCode.attributedPlaceholder = NSAttributedString(string: "Código de Activación", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+               
+                let myColor : UIColor = UIColor.lightGray
+                textAuthorizationCode.layer.borderColor = myColor.cgColor
+            }
+        }
+        
     }
     
     override func viewDidAppear(_ animated: Bool)

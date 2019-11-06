@@ -25,10 +25,8 @@
 		B532A869230F55660055E6F7 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A868230F55660055E6F7 /* Client.swift */; };
 		B532A86F2310508B0055E6F7 /* DeviceUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A86E2310508B0055E6F7 /* DeviceUtilities.swift */; };
 		B532A87223105B0C0055E6F7 /* LocationReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */; };
-		B594C53B23679FC6007690D8 /* LocationBackgroundServiceTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B594C53A23679FC6007690D8 /* LocationBackgroundServiceTask.swift */; };
 		B594C5402367CAD2007690D8 /* INLLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B594C53F2367CAD2007690D8 /* INLLocationManager.swift */; };
 		B594C5422367CC8B007690D8 /* INLLocationTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B594C5412367CC8B007690D8 /* INLLocationTracking.swift */; };
-		B5D45632231EFD7400138CC5 /* LocationServiceTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D45631231EFD7400138CC5 /* LocationServiceTask.swift */; };
 		B5D4563C231F1AE400138CC5 /* ic_launcher.png in Resources */ = {isa = PBXBuildFile; fileRef = B5D4563B231F1AE400138CC5 /* ic_launcher.png */; };
 		B5F53D262315F4640034E43A /* LocationUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D252315F4640034E43A /* LocationUtilities.swift */; };
 		B5F53D2823171B090034E43A /* LocationPermissionsWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */; };
@@ -59,11 +57,9 @@
 		B532A868230F55660055E6F7 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		B532A86E2310508B0055E6F7 /* DeviceUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceUtilities.swift; sourceTree = "<group>"; };
 		B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationReportViewController.swift; sourceTree = "<group>"; };
-		B594C53A23679FC6007690D8 /* LocationBackgroundServiceTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationBackgroundServiceTask.swift; sourceTree = "<group>"; };
 		B594C53F2367CAD2007690D8 /* INLLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INLLocationManager.swift; sourceTree = "<group>"; };
 		B594C5412367CC8B007690D8 /* INLLocationTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INLLocationTracking.swift; sourceTree = "<group>"; };
 		B5B3E2662368954700C2D5AE /* St_Louis_Zoo_sample.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = St_Louis_Zoo_sample.gpx; path = ../../../../Downloads/St_Louis_Zoo_sample.gpx; sourceTree = "<group>"; };
-		B5D45631231EFD7400138CC5 /* LocationServiceTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceTask.swift; sourceTree = "<group>"; };
 		B5D4563B231F1AE400138CC5 /* ic_launcher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ic_launcher.png; path = ../../../../../Desktop/IconoClaroParaLocalizador/ic_launcher.png; sourceTree = "<group>"; };
 		B5F53D252315F4640034E43A /* LocationUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUtilities.swift; sourceTree = "<group>"; };
 		B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionsWarning.swift; sourceTree = "<group>"; };
@@ -102,7 +98,6 @@
 		B532A82D230DAF020055E6F7 /* LocalizadorInalambrik */ = {
 			isa = PBXGroup;
 			children = (
-				B594C53C2367CA0D007690D8 /* AdaptFromProject */,
 				B5F53D2F23197CE80034E43A /* LocalizadorInalambrik.entitlements */,
 				B5F53D242315F4530034E43A /* LocationUtilities */,
 				B532A870231050940055E6F7 /* DeviceUtilities */,
@@ -174,21 +169,12 @@
 			path = DeviceUtilities;
 			sourceTree = "<group>";
 		};
-		B594C53C2367CA0D007690D8 /* AdaptFromProject */ = {
-			isa = PBXGroup;
-			children = (
-				B594C53F2367CAD2007690D8 /* INLLocationManager.swift */,
-				B594C5412367CC8B007690D8 /* INLLocationTracking.swift */,
-			);
-			path = AdaptFromProject;
-			sourceTree = "<group>";
-		};
 		B5F53D242315F4530034E43A /* LocationUtilities */ = {
 			isa = PBXGroup;
 			children = (
+				B594C5412367CC8B007690D8 /* INLLocationTracking.swift */,
+				B594C53F2367CAD2007690D8 /* INLLocationManager.swift */,
 				B5F53D252315F4640034E43A /* LocationUtilities.swift */,
-				B5D45631231EFD7400138CC5 /* LocationServiceTask.swift */,
-				B594C53A23679FC6007690D8 /* LocationBackgroundServiceTask.swift */,
 			);
 			path = LocationUtilities;
 			sourceTree = "<group>";
@@ -276,13 +262,11 @@
 			files = (
 				B594C5402367CAD2007690D8 /* INLLocationManager.swift in Sources */,
 				B532A866230F38080055E6F7 /* CustomObject.h.m in Sources */,
-				B5D45632231EFD7400138CC5 /* LocationServiceTask.swift in Sources */,
 				B532A84E230DE4320055E6F7 /* CoreDataStack.swift in Sources */,
 				B5F53D2823171B090034E43A /* LocationPermissionsWarning.swift in Sources */,
 				B532A85D230F20110055E6F7 /* JSONStructures.swift in Sources */,
 				B532A852230DE7F40055E6F7 /* LocationReportInfo+CoreDataProperties.swift in Sources */,
 				B532A845230DB0F30055E6F7 /* LoginViewController.swift in Sources */,
-				B594C53B23679FC6007690D8 /* LocationBackgroundServiceTask.swift in Sources */,
 				B532A87223105B0C0055E6F7 /* LocationReportViewController.swift in Sources */,
 				B532A837230DAF020055E6F7 /* LocalizadorInalambrik.xcdatamodeld in Sources */,
 				B5F53D262315F4640034E43A /* LocationUtilities.swift in Sources */,
