@@ -215,14 +215,13 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
     
     @objc func waitTimerEventOnLocationError()
     {
+        DeviceUtilities.shared().printData("waitTimerEvent when location is not correct")
         let localDate = Date().preciseLocalDate
         let localTime = Date().preciseLocalTime
         let localDateTime = DeviceUtilities.shared().convertStringToDateTime(localDate, localTime, "yyyy-MM-dd HH:mm:ss")
         let localHour = Int(DeviceUtilities.shared().convertDateTimeToString(localDateTime, "HH"))
         
         stopWaitTimer()
-        
-        DeviceUtilities.shared().printData("waitTimerEvent when location is correct")
         startBackgroundTask()
         startCheckLocationTimer()
         pauseLocationManager()
@@ -235,6 +234,9 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
         {
             DeviceUtilities.shared().printData("Localizador no esta en calendario FechaActual=\(Date().preciseLocalDateTime)")
         }
+        DeviceUtilities.shared().printData("LOCATION REPORT waitTimerEvent Sending pending reports on when location is error")
+        INLLocationTracking.shared().sendDeviceConfiguration()
+        INLLocationTracking.shared().sendPendingLocationReports()
     }
     
     @objc func waitTimerEvent()
@@ -245,7 +247,6 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
         let localHour = Int(DeviceUtilities.shared().convertDateTimeToString(localDateTime, "HH"))
         
         stopWaitTimer()
-        
         if acceptableLocationAccuracyRetrieved()
         {
             DeviceUtilities.shared().printData("waitTimerEvent when location is correct")
@@ -268,6 +269,9 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
             DeviceUtilities.shared().printData("waitTimerEvent When location is 0,0")
             startWaitTimer()
         }
+        DeviceUtilities.shared().printData("LOCATION REPORT waitTimerEvent Sending pending reports on when location is correct")
+        INLLocationTracking.shared().sendDeviceConfiguration()
+        INLLocationTracking.shared().sendPendingLocationReports()
     }
     
     private func acceptableLocationAccuracyRetrieved() -> Bool {

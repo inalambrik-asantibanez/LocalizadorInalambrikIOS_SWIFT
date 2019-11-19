@@ -91,79 +91,77 @@ extension INLLocationTracking:INLLocationManagerDelegate{
     func scheduledLocationManager(_ manager: INLLocationManager, didUpdateLocations locations: [CLLocation])
     {
         let recentLocation = locations.last!
-        
+        DeviceUtilities.shared().printData("Location retrieve successfully: FechaActual=\(Date().preciseLocalDateTime)")
         DeviceUtilities.shared().printData("new datetime=\(recentLocation.timestamp)")
         DeviceUtilities.shared().printData("new latitude=\(recentLocation.coordinate.latitude)")
         DeviceUtilities.shared().printData("new longitude=\(recentLocation.coordinate.longitude)")
         
         let existLastLocationReport = LocationUtilities.shared().checkIfExistsLocationReport()
-        let lastLocationReport = LocationUtilities.shared().getLastLocationInfo()
-        if existLastLocationReport
+        if(existLastLocationReport)
         {
-            
+            DeviceUtilities.shared().printData("Location exists last report on DB")
+            let lastLocationReport = LocationUtilities.shared().getLastLocationInfo()
             currentLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: CLLocationDegrees(lastLocationReport.latitude), longitude: CLLocationDegrees(lastLocationReport.longitude)), altitude: CLLocationDistance(lastLocationReport.altitude), horizontalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), verticalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), timestamp: lastLocationReport.reportDate)
+            
+            let DifferencesTwoDatesInSeconds = getDifferenceBetweenDates(dateFrom: currentLocation.timestamp, dateTo: recentLocation.timestamp)
+            DeviceUtilities.shared().printData("Difference between two dates in seconds \(DifferencesTwoDatesInSeconds)")
+            if(Int(abs(recentLocation.coordinate.latitude)) != 0 && Int(abs(recentLocation.coordinate.longitude)) != 0 && Int(abs(DifferencesTwoDatesInSeconds)) >= 45)
+            {
+                DeviceUtilities.shared().printData("Se guarda reporte en BD despues de haber buscado ubicaci?n valida ")
+                LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(recentLocation,"V")
+                let lastLocationReportGotten = LocationUtilities.shared().getLastLocationInfo()
+                DeviceUtilities.shared().printData("LR Reporte Guardado En varios Reportes Fecha:  \(lastLocationReportGotten.reportDate.preciseLocalDateTime), Latitude:  \(lastLocationReportGotten.latitude) Longitude:  \(lastLocationReportGotten.longitude)")
+            }
+            else
+            {
+                DeviceUtilities.shared().printData("La ubicacion encontrada no cumple las condiciones ")
+            }
         }
         else
         {
-            currentLocation = CLLocation(latitude: 0, longitude: 0)
+            DeviceUtilities.shared().printData("Se guarda reporte en BD como primer reporte")
+            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(recentLocation,"V")
+            let lastLocationOnFirstReport = LocationUtilities.shared().getLastLocationInfo()
+            DeviceUtilities.shared().printData("LR Reporte Guardado En Primer Reporte Fecha:  \(lastLocationOnFirstReport.reportDate.preciseLocalDateTime), Latitude:  \(lastLocationOnFirstReport.latitude) Longitude:  \(lastLocationOnFirstReport.longitude)")
+            currentLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: CLLocationDegrees(lastLocationOnFirstReport.latitude), longitude: CLLocationDegrees(lastLocationOnFirstReport.longitude)), altitude: CLLocationDistance(lastLocationOnFirstReport.altitude), horizontalAccuracy: CLLocationAccuracy(lastLocationOnFirstReport.accuracy), verticalAccuracy: CLLocationAccuracy(lastLocationOnFirstReport.accuracy), timestamp: lastLocationOnFirstReport.reportDate)
         }
-        let DifferencesTwoDatesInSeconds = getDifferenceBetweenDates(dateFrom: currentLocation.timestamp, dateTo: recentLocation.timestamp)
-        DeviceUtilities.shared().printData("Difference between two dates in seconds \(DifferencesTwoDatesInSeconds)")
-        if(Int(abs(recentLocation.coordinate.latitude)) != 0 && Int(abs(recentLocation.coordinate.longitude)) != 0) && (!existLastLocationReport || DifferencesTwoDatesInSeconds >= 45)
-        {
-            DeviceUtilities.shared().printData("Location retrive successfully: FechaActual=\(Date().preciseLocalDateTime)")
-            //Save LocationReport in DB
-            DeviceUtilities.shared().printData("Se guarda reporte en BD despues de haber buscado ubicación")
-            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(recentLocation,"")
-            
-            DeviceUtilities.shared().printData("LR Reporte Guardado Fecha:  \(recentLocation.timestamp.preciseLocalDateTime), Latitude:  \(recentLocation.coordinate.latitude) Longitude:  \(recentLocation.coordinate.longitude)")
-            
-            
-            //Send pending locations (Foreground or Background)
-            sendPendingLocationReports()
-            
-            //Update UI in case is foreground
-            if(UIApplication.shared.applicationState == .active)
-            {
-                NotificationCenter.default.post(name: .refreshUILastReport, object: nil)
-            }
-            
-            currentLocation = recentLocation
-            
-            //Reset Counter
-            counter = 1
+        //Update UI in case is foreground
+        DispatchQueue.main.async {
+            DeviceUtilities.shared().printData("LOCATION REPORT Pantalla actualizada a :  FechaActual=\(Date().preciseLocalDateTime)")
+            NotificationCenter.default.post(name: .refreshUILastReport, object: nil)
         }
-        counter += 1
-        
     }
     
     func scheduledLocationManager(_ manager: INLLocationManager, didFailWithError error: Error)
     {
+        let nullCoordinates = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+        let locationNull = CLLocation.init(coordinate: nullCoordinates, altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, course: 0, speed: 0, timestamp:convertToDate(dateString: Date().preciseLocalDateTime) )
+        DeviceUtilities.shared().printData("Location Error \(error.localizedDescription)")
         let existLastLocationReport = LocationUtilities.shared().checkIfExistsLocationReport()
-        let lastLocationReport = LocationUtilities.shared().getLastLocationInfo()
-        if existLastLocationReport
+        if(existLastLocationReport)
         {
-            
+            let lastLocationReport = LocationUtilities.shared().getLastLocationInfo()
             currentLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: CLLocationDegrees(lastLocationReport.latitude), longitude: CLLocationDegrees(lastLocationReport.longitude)), altitude: CLLocationDistance(lastLocationReport.altitude), horizontalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), verticalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), timestamp: lastLocationReport.reportDate)
+            let DifferencesTwoDatesInSeconds = getDifferenceBetweenDates(dateFrom: currentLocation.timestamp, dateTo: locationNull.timestamp)
+            if(Int(abs(DifferencesTwoDatesInSeconds)) >= 30)
+            {
+                DeviceUtilities.shared().printData("Se guarda reporte en BD 0.0 con fecha \(Date().preciseLocalDateTime)")
+                LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(locationNull,"I",error.localizedDescription)
+                DeviceUtilities.shared().printData("LR Reporte Guardado En Varios Reportes por error Fecha:  \(lastLocationReport.reportDate.preciseLocalDateTime), Latitude:  \(lastLocationReport.latitude) Longitude:  \(lastLocationReport.longitude)")
+                manager.startWaitTimerOnLocationError()
+            }
+            else
+            {
+                DeviceUtilities.shared().printData("La ubicacion encontrada no cumple las condiciones cuando hay error")
+            }
         }
         else
         {
-            currentLocation = CLLocation(latitude: 0, longitude: 0)
-        }
-        
-        DeviceUtilities.shared().printData("Location Error \(error.localizedDescription)")
-        let nullCoordinates = CLLocationCoordinate2D(latitude: 0, longitude: 0)
-        let locationNull = CLLocation.init(coordinate: nullCoordinates, altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, course: 0, speed: 0, timestamp:convertToDate(dateString: Date().preciseLocalDateTime) )
-        
-        let DifferencesTwoDatesInSeconds = getDifferenceBetweenDates(dateFrom: currentLocation.timestamp, dateTo: locationNull.timestamp)
-        if(!existLastLocationReport || DifferencesTwoDatesInSeconds >= 45)
-        {
-            DeviceUtilities.shared().printData("Se guarda reporte en BD 0.0 con fecha \(Date().preciseLocalDateTime)")
-            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(locationNull,"",error.localizedDescription)
-            currentLocation = locationNull
-            sendPendingLocationReports()
-            manager.startWaitTimerOnLocationError()
-            
+            DeviceUtilities.shared().printData("Se guarda reporte en BD como primer reporte en error ")
+            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(locationNull,"I",error.localizedDescription)
+            let lastLocationOnFirstReportError = LocationUtilities.shared().getLastLocationInfo()
+            DeviceUtilities.shared().printData("LR Reporte Guardado En Primer Reporte por error Fecha:  \(lastLocationOnFirstReportError.reportDate.preciseLocalDateTime), Latitude:  \(lastLocationOnFirstReportError.latitude) Longitude:  \(lastLocationOnFirstReportError.longitude)")
+            currentLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: CLLocationDegrees(lastLocationOnFirstReportError.latitude), longitude: CLLocationDegrees(lastLocationOnFirstReportError.longitude)), altitude: CLLocationDistance(lastLocationOnFirstReportError.altitude), horizontalAccuracy: CLLocationAccuracy(lastLocationOnFirstReportError.accuracy), verticalAccuracy: CLLocationAccuracy(lastLocationOnFirstReportError.accuracy), timestamp: lastLocationOnFirstReportError.reportDate)
         }
     }
     
@@ -241,11 +239,6 @@ extension INLLocationTracking:INLLocationManagerDelegate{
                                 let nCenter = UNUserNotificationCenter.current()
                                 DeviceUtilities.shared().printData("Eliminacion de las notificaciones enviadas")
                                 nCenter.removeAllDeliveredNotifications()
-                                
-                                //Update UI in case is foreground
-                                DispatchQueue.main.async {
-                                    NotificationCenter.default.post(name: .refreshUILastReport, object: nil)
-                                }
                             }
                             else
                             {
@@ -253,6 +246,12 @@ extension INLLocationTracking:INLLocationManagerDelegate{
                             }
                         }
                     }
+                }
+                
+                //Update UI in case is foreground
+                DispatchQueue.main.async {
+                    DeviceUtilities.shared().printData("LOCATION REPORT Pantalla actualizada por sending location reports a :  FechaActual=\(Date().preciseLocalDateTime)")
+                    NotificationCenter.default.post(name: .refreshUILastReport, object: nil)
                 }
             }
             else
@@ -277,16 +276,43 @@ extension INLLocationTracking:INLLocationManagerDelegate{
                 DeviceUtilities.shared().printData("Maximo numero de reportes enviados a eliminar=\(ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)")
                 
                 DeviceUtilities.shared().printData("Borrado de reportes enviados \(locationReports?.count ?? 0)")
+                let yesterday = Date().dayBefore
                 for locationReport in locationReports!
                 {
-                    CoreDataStack.shared().context.delete(locationReport)
-                    CoreDataStack.shared().save()
+                    let differenceBetweenDatesInDays = getDifferenceBetweenDatesDay(dateFrom: locationReport.reportDate, dateTo: yesterday)
+                    if(differenceBetweenDatesInDays >= 1)
+                    {
+                        CoreDataStack.shared().context.delete(locationReport)
+                        CoreDataStack.shared().save()
+                    }
                 }
             }
         }
         catch
         {
             DeviceUtilities.shared().printData("No hay reportes enviados por eliminar ")
+        }
+    }
+    
+    func sendDeviceConfiguration()
+    {
+        Client.shared().sendDeviceConfiguration()
+        {
+            (userResponse, error) in
+            
+            if let userResponse = userResponse
+            {
+                let errorMessage = userResponse.errorMessage
+                DeviceUtilities.shared().printData("errorMessage=\(errorMessage)")
+                if errorMessage.isEmpty
+                {
+                    DeviceUtilities.shared().printData("No existio error al mandar la configuracion del dispositivo")
+                }
+                else
+                {
+                    DeviceUtilities.shared().printData("Existio error al mandar la configuracion del dispositivo")
+                }
+            }
         }
     }
     
@@ -332,6 +358,15 @@ extension INLLocationTracking:INLLocationManagerDelegate{
         let DTComponents = calendar.dateComponents(unitFlags, from: dateFrom, to: dateTo)
         guard let seconds = DTComponents.second else { return 0 }
         return Double(seconds)
+    }
+    
+    func getDifferenceBetweenDatesDay(dateFrom: Date, dateTo: Date)-> Double
+    {
+        let calendar = NSCalendar.current
+        let unitFlags = Set<Calendar.Component>([ .second])
+        let DTComponents = calendar.dateComponents(unitFlags, from: dateFrom, to: dateTo)
+        guard let days = DTComponents.day else { return 0 }
+        return Double(days)
     }
 }
 

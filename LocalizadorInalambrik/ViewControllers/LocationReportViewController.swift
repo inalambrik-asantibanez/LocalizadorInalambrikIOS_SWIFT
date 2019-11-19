@@ -230,10 +230,6 @@ class LocationReportViewController : UIViewController
                                 CoreDataStack.shared().save()
                                 
                                 DeviceUtilities.shared().printData("Se actualizo el ultimo reporte pendiente a enviado")
-                                DispatchQueue.main.async {
-                                    print("Actualizacion del UI",separator: "",terminator: "\n")
-                                    self.showLocationReportInfo()
-                                }
                             }
                             else
                             {
@@ -241,6 +237,10 @@ class LocationReportViewController : UIViewController
                             }
                         }
                     }
+                }
+                DispatchQueue.main.async {
+                    print("Actualizacion del UI",separator: "",terminator: "\n")
+                    self.showLocationReportInfo()
                 }
             }
             else
@@ -281,7 +281,13 @@ extension Formatter {
     }()
 }
 
-extension Date {
+extension Date
+{
+    static var yesterday: Date { return Date().dayBefore }
+    var dayBefore: Date {
+        return Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+    }
+    
     var nanosecond: Int { return Calendar.current.component(.nanosecond,  from: self)   }
     var preciseLocalTime: String {
         return Formatter.preciseLocalTime.string(for: self) ?? ""
