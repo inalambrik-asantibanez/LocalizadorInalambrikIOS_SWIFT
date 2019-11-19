@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D33C22C23846956000ABE7C /* iconolocalizador512.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 6D33C22B23846955000ABE7C /* iconolocalizador512.jpg */; };
 		B532A82F230DAF020055E6F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A82E230DAF020055E6F7 /* AppDelegate.swift */; };
 		B532A837230DAF020055E6F7 /* LocalizadorInalambrik.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B532A835230DAF020055E6F7 /* LocalizadorInalambrik.xcdatamodeld */; };
 		B532A839230DAF040055E6F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B532A838230DAF040055E6F7 /* Assets.xcassets */; };
@@ -27,13 +28,14 @@
 		B532A87223105B0C0055E6F7 /* LocationReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A87123105B0C0055E6F7 /* LocationReportViewController.swift */; };
 		B594C5402367CAD2007690D8 /* INLLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B594C53F2367CAD2007690D8 /* INLLocationManager.swift */; };
 		B594C5422367CC8B007690D8 /* INLLocationTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B594C5412367CC8B007690D8 /* INLLocationTracking.swift */; };
-		B5D4563C231F1AE400138CC5 /* ic_launcher.png in Resources */ = {isa = PBXBuildFile; fileRef = B5D4563B231F1AE400138CC5 /* ic_launcher.png */; };
+		B5D4563C231F1AE400138CC5 /* ic_launcher.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B5D4563B231F1AE400138CC5 /* ic_launcher.jpg */; };
 		B5F53D262315F4640034E43A /* LocationUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D252315F4640034E43A /* LocationUtilities.swift */; };
 		B5F53D2823171B090034E43A /* LocationPermissionsWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */; };
 		B5F53D2C23183B490034E43A /* ConstantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F53D2B23183B490034E43A /* ConstantsController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D33C22B23846955000ABE7C /* iconolocalizador512.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = iconolocalizador512.jpg; path = LocalizadorInalambrik/iconolocalizador512.jpg; sourceTree = "<group>"; };
 		B532A82B230DAF020055E6F7 /* Localizador.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Localizador.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B532A82E230DAF020055E6F7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B532A836230DAF020055E6F7 /* LocalizadorInalambrik.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LocalizadorInalambrik.xcdatamodel; sourceTree = "<group>"; };
@@ -60,7 +62,7 @@
 		B594C53F2367CAD2007690D8 /* INLLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INLLocationManager.swift; sourceTree = "<group>"; };
 		B594C5412367CC8B007690D8 /* INLLocationTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INLLocationTracking.swift; sourceTree = "<group>"; };
 		B5B3E2662368954700C2D5AE /* St_Louis_Zoo_sample.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = St_Louis_Zoo_sample.gpx; path = ../../../../Downloads/St_Louis_Zoo_sample.gpx; sourceTree = "<group>"; };
-		B5D4563B231F1AE400138CC5 /* ic_launcher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ic_launcher.png; path = ../../../../../Desktop/IconoClaroParaLocalizador/ic_launcher.png; sourceTree = "<group>"; };
+		B5D4563B231F1AE400138CC5 /* ic_launcher.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ic_launcher.jpg; path = ../../../../../Desktop/IconoClaroParaLocalizador/ic_launcher.jpg; sourceTree = "<group>"; };
 		B5F53D252315F4640034E43A /* LocationUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUtilities.swift; sourceTree = "<group>"; };
 		B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionsWarning.swift; sourceTree = "<group>"; };
 		B5F53D2B23183B490034E43A /* ConstantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantsController.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 		B532A822230DAF020055E6F7 = {
 			isa = PBXGroup;
 			children = (
+				6D33C22B23846955000ABE7C /* iconolocalizador512.jpg */,
 				B5B3E2662368954700C2D5AE /* St_Louis_Zoo_sample.gpx */,
 				B532A82D230DAF020055E6F7 /* LocalizadorInalambrik */,
 				B532A82C230DAF020055E6F7 /* Products */,
@@ -107,7 +110,7 @@
 				B532A84A230DCF960055E6F7 /* DatabaseUtilities */,
 				B532A843230DAF5C0055E6F7 /* ViewControllers */,
 				B532A82E230DAF020055E6F7 /* AppDelegate.swift */,
-				B5D4563B231F1AE400138CC5 /* ic_launcher.png */,
+				B5D4563B231F1AE400138CC5 /* ic_launcher.jpg */,
 				B532A838230DAF040055E6F7 /* Assets.xcassets */,
 				B532A83A230DAF040055E6F7 /* LaunchScreen.storyboard */,
 				B532A83D230DAF040055E6F7 /* Info.plist */,
@@ -249,7 +252,8 @@
 				B532A847230DB1910055E6F7 /* Main.storyboard in Resources */,
 				B532A83C230DAF040055E6F7 /* LaunchScreen.storyboard in Resources */,
 				B532A839230DAF040055E6F7 /* Assets.xcassets in Resources */,
-				B5D4563C231F1AE400138CC5 /* ic_launcher.png in Resources */,
+				6D33C22C23846956000ABE7C /* iconolocalizador512.jpg in Resources */,
+				B5D4563C231F1AE400138CC5 /* ic_launcher.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,7 +422,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = LocalizadorInalambrik/LocalizadorInalambrik.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 973ZT8Y397;
 				INFOPLIST_FILE = LocalizadorInalambrik/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -426,7 +430,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = ec.com.inalambrik.localizadormovil;
 				PRODUCT_NAME = Localizador;
 				SWIFT_OBJC_BRIDGING_HEADER = "LocalizadorInalambrik/ObjectiveC Utilities/LocalizadorInalambrik-Bridging-Header.h";
@@ -443,7 +447,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = LocalizadorInalambrik/LocalizadorInalambrik.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 973ZT8Y397;
 				INFOPLIST_FILE = LocalizadorInalambrik/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -451,7 +455,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = ec.com.inalambrik.localizadormovil;
 				PRODUCT_NAME = Localizador;
 				SWIFT_OBJC_BRIDGING_HEADER = "LocalizadorInalambrik/ObjectiveC Utilities/LocalizadorInalambrik-Bridging-Header.h";

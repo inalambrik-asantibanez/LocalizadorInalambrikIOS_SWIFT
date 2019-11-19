@@ -204,8 +204,8 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik (Versión 3.2)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t7t-hW-EOA" userLabel="Leyenda Desarrollado">
-                                                <rect key="frame" x="40" y="525" width="295" height="16"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik (Versión 3.2)" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t7t-hW-EOA" userLabel="Leyenda Desarrollado">
+                                                <rect key="frame" x="40" y="525" width="295" height="15.666666666666629"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="0.43933166870000001" green="0.47020203669999999" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -442,7 +442,7 @@ Si su empresa ha contratado el servicio, por favor a continuación ingrese el c�
                                                     <action selector="actionActivateDevice:" destination="S2E-Wc-Exo" eventType="touchUpInside" id="Med-EW-1fg"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik S.A. (Versión 3.2)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KmX-FJ-5kE">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Desarrollado por Inalambrik S.A. (Versión 3.3)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KmX-FJ-5kE">
                                                 <rect key="frame" x="40" y="507" width="295" height="16"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="0.43933166871275164" green="0.47020203669653154" blue="0.47450980392156861" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -457,7 +457,7 @@ Si su empresa ha contratado el servicio, por favor a continuación ingrese el c�
                                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="TGt-Q2-5Oz">
                                                 <rect key="frame" x="177" y="557" width="21" height="20"/>
                                             </activityIndicatorView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_launcher.png" translatesAutoresizingMaskIntoConstraints="NO" id="8hq-41-jv3" userLabel="Imagen Localizador">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_launcher.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="8hq-41-jv3" userLabel="Imagen Localizador">
                                                 <rect key="frame" x="147.66666666666666" y="90" width="80" height="80"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
@@ -539,7 +539,7 @@ Si su empresa ha contratado el servicio, por favor a continuación ingrese el c�
         </scene>
     </scenes>
     <resources>
-        <image name="ic_launcher.png" width="180" height="180"/>
+        <image name="ic_launcher.jpg" width="384" height="384"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="rgN-KA-VY9"/>

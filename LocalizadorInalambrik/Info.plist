@@ -35,9 +35,9 @@
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Se solicita la activación de los permisos de Localización. ¿Permitir?</string>
-	<key>NSLocationUsageDescription</key>
-	<string>Necesario para el uso del Localizador Móvil.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Necesario para el uso del Localizador Móvil.</string>
+	<key>NSLocationUsageDescription</key>
 	<string>Necesario para el uso del Localizador Móvil.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Se solicita la activación de los permisos de Localización. ¿Permitir?</string>

@@ -22,7 +22,7 @@ class ConstantsController
     let NUMBER_OF_TRIES = 2
     let BEGIN_REPORT_HOUR = 6
     let END_REPORT_HOUR = 22
-    let APP_VERSION = 3.2
+    let APP_VERSION = 3.3
     let NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND = 20
     let NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE = 20
     
