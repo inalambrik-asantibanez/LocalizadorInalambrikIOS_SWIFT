@@ -3,10 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6066523E0BD564396692E7BD /* Pods_LocalizadorInalambrik.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DE558C00B79D10A60F00F87 /* Pods_LocalizadorInalambrik.framework */; };
+		6D271954238D8BD200F119AA /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D271953238D8BD200F119AA /* Reachability.swift */; };
 		6D33C22C23846956000ABE7C /* iconolocalizador512.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 6D33C22B23846955000ABE7C /* iconolocalizador512.jpg */; };
 		B532A82F230DAF020055E6F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B532A82E230DAF020055E6F7 /* AppDelegate.swift */; };
 		B532A837230DAF020055E6F7 /* LocalizadorInalambrik.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B532A835230DAF020055E6F7 /* LocalizadorInalambrik.xcdatamodeld */; };
@@ -35,6 +37,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3B696DE7C26FA605E3A8C45E /* Pods-LocalizadorInalambrik.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocalizadorInalambrik.release.xcconfig"; path = "Target Support Files/Pods-LocalizadorInalambrik/Pods-LocalizadorInalambrik.release.xcconfig"; sourceTree = "<group>"; };
+		3DE558C00B79D10A60F00F87 /* Pods_LocalizadorInalambrik.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LocalizadorInalambrik.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D271953238D8BD200F119AA /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		6D33C22B23846955000ABE7C /* iconolocalizador512.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = iconolocalizador512.jpg; path = LocalizadorInalambrik/iconolocalizador512.jpg; sourceTree = "<group>"; };
 		B532A82B230DAF020055E6F7 /* Localizador.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Localizador.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B532A82E230DAF020055E6F7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +72,7 @@
 		B5F53D2723171B090034E43A /* LocationPermissionsWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionsWarning.swift; sourceTree = "<group>"; };
 		B5F53D2B23183B490034E43A /* ConstantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantsController.swift; sourceTree = "<group>"; };
 		B5F53D2F23197CE80034E43A /* LocalizadorInalambrik.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LocalizadorInalambrik.entitlements; sourceTree = "<group>"; };
+		DB54DD07FF2F4D9D1CD65AEC /* Pods-LocalizadorInalambrik.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocalizadorInalambrik.debug.xcconfig"; path = "Target Support Files/Pods-LocalizadorInalambrik/Pods-LocalizadorInalambrik.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,12 +80,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6066523E0BD564396692E7BD /* Pods_LocalizadorInalambrik.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		021D24888FFDC15E3A59929E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3DE558C00B79D10A60F00F87 /* Pods_LocalizadorInalambrik.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A1A55DEB6E8C0C7F209AF576 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DB54DD07FF2F4D9D1CD65AEC /* Pods-LocalizadorInalambrik.debug.xcconfig */,
+				3B696DE7C26FA605E3A8C45E /* Pods-LocalizadorInalambrik.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		B532A822230DAF020055E6F7 = {
 			isa = PBXGroup;
 			children = (
@@ -87,6 +111,8 @@
 				B5B3E2662368954700C2D5AE /* St_Louis_Zoo_sample.gpx */,
 				B532A82D230DAF020055E6F7 /* LocalizadorInalambrik */,
 				B532A82C230DAF020055E6F7 /* Products */,
+				A1A55DEB6E8C0C7F209AF576 /* Pods */,
+				021D24888FFDC15E3A59929E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -150,6 +176,7 @@
 			children = (
 				B532A85C230F20110055E6F7 /* JSONStructures.swift */,
 				B532A868230F55660055E6F7 /* Client.swift */,
+				6D271953238D8BD200F119AA /* Reachability.swift */,
 			);
 			path = ClientWebServiceUtilities;
 			sourceTree = "<group>";
@@ -189,9 +216,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B532A840230DAF040055E6F7 /* Build configuration list for PBXNativeTarget "LocalizadorInalambrik" */;
 			buildPhases = (
+				F153A140496F75E6EC191D39 /* [CP] Check Pods Manifest.lock */,
 				B532A827230DAF020055E6F7 /* Sources */,
 				B532A828230DAF020055E6F7 /* Frameworks */,
 				B532A829230DAF020055E6F7 /* Resources */,
+				71717605ED540689BB795502 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -259,6 +288,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		71717605ED540689BB795502 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LocalizadorInalambrik/Pods-LocalizadorInalambrik-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LocalizadorInalambrik/Pods-LocalizadorInalambrik-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LocalizadorInalambrik/Pods-LocalizadorInalambrik-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F153A140496F75E6EC191D39 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-LocalizadorInalambrik-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B532A827230DAF020055E6F7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -278,6 +349,7 @@
 				B532A85B230F082F0055E6F7 /* ViewControllerUtilities.swift in Sources */,
 				B532A850230DE75C0055E6F7 /* User.swift in Sources */,
 				B594C5422367CC8B007690D8 /* INLLocationTracking.swift in Sources */,
+				6D271954238D8BD200F119AA /* Reachability.swift in Sources */,
 				B532A856230DF3CF0055E6F7 /* QueryUtilities.swift in Sources */,
 				B532A82F230DAF020055E6F7 /* AppDelegate.swift in Sources */,
 				B532A86F2310508B0055E6F7 /* DeviceUtilities.swift in Sources */,
@@ -417,12 +489,13 @@
 		};
 		B532A841230DAF040055E6F7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DB54DD07FF2F4D9D1CD65AEC /* Pods-LocalizadorInalambrik.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = LocalizadorInalambrik/LocalizadorInalambrik.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 973ZT8Y397;
 				INFOPLIST_FILE = LocalizadorInalambrik/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -430,7 +503,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.3;
+				MARKETING_VERSION = 3.4;
 				PRODUCT_BUNDLE_IDENTIFIER = ec.com.inalambrik.localizadormovil;
 				PRODUCT_NAME = Localizador;
 				SWIFT_OBJC_BRIDGING_HEADER = "LocalizadorInalambrik/ObjectiveC Utilities/LocalizadorInalambrik-Bridging-Header.h";
@@ -442,12 +515,13 @@
 		};
 		B532A842230DAF040055E6F7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3B696DE7C26FA605E3A8C45E /* Pods-LocalizadorInalambrik.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = LocalizadorInalambrik/LocalizadorInalambrik.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 973ZT8Y397;
 				INFOPLIST_FILE = LocalizadorInalambrik/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -455,7 +529,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.3;
+				MARKETING_VERSION = 3.4;
 				PRODUCT_BUNDLE_IDENTIFIER = ec.com.inalambrik.localizadormovil;
 				PRODUCT_NAME = Localizador;
 				SWIFT_OBJC_BRIDGING_HEADER = "LocalizadorInalambrik/ObjectiveC Utilities/LocalizadorInalambrik-Bridging-Header.h";

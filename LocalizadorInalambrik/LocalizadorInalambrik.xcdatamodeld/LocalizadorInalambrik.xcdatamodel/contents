@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15400" systemVersion="19A603" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15400" systemVersion="18G103" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="LocationReportInfo" representedClassName="LocationReportInfo" syncable="YES">
         <attribute name="accuracy" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="altitude" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -20,6 +20,7 @@
         <attribute name="networkType" optional="YES" attributeType="String"/>
         <attribute name="orientation" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="reportDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="reportIsInvalid" optional="YES" attributeType="String"/>
         <attribute name="satellites" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="second" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="speed" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -34,7 +35,7 @@
         <attribute name="userId" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="LocationReportInfo" positionX="-63" positionY="-18" width="128" height="403"/>
+        <element name="LocationReportInfo" positionX="-63" positionY="-18" width="128" height="418"/>
         <element name="User" positionX="-54" positionY="144" width="128" height="120"/>
     </elements>
 </model>
