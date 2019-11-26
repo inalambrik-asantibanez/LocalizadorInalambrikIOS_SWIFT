@@ -56,19 +56,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidEnterBackground(_ application: UIApplication)
     {
-        /*if #available(iOS 13.0, *)
-        {
-            let vc = LocationReportViewController()
-            vc.endBackgroundTask()
-            DeviceUtilities.shared().printData("App entro a background ios 13")
-            cancelAllPandingBGTask()
-            scheduleAppRefresh()
-        }
-        else
-        {
-            DeviceUtilities.shared().printData("App entro a background ios 12 para abajo")
-            NotificationCenter.default.post(name: .setLocationReportInterval, object: nil)
-        }*/
     }
     
     
@@ -175,7 +162,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         {
             DeviceUtilities.shared().printData("Usuario autorizado proceda con el guardado del reporte por terminacion de app")
             let locationReport = CLLocation()
-            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(locationReport,"TERMINATE")
+            LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(locationReport,"I")
             let notificationType = "Localizador Inalambrik fue cerrado"
             DeviceUtilities.shared().printData("Programacion de notificacion por terminacion del app")
             self.scheduleNotification(event: notificationType,interval: 2)

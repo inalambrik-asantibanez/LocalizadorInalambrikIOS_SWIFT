@@ -43,13 +43,11 @@ class LocationReportViewController : UIViewController
     @IBOutlet weak var sendLocationReportTest: UIButton!
     @IBOutlet weak var textErrorLocation: UILabel!
     
-    override func viewWillAppear(_ animated: Bool) {
-        
-        //Observer to refresh the ui
-        NotificationCenter.default.addObserver(self, selector:  #selector(applicationDidBecomeActive),name: .UIApplicationDidBecomeActive,object: nil)
-        
-        //Observer to refresh the last report saved in DB
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshLastReportUI), name: .refreshUILastReport , object: nil)
+    override func viewWillAppear(_ animated: Bool)
+    {
+        /*showLocationReportInfo()
+        sendPendingLocationReports()
+        INLLocationTracking.shared().startLocationTracking()*/
     }
     
     override func viewDidLoad() {
@@ -74,18 +72,23 @@ class LocationReportViewController : UIViewController
                 labelStatus.textColor = UIColor.black
             }
         }
-        
-        showLocationReportInfo()
-        
-        //Send the pending reports
-        sendPendingLocationReports()
+        //Observer to refresh the ui
+        NotificationCenter.default.addObserver(self, selector:  #selector(applicationDidBecomeActive),name: .UIApplicationDidBecomeActive,object: nil)
+               
+        //Observer to refresh the last report saved in DB
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshLastReportUI), name: .refreshUILastReport , object: nil)
         
         sendLocationReportTest.isHidden = true
         textSentReports.isHidden = true
         labelSentReports.isHidden = true
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        showLocationReportInfo()
         
+        //Send the pending reports
+        sendPendingLocationReports()
         INLLocationTracking.shared().startLocationTracking()
-        
     }
     
     //Remove the observer when the viewcontroller is closed
@@ -198,44 +201,82 @@ class LocationReportViewController : UIViewController
     func sendPendingLocationReports()
     {
         var locationReports: [LocationReportInfo]?
+        DeviceUtilities.shared().printData("Recopilando reportes pendientes")
         do
         {
             try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "P"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true),ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)
             
+            let pendingLocationReportsCount = locationReports?.count
+            if(pendingLocationReportsCount == 0)
+            {
+                return
+            }
+            
             if (locationReports?.count)! > 0
             {
+                var stopSendPendingReports = false
+                //let group = DispatchGroup()
+                //let queue = DispatchQueue.global(qos: .userInteractive)
+                //let semaphore = DispatchSemaphore(value: 1)
+                
                 DeviceUtilities.shared().printData("Maxima cantidad de reportes pendientes a enviar=\(ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)")
                 for locationReport in locationReports!
                 {
-                    DeviceUtilities.shared().printData("LR Reporte a enviar=\(locationReport.reportDate.preciseLocalDateTime)")
-                    Client.shared().sendPendingLocationReport(locationReport)
+                    DeviceUtilities.shared().printData("Enviando reporte")
+                    //group.enter()
+                    //semaphore.wait()
+                    if !stopSendPendingReports
                     {
-                        (sendLocationResp, error) in
-                        
-                        //After calling the webservice and this finished then check if there exist a response
-                        if let sendLocationResp = sendLocationResp
+                        //group.enter()
+                        DeviceUtilities.shared().printData("LR Reporte a enviar=\(locationReport.reportDate.preciseLocalDateTime)")
+                        Client.shared().sendPendingLocationReport(locationReport)
                         {
-                            let reportInterval = sendLocationResp.ReportInterval
-                            let errorMessage = sendLocationResp.ErrorMessage
+                            (sendLocationResp, error) in
                             
-                             DeviceUtilities.shared().printData("Respuestas del webservice")
-                             DeviceUtilities.shared().printData("reportInterval=\(reportInterval)")
-                             DeviceUtilities.shared().printData("errorMessage=\(errorMessage)")
-                            
-                            if errorMessage == ""
+                            if let error = error
                             {
-                                //Actualiza el reporte a estado Enviado (S)
-                                DeviceUtilities.shared().printData("Se va actualizar el reporte a estado Enviado (S)")
-                                locationReport.setValue("S", forKey: "status")
-                                CoreDataStack.shared().save()
-                                
-                                DeviceUtilities.shared().printData("Se actualizo el ultimo reporte pendiente a enviado")
+                                DeviceUtilities.shared().printData("error consultando el WS=\(error.localizedDescription)")
+                                stopSendPendingReports = true
+                                //return
                             }
-                            else
+                            
+                            //After calling the webservice and this finished then check if there exist a response
+                            if let sendLocationResp = sendLocationResp
                             {
-                                DeviceUtilities.shared().printData("Existio un error al enviar el reporte")
+                                let reportInterval = sendLocationResp.ReportInterval
+                                let errorMessage = sendLocationResp.ErrorMessage
+                                
+                                 DeviceUtilities.shared().printData("Respuestas del webservice")
+                                 DeviceUtilities.shared().printData("reportInterval=\(reportInterval)")
+                                 DeviceUtilities.shared().printData("errorMessage=\(errorMessage)")
+                                
+                                if errorMessage.isEmpty
+                                {
+                                    //Actualiza el reporte a estado Enviado (S)
+                                    DeviceUtilities.shared().printData("Se va actualizar el reporte a estado Enviado (S)")
+                                    locationReport.setValue("S", forKey: "status")
+                                    CoreDataStack.shared().save()
+                                    
+                                    DeviceUtilities.shared().printData("Se actualizo el ultimo reporte pendiente a enviado")
+                                }
+                                else
+                                {
+                                    if errorMessage == "DELETE"
+                                    {
+                                        //Actualiza el reporte a estado Enviado (S)
+                                        DeviceUtilities.shared().printData("Se va a eliminar el reporte")
+                                        CoreDataStack.shared().context.delete(locationReport)
+                                        CoreDataStack.shared().save()
+                                    }
+                                    else
+                                    {
+                                        DeviceUtilities.shared().printData("Existio un error del servidor")
+                                    }
+                                }
                             }
                         }
+                        //semaphore.signal()
+                        //group.leave()
                     }
                 }
                 DispatchQueue.main.async {

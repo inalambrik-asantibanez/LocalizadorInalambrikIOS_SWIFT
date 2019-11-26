@@ -110,7 +110,7 @@ class LocationUtilities
     {
         do
         {
-            guard let last = try CoreDataStack.shared().fetchLocationReport(nil, entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))
+            guard (try CoreDataStack.shared().fetchLocationReport(nil, entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))) != nil
             else
             {
                 return false
