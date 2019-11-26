@@ -59,7 +59,8 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
         manager.requestWhenInUseAuthorization()
     }
     
-    public func startUpdatingLocation(interval: TimeInterval, acceptableLocationAccuracy: CLLocationAccuracy = 100) {
+    public func startUpdatingLocation(interval: TimeInterval, acceptableLocationAccuracy: CLLocationAccuracy = 100)
+    {
         DeviceUtilities.shared().printData("startUpdatingLocation Start Update Location at interval =\(interval) seconds")
         if isRunning {
             stopUpdatingLocation()
@@ -150,7 +151,8 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
         delegate.scheduledLocationManager(self, didFailWithError: error)
     }
     
-    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
+    {
         
         guard isManagerRunning else { return }
         guard locations.count>0 else { return }
@@ -190,7 +192,7 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
         self.perform(#selector(stopAndResetBgTaskIfNeeded), with: nil, afterDelay: 1)
     }
     
-    private func startWaitTimer()
+    public func startWaitTimer()
     {
         stopWaitTimer()
         
@@ -235,6 +237,7 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
             DeviceUtilities.shared().printData("Localizador no esta en calendario FechaActual=\(Date().preciseLocalDateTime)")
         }
         DeviceUtilities.shared().printData("LOCATION REPORT waitTimerEvent Sending pending reports on when location is error")
+        QueryUtilities.shared().deleteInvalidLocationReports()
         INLLocationTracking.shared().sendDeviceConfiguration()
         INLLocationTracking.shared().sendPendingLocationReports()
     }
@@ -270,6 +273,7 @@ public class INLLocationManager: NSObject, CLLocationManagerDelegate {
             startWaitTimer()
         }
         DeviceUtilities.shared().printData("LOCATION REPORT waitTimerEvent Sending pending reports on when location is correct")
+        QueryUtilities.shared().deleteInvalidLocationReports()
         INLLocationTracking.shared().sendDeviceConfiguration()
         INLLocationTracking.shared().sendPendingLocationReports()
     }

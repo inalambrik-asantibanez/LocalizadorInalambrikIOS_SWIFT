@@ -41,4 +41,5 @@ extension LocationReportInfo
     @NSManaged public var reportDate: Date
     @NSManaged public var gpsStatus: String?
     @NSManaged public var locationerror: String?
+    @NSManaged public var reportIsInvalid: String?
 }

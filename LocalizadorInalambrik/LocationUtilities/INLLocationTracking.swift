@@ -103,7 +103,7 @@ extension INLLocationTracking:INLLocationManagerDelegate{
             let lastLocationReport = LocationUtilities.shared().getLastLocationInfo()
             currentLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: CLLocationDegrees(lastLocationReport.latitude), longitude: CLLocationDegrees(lastLocationReport.longitude)), altitude: CLLocationDistance(lastLocationReport.altitude), horizontalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), verticalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), timestamp: lastLocationReport.reportDate)
             
-            let DifferencesTwoDatesInSeconds = getDifferenceBetweenDates(dateFrom: currentLocation.timestamp, dateTo: recentLocation.timestamp)
+            let DifferencesTwoDatesInSeconds = QueryUtilities.shared().getDifferenceBetweenDates(dateFrom: currentLocation.timestamp, dateTo: recentLocation.timestamp)
             DeviceUtilities.shared().printData("Difference between two dates in seconds \(DifferencesTwoDatesInSeconds)")
             if(Int(abs(recentLocation.coordinate.latitude)) != 0 && Int(abs(recentLocation.coordinate.longitude)) != 0 && Int(abs(DifferencesTwoDatesInSeconds)) >= 45)
             {
@@ -111,6 +111,7 @@ extension INLLocationTracking:INLLocationManagerDelegate{
                 LocationUtilities.shared().saveLocationReportObjectOnFetchLocation(recentLocation,"V")
                 let lastLocationReportGotten = LocationUtilities.shared().getLastLocationInfo()
                 DeviceUtilities.shared().printData("LR Reporte Guardado En varios Reportes Fecha:  \(lastLocationReportGotten.reportDate.preciseLocalDateTime), Latitude:  \(lastLocationReportGotten.latitude) Longitude:  \(lastLocationReportGotten.longitude)")
+                //manager.startWaitTimer()
             }
             else
             {
@@ -142,7 +143,7 @@ extension INLLocationTracking:INLLocationManagerDelegate{
         {
             let lastLocationReport = LocationUtilities.shared().getLastLocationInfo()
             currentLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: CLLocationDegrees(lastLocationReport.latitude), longitude: CLLocationDegrees(lastLocationReport.longitude)), altitude: CLLocationDistance(lastLocationReport.altitude), horizontalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), verticalAccuracy: CLLocationAccuracy(lastLocationReport.accuracy), timestamp: lastLocationReport.reportDate)
-            let DifferencesTwoDatesInSeconds = getDifferenceBetweenDates(dateFrom: currentLocation.timestamp, dateTo: locationNull.timestamp)
+            let DifferencesTwoDatesInSeconds = QueryUtilities.shared().getDifferenceBetweenDates(dateFrom: currentLocation.timestamp, dateTo: locationNull.timestamp)
             if(Int(abs(DifferencesTwoDatesInSeconds)) >= 30)
             {
                 DeviceUtilities.shared().printData("Se guarda reporte en BD 0.0 con fecha \(Date().preciseLocalDateTime)")
@@ -202,21 +203,48 @@ extension INLLocationTracking:INLLocationManagerDelegate{
     
     func sendPendingLocationReports()
     {
-        deleteYesterDaySentLocationReports()
         var locationReports: [LocationReportInfo]?
+        DeviceUtilities.shared().printData("Recopilando reportes pendientes para ser enviados")
         do
         {
             try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "P"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true),ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)
             
-            if (locationReports?.count)! > 0
+            let pendingLocationReportsCount = locationReports?.count
+            if(pendingLocationReportsCount == 0)
             {
-                DeviceUtilities.shared().printData("Maxima cantidad de reportes pendientes a enviar=\(ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)")
-                for locationReport in locationReports!
+                DeviceUtilities.shared().printData("No Hay reportes pendientes que enviar")
+                return
+            }
+            
+            if (!Reachability.shared.isConnectedToNetwork()){
+                DeviceUtilities.shared().printData("No Hay conexión a Internet disponible para enviar los reportes")
+                return
+            }
+            
+            var lastReportSentOK = true
+            var notSentReportCount = 0
+            
+            DeviceUtilities.shared().printData("Maxima cantidad de reportes pendientes a enviar=\(ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)")
+            for locationReport in locationReports!
+            {
+                if(lastReportSentOK)
                 {
-                    DeviceUtilities.shared().printData("LR Reporte a enviar=\(locationReport.reportDate.preciseLocalDateTime)")
+                     DeviceUtilities.shared().printData("LR Reporte a enviar=\(locationReport.reportDate.preciseLocalDateTime)")
                     Client.shared().sendPendingLocationReport(locationReport)
                     {
                         (sendLocationResp, error) in
+                        
+                        if sendLocationResp == nil && error == nil
+                        {
+                            DeviceUtilities.shared().printData("error no hay conexion a internet al tratar de enviar el reporte")
+                            lastReportSentOK = false
+                        }
+                        
+                        if let error = error
+                        {
+                            DeviceUtilities.shared().printData("error consultando el WS=\(error.localizedDescription)")
+                            lastReportSentOK = false
+                        }
                         
                         //After calling the webservice and this finished then check if there exist a response
                         if let sendLocationResp = sendLocationResp
@@ -228,21 +256,116 @@ extension INLLocationTracking:INLLocationManagerDelegate{
                              DeviceUtilities.shared().printData("reportInterval=\(reportInterval)")
                              DeviceUtilities.shared().printData("errorMessage=\(errorMessage)")
                             
-                            if errorMessage == ""
+                            if errorMessage.isEmpty
                             {
                                 //Actualiza el reporte a estado Enviado (S)
                                 DeviceUtilities.shared().printData("Se va actualizar el reporte a estado Enviado (S)")
                                 locationReport.setValue("S", forKey: "status")
                                 CoreDataStack.shared().save()
-                                DeviceUtilities.shared().printData("Se actualizo el ultimo reporte pendiente a enviado")
                                 
-                                let nCenter = UNUserNotificationCenter.current()
-                                DeviceUtilities.shared().printData("Eliminacion de las notificaciones enviadas")
-                                nCenter.removeAllDeliveredNotifications()
+                                DeviceUtilities.shared().printData("Se actualizo el ultimo reporte pendiente a enviado")
                             }
                             else
                             {
-                                DeviceUtilities.shared().printData("Existio un error al enviar el reporte")
+                                DeviceUtilities.shared().printData("Se va a marcar el reporte como invalido")
+                                lastReportSentOK = false
+                                //Primero se actualiza a enviado el reporte para que no se trate de enviar nuevamente
+                                //Se marca el reporte con error para luego ser eliminado
+                                locationReport.setValue("S", forKey: "status")
+                                locationReport.setValue("1", forKey: "reportIsInvalid")
+                                CoreDataStack.shared().save()
+                            }
+                        }
+                    }
+                }
+                
+                if(!lastReportSentOK)
+                {
+                    notSentReportCount += 1
+                }
+            }
+            if(notSentReportCount > 0)
+            {
+                DeviceUtilities.shared().printData("errorMessage=\(notSentReportCount)")
+            }
+            
+        }
+        catch
+        {
+            DeviceUtilities.shared().printData("No es posible obtener los reportes pendientes ")
+        }
+        //Update UI in case is foreground
+        DispatchQueue.main.async {
+            DeviceUtilities.shared().printData("LOCATION REPORT Pantalla actualizada por sending location reports a :  FechaActual=\(Date().preciseLocalDateTime)")
+            NotificationCenter.default.post(name: .refreshUILastReport, object: nil)
+        }
+    }
+    
+    /*
+    func sendPendingLocationReports()
+    {
+        QueryUtilities.shared().deleteYesterDaySentLocationReports()
+        var locationReports: [LocationReportInfo]?
+        do
+        {
+            try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "P"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true),ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)
+            
+            if (locationReports?.count)! > 0
+            {
+                var stopSendPendingReports = false
+                DeviceUtilities.shared().printData("Maxima cantidad de reportes pendientes a enviar=\(ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)")
+                for locationReport in locationReports!
+                {
+                    if !stopSendPendingReports
+                    {
+                        DeviceUtilities.shared().printData("LR Reporte a enviar=\(locationReport.reportDate.preciseLocalDateTime)")
+                        Client.shared().sendPendingLocationReport(locationReport)
+                        {
+                            (sendLocationResp, error) in
+                            
+                            if let error = error
+                            {
+                                DeviceUtilities.shared().printData("error consultando el WS=\(error.localizedDescription)")
+                                var stopSendPendingReports = true
+                                return
+                            }
+                            
+                            //After calling the webservice and this finished then check if there exist a response
+                            if let sendLocationResp = sendLocationResp
+                            {
+                                let reportInterval = sendLocationResp.ReportInterval
+                                let errorMessage = sendLocationResp.ErrorMessage
+                                
+                                 DeviceUtilities.shared().printData("Respuestas del webservice")
+                                 DeviceUtilities.shared().printData("reportInterval=\(reportInterval)")
+                                 DeviceUtilities.shared().printData("errorMessage=\(errorMessage)")
+                                
+                                if errorMessage == ""
+                                {
+                                    //Actualiza el reporte a estado Enviado (S)
+                                    DeviceUtilities.shared().printData("Se va actualizar el reporte a estado Enviado (S)")
+                                    locationReport.setValue("S", forKey: "status")
+                                    CoreDataStack.shared().save()
+                                    DeviceUtilities.shared().printData("Se actualizo el ultimo reporte pendiente a enviado")
+                                    
+                                    let nCenter = UNUserNotificationCenter.current()
+                                    DeviceUtilities.shared().printData("Eliminacion de las notificaciones enviadas")
+                                    nCenter.removeAllDeliveredNotifications()
+                                }
+                                else
+                                {
+                                    if errorMessage == "DELETE"
+                                    {
+                                        //Actualiza el reporte a estado Enviado (S)
+                                        DeviceUtilities.shared().printData("Se va a eliminar el reporte por comando DELET")
+                                        CoreDataStack.shared().context.delete(locationReport)
+                                        CoreDataStack.shared().save()
+                                    }
+                                    else
+                                    {
+                                        DeviceUtilities.shared().printData("Existio un error del servidor")
+                                    }
+                                }
                             }
                         }
                     }
@@ -262,43 +385,24 @@ extension INLLocationTracking:INLLocationManagerDelegate{
         catch {
             DeviceUtilities.shared().printData("No es posible obtener los reportes pendientes ")
         }
-    }
-    
-    func deleteYesterDaySentLocationReports()
-    {
-        var locationReports: [LocationReportInfo]?
-        do
-        {
-            try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "S"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true),ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)
-            
-            if (locationReports?.count)! > 0
-            {
-                DeviceUtilities.shared().printData("Maximo numero de reportes enviados a eliminar=\(ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)")
-                
-                DeviceUtilities.shared().printData("Borrado de reportes enviados \(locationReports?.count ?? 0)")
-                let yesterday = Date().dayBefore
-                for locationReport in locationReports!
-                {
-                    let differenceBetweenDatesInDays = getDifferenceBetweenDatesDay(dateFrom: locationReport.reportDate, dateTo: yesterday)
-                    if(differenceBetweenDatesInDays >= 1)
-                    {
-                        CoreDataStack.shared().context.delete(locationReport)
-                        CoreDataStack.shared().save()
-                    }
-                }
-            }
-        }
-        catch
-        {
-            DeviceUtilities.shared().printData("No hay reportes enviados por eliminar ")
-        }
-    }
+    }*/
     
     func sendDeviceConfiguration()
     {
+        DeviceUtilities.shared().printData("Recopilando la informacion de la configuracion del dispositivo para ser enviada")
+        if (!Reachability.shared.isConnectedToNetwork()){
+            DeviceUtilities.shared().printData("No Hay conexión a Internet disponible para enviar la configuracion del dispositivo")
+            return
+        }
+        
         Client.shared().sendDeviceConfiguration()
         {
             (userResponse, error) in
+            
+            if let error = error
+            {
+                DeviceUtilities.shared().printData("errorMessage al consultar el ws =\(error)")
+            }
             
             if let userResponse = userResponse
             {
@@ -349,24 +453,6 @@ extension INLLocationTracking:INLLocationManagerDelegate{
                 print("Unable to Add Notification Request (\(error), \(error.localizedDescription))")
             }
         }
-    }
-    
-    func getDifferenceBetweenDates(dateFrom: Date, dateTo: Date) -> Double
-    {
-        let calendar = NSCalendar.current
-        let unitFlags = Set<Calendar.Component>([ .second])
-        let DTComponents = calendar.dateComponents(unitFlags, from: dateFrom, to: dateTo)
-        guard let seconds = DTComponents.second else { return 0 }
-        return Double(seconds)
-    }
-    
-    func getDifferenceBetweenDatesDay(dateFrom: Date, dateTo: Date)-> Double
-    {
-        let calendar = NSCalendar.current
-        let unitFlags = Set<Calendar.Component>([ .second])
-        let DTComponents = calendar.dateComponents(unitFlags, from: dateFrom, to: dateTo)
-        guard let days = DTComponents.day else { return 0 }
-        return Double(days)
     }
 }
 

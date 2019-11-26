@@ -201,7 +201,7 @@ class LocationReportViewController : UIViewController
     func sendPendingLocationReports()
     {
         var locationReports: [LocationReportInfo]?
-        DeviceUtilities.shared().printData("Recopilando reportes pendientes")
+        DeviceUtilities.shared().printData("Recopilando reportes pendientes para ser enviados")
         do
         {
             try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "P"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true),ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)
@@ -209,87 +209,85 @@ class LocationReportViewController : UIViewController
             let pendingLocationReportsCount = locationReports?.count
             if(pendingLocationReportsCount == 0)
             {
+                DeviceUtilities.shared().printData("No Hay reportes pendientes que enviar")
                 return
             }
             
-            if (locationReports?.count)! > 0
+            if (!Reachability.shared.isConnectedToNetwork()){
+                DeviceUtilities.shared().printData("No Hay conexión a Internet disponible")
+                return
+            }
+            
+            var lastReportSentOK = true
+            var notSentReportCount = 0
+            
+            DeviceUtilities.shared().printData("Maxima cantidad de reportes pendientes a enviar=\(ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)")
+            for locationReport in locationReports!
             {
-                var stopSendPendingReports = false
-                //let group = DispatchGroup()
-                //let queue = DispatchQueue.global(qos: .userInteractive)
-                //let semaphore = DispatchSemaphore(value: 1)
-                
-                DeviceUtilities.shared().printData("Maxima cantidad de reportes pendientes a enviar=\(ConstantsController().NUMBER_OF_MAX_PENDING_REPORTS_TO_SEND)")
-                for locationReport in locationReports!
+                if(lastReportSentOK)
                 {
-                    DeviceUtilities.shared().printData("Enviando reporte")
-                    //group.enter()
-                    //semaphore.wait()
-                    if !stopSendPendingReports
+                     DeviceUtilities.shared().printData("LR Reporte a enviar=\(locationReport.reportDate.preciseLocalDateTime)")
+                    Client.shared().sendPendingLocationReport(locationReport)
                     {
-                        //group.enter()
-                        DeviceUtilities.shared().printData("LR Reporte a enviar=\(locationReport.reportDate.preciseLocalDateTime)")
-                        Client.shared().sendPendingLocationReport(locationReport)
+                        (sendLocationResp, error) in
+                        
+                        if sendLocationResp == nil && error == nil
                         {
-                            (sendLocationResp, error) in
+                            DeviceUtilities.shared().printData("error no hay conexion a internet al tratar de enviar el reporte desde el viewcontroller")
+                            lastReportSentOK = false
+                        }
+                        
+                        if let error = error
+                        {
+                            DeviceUtilities.shared().printData("error consultando el WS=\(error.localizedDescription)")
+                            lastReportSentOK = false
+                        }
+                        
+                        //After calling the webservice and this finished then check if there exist a response
+                        if let sendLocationResp = sendLocationResp
+                        {
+                            let reportInterval = sendLocationResp.ReportInterval
+                            let errorMessage = sendLocationResp.ErrorMessage
                             
-                            if let error = error
+                             DeviceUtilities.shared().printData("Respuestas del webservice")
+                             DeviceUtilities.shared().printData("reportInterval=\(reportInterval)")
+                             DeviceUtilities.shared().printData("errorMessage=\(errorMessage)")
+                            
+                            if errorMessage.isEmpty
                             {
-                                DeviceUtilities.shared().printData("error consultando el WS=\(error.localizedDescription)")
-                                stopSendPendingReports = true
-                                //return
+                                //Actualiza el reporte a estado Enviado (S)
+                                DeviceUtilities.shared().printData("Se va actualizar el reporte a estado Enviado (S)")
+                                locationReport.setValue("S", forKey: "status")
+                                CoreDataStack.shared().save()
+                                
+                                DeviceUtilities.shared().printData("Se actualizo el ultimo reporte pendiente a enviado")
                             }
-                            
-                            //After calling the webservice and this finished then check if there exist a response
-                            if let sendLocationResp = sendLocationResp
+                            else
                             {
-                                let reportInterval = sendLocationResp.ReportInterval
-                                let errorMessage = sendLocationResp.ErrorMessage
-                                
-                                 DeviceUtilities.shared().printData("Respuestas del webservice")
-                                 DeviceUtilities.shared().printData("reportInterval=\(reportInterval)")
-                                 DeviceUtilities.shared().printData("errorMessage=\(errorMessage)")
-                                
-                                if errorMessage.isEmpty
-                                {
-                                    //Actualiza el reporte a estado Enviado (S)
-                                    DeviceUtilities.shared().printData("Se va actualizar el reporte a estado Enviado (S)")
-                                    locationReport.setValue("S", forKey: "status")
-                                    CoreDataStack.shared().save()
-                                    
-                                    DeviceUtilities.shared().printData("Se actualizo el ultimo reporte pendiente a enviado")
-                                }
-                                else
-                                {
-                                    if errorMessage == "DELETE"
-                                    {
-                                        //Actualiza el reporte a estado Enviado (S)
-                                        DeviceUtilities.shared().printData("Se va a eliminar el reporte")
-                                        CoreDataStack.shared().context.delete(locationReport)
-                                        CoreDataStack.shared().save()
-                                    }
-                                    else
-                                    {
-                                        DeviceUtilities.shared().printData("Existio un error del servidor")
-                                    }
-                                }
+                                lastReportSentOK = false
+                                //Primero se actualiza a enviado el reporte para que no se trate de enviar nuevamente
+                                //Se marca el reporte con error para luego ser eliminado
+                                locationReport.setValue("S", forKey: "status")
+                                locationReport.setValue("1", forKey: "reportIsInvalid")
+                                CoreDataStack.shared().save()
                             }
                         }
-                        //semaphore.signal()
-                        //group.leave()
                     }
                 }
-                DispatchQueue.main.async {
-                    print("Actualizacion del UI",separator: "",terminator: "\n")
-                    self.showLocationReportInfo()
+                
+                if(!lastReportSentOK)
+                {
+                    notSentReportCount += 1
                 }
             }
-            else
+            if(notSentReportCount > 0)
             {
-                DeviceUtilities.shared().printData("No hay reportes pendientes de enviar")
+                DeviceUtilities.shared().printData("errorMessage=\(notSentReportCount)")
             }
+            
         }
-        catch {
+        catch
+        {
             DeviceUtilities.shared().printData("No es posible obtener los reportes pendientes ")
         }
         showLocationReportInfo()

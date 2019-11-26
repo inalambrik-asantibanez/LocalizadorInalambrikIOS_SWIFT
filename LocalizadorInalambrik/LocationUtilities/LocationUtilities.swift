@@ -49,7 +49,7 @@ class LocationUtilities
         let GpsStatus        = reportType
         
         //Save Location Report To DB
-        _ = LocationReportInfo(year: Year!, month: Month!, day: Day!, hour: Hour!, minute: Minute!, second: Second!, latitude: Latitude, longitude: Longitude, altitude: Int(Altitude), speed: Int(Speed), orientation: Orientation, satellites: Satellites, accuracy: Accuracy, status: Status, networkType: NetworkType, mcc: MCC, mnc: MNC, lac: LAC, cid: CID, batteryLevel: BatteryLevel, eventCode: EventCode, reportDate: ReportDate,gpsStatus: GpsStatus,errorLocation: errorLocation!, context: CoreDataStack.shared().context)
+        _ = LocationReportInfo(year: Year!, month: Month!, day: Day!, hour: Hour!, minute: Minute!, second: Second!, latitude: Latitude, longitude: Longitude, altitude: Int(Altitude), speed: Int(Speed), orientation: Orientation, satellites: Satellites, accuracy: Accuracy, status: Status, networkType: NetworkType, mcc: MCC, mnc: MNC, lac: LAC, cid: CID, batteryLevel: BatteryLevel, eventCode: EventCode, reportDate: ReportDate,gpsStatus: GpsStatus,errorLocation: errorLocation!,reportIsInvalid:"0", context: CoreDataStack.shared().context)
         CoreDataStack.shared().save()
     }
     
@@ -96,13 +96,13 @@ class LocationUtilities
             guard let lastLocationReport = try CoreDataStack.shared().fetchLocationReport(nil, entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))
                 else
                 {
-                    return LocationReportInfo(year: 0, month: 0, day: 0, hour: 0, minute: 0, second: 0, latitude: 0, longitude: 0, altitude: 0, speed: 0, orientation: 0, satellites: 0, accuracy: 0, status: "P", networkType: "GPS", mcc: 0, mnc: 0, lac: 0, cid: 0, batteryLevel: 0, eventCode: 0, reportDate: Date(), gpsStatus: "V",errorLocation: "", context: CoreDataStack.shared().context)
+                    return LocationReportInfo(year: 0, month: 0, day: 0, hour: 0, minute: 0, second: 0, latitude: 0, longitude: 0, altitude: 0, speed: 0, orientation: 0, satellites: 0, accuracy: 0, status: "P", networkType: "GPS", mcc: 0, mnc: 0, lac: 0, cid: 0, batteryLevel: 0, eventCode: 0, reportDate: Date(), gpsStatus: "V",errorLocation: "",reportIsInvalid: "0", context: CoreDataStack.shared().context)
                 }
             return lastLocationReport
         }
         catch
         {
-            return LocationReportInfo(year: 0, month: 0, day: 0, hour: 0, minute: 0, second: 0, latitude: 0, longitude: 0, altitude: 0, speed: 0, orientation: 0, satellites: 0, accuracy: 0, status: "P", networkType: "GPS", mcc: 0, mnc: 0, lac: 0, cid: 0, batteryLevel: 0, eventCode: 0, reportDate: Date(), gpsStatus: "V",errorLocation: "", context: CoreDataStack.shared().context)
+            return LocationReportInfo(year: 0, month: 0, day: 0, hour: 0, minute: 0, second: 0, latitude: 0, longitude: 0, altitude: 0, speed: 0, orientation: 0, satellites: 0, accuracy: 0, status: "P", networkType: "GPS", mcc: 0, mnc: 0, lac: 0, cid: 0, batteryLevel: 0, eventCode: 0, reportDate: Date(), gpsStatus: "V",errorLocation: "",reportIsInvalid: "0", context: CoreDataStack.shared().context)
         }
     }
     
@@ -110,7 +110,7 @@ class LocationUtilities
     {
         do
         {
-            guard (try CoreDataStack.shared().fetchLocationReport(nil, entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))) != nil
+            guard (try CoreDataStack.shared().fetchLocationReport(NSPredicate(format: " reportIsInvalid == %@ " ,"0"), entityName: LocationReportInfo.name, sorting: NSSortDescriptor(key: "reportDate", ascending: false))) != nil
             else
             {
                 return false

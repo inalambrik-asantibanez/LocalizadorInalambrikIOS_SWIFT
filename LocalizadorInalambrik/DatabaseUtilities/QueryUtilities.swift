@@ -21,7 +21,7 @@ class QueryUtilities
     
     func saveLocationReport(_ locationReport: LocationReportInfo)
     {
-        _ = LocationReportInfo(year: locationReport.year, month: locationReport.month, day: locationReport.day, hour: locationReport.hour, minute: locationReport.minute, second: locationReport.second, latitude: locationReport.latitude, longitude: locationReport.longitude, altitude: locationReport.altitude, speed: locationReport.speed, orientation: locationReport.orientation, satellites: locationReport.satellites, accuracy: locationReport.accuracy, status: locationReport.status!, networkType: locationReport.networkType!, mcc: locationReport.mcc, mnc: locationReport.mnc, lac: locationReport.lac, cid: locationReport.cid, batteryLevel: locationReport.batteryLevel, eventCode: locationReport.eventCode,reportDate: locationReport.reportDate,gpsStatus: locationReport.gpsStatus!,errorLocation: locationReport.locationerror!, context: CoreDataStack.shared().context)
+        _ = LocationReportInfo(year: locationReport.year, month: locationReport.month, day: locationReport.day, hour: locationReport.hour, minute: locationReport.minute, second: locationReport.second, latitude: locationReport.latitude, longitude: locationReport.longitude, altitude: locationReport.altitude, speed: locationReport.speed, orientation: locationReport.orientation, satellites: locationReport.satellites, accuracy: locationReport.accuracy, status: locationReport.status!, networkType: locationReport.networkType!, mcc: locationReport.mcc, mnc: locationReport.mnc, lac: locationReport.lac, cid: locationReport.cid, batteryLevel: locationReport.batteryLevel, eventCode: locationReport.eventCode,reportDate: locationReport.reportDate,gpsStatus: locationReport.gpsStatus!,errorLocation: locationReport.locationerror!,reportIsInvalid: "0", context: CoreDataStack.shared().context)
         CoreDataStack.shared().save()
         
     }
@@ -120,5 +120,87 @@ class QueryUtilities
         }
         
         return locationReportCount
+    }
+    
+    func deleteYesterDaySentLocationReports()
+    {
+        var locationReports: [LocationReportInfo]?
+        do
+        {
+            try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ ", "S"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true),ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)
+            
+            if (locationReports?.count)! > 0
+            {
+                DeviceUtilities.shared().printData("Maximo numero de reportes enviados a eliminar=\(ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)")
+                let yesterday = Date().dayBefore
+                var deletedLocationReports = 0
+                for locationReport in locationReports!
+                {
+                    let differenceBetweenDatesInDays = getDifferenceBetweenDatesDay(dateFrom: locationReport.reportDate, dateTo: yesterday)
+                    if(differenceBetweenDatesInDays >= 1)
+                    {
+                        deletedLocationReports += 1
+                        CoreDataStack.shared().context.delete(locationReport)
+                        CoreDataStack.shared().save()
+                    }
+                }
+                if(deletedLocationReports > 0)
+                {
+                    DeviceUtilities.shared().printData("Borrado de reportes enviados \(deletedLocationReports)")
+                }
+            }
+        }
+        catch
+        {
+            DeviceUtilities.shared().printData("No hay reportes enviados por eliminar ")
+        }
+    }
+    
+    func getDifferenceBetweenDates(dateFrom: Date, dateTo: Date) -> Double
+    {
+        let calendar = NSCalendar.current
+        let unitFlags = Set<Calendar.Component>([ .second])
+        let DTComponents = calendar.dateComponents(unitFlags, from: dateFrom, to: dateTo)
+        guard let seconds = DTComponents.second else { return 0 }
+        return Double(seconds)
+    }
+    
+    func getDifferenceBetweenDatesDay(dateFrom: Date, dateTo: Date)-> Double
+    {
+        let calendar = NSCalendar.current
+        let unitFlags = Set<Calendar.Component>([ .second])
+        let DTComponents = calendar.dateComponents(unitFlags, from: dateFrom, to: dateTo)
+        guard let days = DTComponents.day else { return 0 }
+        return Double(days)
+    }
+    
+    func deleteInvalidLocationReports()
+    {
+        DeviceUtilities.shared().printData("Se van a borrar los reportes invalidos")
+        var locationReports: [LocationReportInfo]?
+        do
+        {
+            try locationReports = CoreDataStack.shared().fetchLocationReports(NSPredicate(format: " status == %@ AND reportIsInvalid == %@ " ,"S", "1"), LocationReportInfo.name,sorting: NSSortDescriptor(key: "reportDate", ascending: true),ConstantsController().NUMBER_OF_MAX_SENT_REPORTS_TO_DELETE)
+            
+            if (locationReports?.count)! > 0
+            {
+                var deletedLocationReports = 0
+                DeviceUtilities.shared().printData("Maximo numero de reportes invalidados a eliminar =\(String(describing: locationReports?.count))")
+                for locationReport in locationReports!
+                {
+                    deletedLocationReports += 1
+                    CoreDataStack.shared().context.delete(locationReport)
+                    CoreDataStack.shared().save()
+                }
+                if(deletedLocationReports > 0)
+                {
+                    DeviceUtilities.shared().printData("Borrado de reportes invalidos \(deletedLocationReports)")
+                }
+            }
+        }
+        catch
+        {
+            DeviceUtilities.shared().printData("No hay reportes enviados por eliminar ")
+        }
     }
 }
