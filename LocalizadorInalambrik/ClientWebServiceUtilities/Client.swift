@@ -91,8 +91,14 @@ extension Client
         let jsonString = String(data: jsonData, encoding: .utf8)!
         DeviceUtilities.shared().printData(jsonString)
         
+        if (!Reachability.shared.isConnectedToNetwork()){
+            DeviceUtilities.shared().printData("No Hay conexión a Internet disponible al enviar el reporte")
+            return
+        }
+        
         _ = taskForPOSTRESTMethod("POST", "", jsonString){ (data, error) in
-            if let error = error {
+            if let error = error
+            {
                 completion(nil, error)
                 return
             }
@@ -113,7 +119,7 @@ extension Client
         }
     }
     
-    func sendDeviceConfiguration(completion: @escaping (_ result: sendDeviceConfigurationResponse?, _ error: Error?) -> Void)
+    func sendDeviceConfiguration(completion: @escaping (_ result: SetDeviceConfigurationResponse?, _ error: Error?) -> Void)
     {
         let IMEIGetOnKeyChain = CustomObject()
         let IMEIGetFromKeyChain = IMEIGetOnKeyChain.getGeneratedDeviceIDFromKeychain()
@@ -121,7 +127,18 @@ extension Client
         let deviceOSVersion = UIDevice.current.systemVersion
         let deviceModel = UIDevice.current.name
         
-        let sendDeviceConfRequest = sendDeviceConfigurationRequest(device_imei: IMEIGetFromKeyChain!, device_brand: "IOS", device_model: deviceModel, device_os: "IOS", device_os_version: deviceOSVersion, app_version: appVersion, device_email: "", device_phone_number: "", device_diagnostics: "", device_fcm_registration_id: "", device_activation_code: "")
+        let sendDeviceConfRequest = SetDeviceConfigurationRequest(
+                                                    device_imei: IMEIGetFromKeyChain!,
+                                                    device_brand: "IOS",
+                                                    device_model: deviceModel,
+                                                    device_os: "IOS",
+                                                    device_os_version: deviceOSVersion,
+                                                    app_version: appVersion,
+                                                    device_email: "",
+                                                    device_phone_number: "",
+                                                    device_diagnostics: "",
+                                                    device_fcm_registration_id: "",
+                                                    device_activation_code: "")
         
         let jsonData = try! JSONEncoder().encode(sendDeviceConfRequest)
         let jsonString = String(data: jsonData, encoding: .utf8)!
@@ -134,15 +151,20 @@ extension Client
             }
             guard let data = data else {
                 let userInfo = [NSLocalizedDescriptionKey : "Could not retrieve data."]
+                DeviceUtilities.shared().printData("Error encontrando =\(userInfo)")
                 completion(nil, NSError(domain: "taskForPOSTMethod", code: 1, userInfo: userInfo))
                 return
             }
             
-            do {
-                let userResponseParser = try JSONDecoder().decode(sendDeviceConfigurationResponse.self, from: data)
+            do
+            {
+                let userResponseParser = try JSONDecoder().decode(SetDeviceConfigurationResponse.self, from: data)
                 completion(userResponseParser, nil)
-            } catch {
-                print("\(#function) error: \(error)")
+            }
+            catch
+            {
+                let responseData = String(data: data, encoding: String.Encoding.utf8)
+                DeviceUtilities.shared().printData("Error encontrando decoding=\(responseData)")
                 completion(nil, error)
             }
         }
@@ -177,11 +199,15 @@ extension Client
             if let error = error {
                 
                 // the request got canceled
-                if (error as NSError).code == URLError.cancelled.rawValue {
+                if (error as NSError).code == URLError.cancelled.rawValue
+                {
                     completionHandlerForPOSTREST(nil, nil)
-                } else {
+                }
+                else
+                {
                     DeviceUtilities.shared().printData("Existió un error al conectarse al servidor")
                     sendError("Existió un error al conectarse al servidor: \(error.localizedDescription)")
+                    completionHandlerForPOSTREST(nil,error as NSError)
                 }
                 return
             }
@@ -202,6 +228,7 @@ extension Client
             
             //It parses the data and use the data (happens in completion handler)
             DeviceUtilities.shared().printData("Si logro consultar el webservice ")
+            DeviceUtilities.shared().printData("Data devuelta = \(data)")
             completionHandlerForPOSTREST(data, nil)
             
         }
