@@ -9,10 +9,12 @@
 import Foundation
 import UIKit
 import CoreTelephony
+import CoreLocation
 
 class DeviceUtilities
 {
     let telephonyInfo: CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
+    let notificationCenter = UNUserNotificationCenter.current()
     
     class func shared() -> DeviceUtilities {
         struct Singleton {
@@ -34,6 +36,39 @@ class DeviceUtilities
         return batteryStatus
     }
     
+    func getLocationServicesStatus()->Bool{
+        if CLLocationManager.authorizationStatus() == .denied{
+            return false
+        }else{
+            return true
+        }
+    }
+    
+    func getNotificationServiceStatus() -> Bool
+    {
+        var notificationServiceStatus = false
+        notificationCenter.getNotificationSettings()
+        {
+            (settings) in
+            
+            switch settings.authorizationStatus
+            {
+                case .authorized, .provisional:
+                  notificationServiceStatus = true
+                case .denied:
+                  notificationServiceStatus = false
+                case .notDetermined:
+                  notificationServiceStatus = false
+            }
+        }
+        return notificationServiceStatus
+    }
+    
+    func getCurrentDeviceDateTime() -> String
+    {
+        return Date().preciseLocalDateTime
+    }
+        
     func convertDateTimeToString(_ date: Date,_ format: String) -> String
     {
         var dateTimeString:String = ""
@@ -61,4 +96,6 @@ class DeviceUtilities
     {
         print(message,separator: "",terminator: "\n")
     }
+    
+    
 }

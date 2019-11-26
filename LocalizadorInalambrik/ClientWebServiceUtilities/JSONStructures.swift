@@ -74,24 +74,39 @@ struct sendLocationReportResponse: Codable
     let ErrorMessage:   String
 }
 
-struct sendDeviceConfigurationRequest:Codable
+struct SetDeviceConfigurationRequest:Codable
 {
-    let device_imei:                String
-    let device_brand:               String
-    let device_model:               String
-    let device_os:                  String
-    let device_os_version:          String
-    let app_version:                Float
-    let device_email:               String
-    let device_phone_number:        String
-    let device_diagnostics:         String
-    let device_fcm_registration_id: String
-    let device_activation_code:     String
+    let device_imei:                         String
+    let device_brand:                        String
+    let device_model:                        String
+    let device_os:                           String
+    let device_os_version:                   String
+    let app_version:                         Float
+    let device_email:                        String
+    let device_phone_number:                 String
+    let device_diagnostics:                  String
+    let device_fcm_registration_id:          String
+    let device_activation_code:              String
 }
 
-struct sendDeviceConfigurationResponse:Codable
+struct SetDeviceConfigurationResponse:Codable
 {
-    let errorMessage:               String
+    let cta_password:           String
+    let report_interval:        Float
+    let report_schedule:        String
+    let year:                   Float
+    let month:                  Float
+    let day:                    Float
+    let hour:                   Float
+    let minute:                 Float
+    let second:                 Float
+    let max_speed:              Float
+    let min_battery_level:      Float
+    let max_time_stopped:       Float
+    let max_distance_traveled:  Float
+    let preferences:            String
+    let errorMessage:           String
+    let is_lite_version:        Int
 }
 
 //It Contains the struct to use in the flickr api
